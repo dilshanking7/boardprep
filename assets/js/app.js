@@ -146,6 +146,7 @@
   }
 
   function freqBadge(q) {
+    if (bank()) return '';
     var row = FREQ[norm(q.q)] || FREQ[norm(q.chap)];
     if (!row) return '';
     return '<span class="badge freq">' + esc(row.times) + '× · ' + esc(row.years) + '</span>';
@@ -279,7 +280,7 @@
       '<a class="more" href="#/subjects">' + esc(t('all')) + ' →</a></div>' +
       '<div class="grid grid-3">' + boardSubjects().map(subjectCard).join('') + '</div></section>';
 
-    var top = Object.keys(FREQ).map(function (k) { return FREQ[k]; })
+    var top = bank() ? [] : Object.keys(FREQ).map(function (k) { return FREQ[k]; })
       .sort(function (a, b) { return b.times - a.times; }).slice(0, 6);
     if (top.length) {
       html += '<section class="section"><div class="section-head"><h2>' + esc(t('freq_title')) + '</h2></div>';
