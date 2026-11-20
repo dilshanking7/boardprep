@@ -14,6 +14,15 @@
     return seen;
   }
 
+  // stories ke liye sirf asli chapter/section naam (data-source categories nahi)
+  function storyChapters(subjKey) {
+    var bad = ['प्रश्न', 'उत्तरीय', 'Bank', 'Objective', 'MCQ', 'पुनरीक्षण', 'उद्धरण', 'मुख्य बातें'];
+    return chapList(subjKey).filter(function (c) {
+      return !bad.some(function (b) { return c.indexOf(b) >= 0; });
+    });
+  }
+
+
   function keyPoints(subjKey, chap) {
     var pts = [];
     BP.qsFor(subjKey).forEach(function (q) {
@@ -70,7 +79,7 @@
     var subs = [];
     F.forEach(function (x) { if (subs.indexOf(x.subj) === -1) subs.push(x.subj); });
     var html = '<section class="section"><div class="section-head"><h2>' + esc(t('formulas_title')) + '</h2>' +
-      '<span class="note">' + list.length + ' sections</span></div>';
+      '<span class="note">' + list.length + ' ' + (state.lang === 'en' ? 'chapters' : 'अध्याय') + '</span></div>';
     html += '<div class="chips"><button class="fchip' + (!subj || subj === 'all' ? ' on' : '') + '" data-fsub="all">' +
       esc(t('formulas_all')) + '</button>' + subs.map(function (s) {
         var nm = pick((BP.subj(s) || {}).name, (BP.subj(s) || {}).en) || s;
@@ -118,7 +127,8 @@
       '<span class="note">' + esc(t('periodic_sub')) + '</span></div>';
 
     html += '<div class="pt-legend">' + ['alkali', 'alkaline', 'transition', 'metalloid', 'nonmetal', 'halogen', 'noble', 'lanthanide', 'actinide'].map(function (c) {
-      return '<span><i style="background:' + catColor(c) + '"></i>' + c + '</span>';
+      var nm = { alkali: L('Alkali', 'तालकीय'), alkaline: L('Alkaline', 'क्षारीय मिश्र'), transition: L('Transition metal', 'संक्रमण धातु'), metalloid: L('Metalloid', 'अर्धधातु'), nonmetal: L('Non-metal', 'अधातु'), halogen: L('Halogen', 'हैलोजन'), noble: L('Noble gas', 'कांज्य गैस'), lanthanide: L('Lanthanide', 'लैंथेनाइड'), actinide: L('Actinide', 'एक्टिनाइड') }[c] || c;
+      return '<span><i style="background:' + catColor(c) + '"></i>' + nm + '</span>';
     }).join('') + '</div>';
 
     html += '<div class="pt-wrap"><div class="pt-grid">';
@@ -370,13 +380,14 @@
       }).join('') + '</div>';
       STORY_SUBS.forEach(function (k) {
         var s = BP.subj(k) || {};
-        var ch = chapList(k);
-        html += '<div class="board-group">' + esc(pick(s.name, s.en) || k) + ' · ' + ch.length + ' ' + L('chapters', 'अध्याय') + '</div>';
+        var ch = storyChapters(k);
+        if (!ch.length) return;
+        html += '<div class="board-group">' + esc(pick(s.name, s.en) || k) + ' · ' + ch.length + ' ' + (ch.length === 1 ? (state.lang === 'en' ? 'chapter' : 'अध्याय') : L('chapters', 'अध्याय')) + '</div>';
         ch.forEach(function (c) {
           var pts = keyPoints(k, c);
           html += '<a class="list-row" href="#/story/' + k + '?c=' + encodeURIComponent(c) + '"><div>' +
             '<div class="t">' + esc(c) + '</div>' +
-            '<div class="s">' + pts.length + ' ' + L('key points', 'मुख्य बातें') + ' · ' + BP.qsFor(k).filter(function (q) { return (q.chap || q.part) === c; }).length + ' ' + L('questions', 'प्रश्न') + '</div></div>' +
+            '<div class="s">' + pts.length + ' ' + L('key points', 'मुख्य बातें') + ' · ' + BP.qsFor(k).filter(function (q) { return (q.chap || q.part) === c; }).length + ' ' + (BP.qsFor(k).filter(function (q) { return (q.chap || q.part) === c; }).length === 1 ? (state.lang === 'en' ? 'question' : 'प्रश्न') : L('questions', 'प्रश्न')) + '</div></div>' +
             '<span class="n">→</span></a>';
         });
       });
@@ -387,7 +398,7 @@
       var ss = BP.subj(k) || {};
       return '<button class="fchip' + (k === subjKey ? ' on' : '') + '" data-story="' + k + '">' + esc(ss.name || k) + '</button>';
     }).join('') + '</div>';
-    chapList(subjKey).forEach(function (c) {
+    storyChapters(subjKey).forEach(function (c) {
       var pts = keyPoints(subjKey, c);
       html += '<div class="story"><h3>' + esc(c) + '</h3>' +
         '<div class="smeta">' + esc(pick(s.name, s.en) || '') + ' · ' + pts.length + ' ' + L('key points', 'मुख्य बातें') + '</div>';
@@ -462,7 +473,7 @@
     var M = window.MODELS3D || { biology: [], physics: [] };
     var html = '<section class="section"><div class="section-head"><h2>' + '3D ' + t('models_word') + '</h2>' +
       '<span class="note">' + t('hub_models_sub') + '</span></div>';
-    html += '<div class="note">' + L('Real 3D anatomy models downloaded (CC BY 4.0) — 147 parts. ', 'असली 3D एनाटमी models download किए (CC BY 4.0) — 147 भाग। ') + '' +
+    html += '<div class="note">' + L('Real 3D anatomy models downloaded (CC BY 4.0) — 147 parts. ', 'असली 3D एनाटमी मॉडल डाउनलोड किए गए (CC BY 4.0) — 147 भाग। ') + '' +
       '<span style="opacity:.7">' + esc(M.attribution || '') + '</span></div>';
     [['biology', L('Biology', 'जीव विज्ञान'), L('18 diagrams', '18 डायग्राम')], ['physics', L('Physics', 'भौतिकी'), L('16 diagrams', '16 डायग्राम')]].forEach(function (sec) {
       var list = M[sec[0]] || [];

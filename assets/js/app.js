@@ -172,7 +172,7 @@
     var nm = state.lang === 'en' ? (s.en || s.name) : s.name;
     return '<a class="card subj-card" href="#/subject/' + s.key + '" style="--sc:' + s.color + '">' +
       '<h3>' + esc(nm) + '</h3>' + (state.lang === 'en' ? '' : '<p>' + esc(s.en) + '</p>') +
-      '<div class="count">' + n + ' ' + esc(t('questions_word')) + ' · ' + mcq + ' MCQ</div></a>';
+      '<div class="count">' + n + ' ' + esc(n === 1 ? (state.lang === 'en' ? 'question' : 'सवाल') : t('questions_word')) + ' · ' + mcq + ' MCQ</div></a>';
   }
 
   function hubCard(href, icon, title, sub) {
@@ -430,7 +430,11 @@
 
   function vPapers() {
     var list = D.papers.filter(function (p) {
-      return state.paperFilter === 'all' || p.kind.toLowerCase() === state.paperFilter;
+      if (state.paperFilter === 'all') return true;
+      var k = String(p.kind || '').toLowerCase();
+      if (state.paperFilter === 'pyq') return k.indexOf('pyq') >= 0;
+      if (state.paperFilter === 'model') return k.indexOf('model') >= 0;
+      return k === state.paperFilter;
     });
     var html = '<section class="section"><div class="section-head"><h2>' + esc(t('papers_title')) + '</h2>' +
       '<span class="note">' + esc(board().name) + '</span></div>' +
@@ -447,9 +451,17 @@
       Object.keys(years).sort().reverse().forEach(function (y) {
         html += '<div class="board-group">' + esc(y) + '</div>';
         years[y].forEach(function (p) {
+          var raw = String(p.name || '');
+          var isM = /-Model-Paper$/.test(raw);
+          var title = raw;
+          if (isM) {
+            title = raw.replace(/-Model-Paper$/, '') + ' — ' + t('papers_model');
+          } else if (raw.indexOf('Sample Question Paper') < 0 && raw.indexOf('Marking Scheme') < 0) {
+            title = raw + ' — ' + t('papers_pyq');
+          }
           html += '<div class="list-row"><div>' +
-            '<div class="t">' + esc(p.name) + '</div>' +
-            '<div class="s">' + esc(p.label) + '</div></div>' +
+            '<div class="t">' + esc(title) + '</div>' +
+            '<div class="s">' + esc(p.label) + ' · ' + esc(p.year) + '</div></div>' +
             '<a class="btn btn-ghost" style="background:var(--accent);color:#fff;padding:8px 14px" href="' +
             esc(p.url) + '" target="_blank" rel="noopener">' + esc(t('papers_open')) + '</a></div>';
         });

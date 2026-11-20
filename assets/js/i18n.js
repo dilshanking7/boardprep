@@ -86,7 +86,7 @@ window.I18N = {
   tool_mathlab: { hi: "गणित लैब", en: "Math lab" },
   tool_mathlab_s: { hi: "सूत्र लगाओ, उत्तर जाँचो", en: "Apply the formula, check the answer" },
   tool_diagrams: { hi: "डायग्राम", en: "Diagrams" },
-  tool_diagrams_s: { hi: "हर hisse पर टैप करो", en: "Tap any part to learn it" },
+  tool_diagrams_s: { hi: "हर हिस्से पर टैप करो", en: "Tap any part to learn it" },
   tool_timeline: { hi: "इतिहास टाइमलाइन", en: "History timeline" },
   tool_timeline_s: { hi: "साल-दर-साल सारे इतिहास", en: "Year by year, all of history" },
   tool_stories: { hi: "पाठ्य पुस्तक", en: "Textbook chapters" },

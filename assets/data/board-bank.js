@@ -1405,6 +1405,34 @@ window.BOARD_BANK = {
     "kind": "model",
     "year": "2026",
     "url": "assets/pdfs/cbse-sqp/EnglishL-MS.pdf"
+   },
+   {
+    "name": "Science — Sample Question Paper 2024-25",
+    "label": "CBSE SQP",
+    "kind": "model",
+    "year": "2025",
+    "url": "assets/pdfs/cbse-sqp/x2425/Science-SQP.pdf"
+   },
+   {
+    "name": "Mathematics Standard — Sample Question Paper 2024-25",
+    "label": "CBSE SQP",
+    "kind": "model",
+    "year": "2025",
+    "url": "assets/pdfs/cbse-sqp/x2425/MathsStandard-SQP.pdf"
+   },
+   {
+    "name": "Social Science — Sample Question Paper 2024-25",
+    "label": "CBSE SQP",
+    "kind": "model",
+    "year": "2025",
+    "url": "assets/pdfs/cbse-sqp/x2425/SocialScience-SQP.pdf"
+   },
+   {
+    "name": "English Language & Literature — Sample Question Paper 2024-25",
+    "label": "CBSE SQP",
+    "kind": "model",
+    "year": "2025",
+    "url": "assets/pdfs/cbse-sqp/x2425/EnglishL-SQP.pdf"
    }
   ]
  }
