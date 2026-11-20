@@ -1,0 +1,778 @@
+/* BoardPrep core — state, router, home, subjects, quiz, search, papers, important */
+(function () {
+  var D = window.BOARD_DATA;
+  var I18N = window.I18N;
+  var BOARDS = window.BOARDS;
+  var MAP = window.BOARD_MAP;
+  var SUBJECTS = window.SUBJECTS || [];
+  var SMAP = window.SUBJECT_MAP || {};
+  var IMP = window.IMPORTANT || null;
+  var view = document.getElementById('view');
+  var ORIG = { questions: window.BOARD_DATA.questions, subjects: window.BOARD_DATA.subjects, papers: window.BOARD_DATA.papers };
+  var BANK = window.BOARD_BANK || {};
+  var HI_EN = window.HI_EN || {};
+  var CONTENT_KEYS = ['FORMULAS', 'PERIODIC', 'LAB', 'DIAGRAMS', 'TIMELINE', 'IMPORTANT', 'BRAIN', 'MODELS3D'];
+  var ORIG_CONTENT = {};
+  CONTENT_KEYS.forEach(function (k) { if (window[k]) ORIG_CONTENT[k] = window[k]; });
+
+  function trStr(s) {
+    if (state.lang !== 'en' || typeof s !== 'string') return s;
+    return HI_EN[s] || s;
+  }
+  function translateDeep(o) {
+    if (typeof o === 'string') return trStr(o);
+    if (Array.isArray(o)) return o.map(translateDeep);
+    if (o && typeof o === 'object') {
+      var r = {};
+      Object.keys(o).forEach(function (k) { r[k] = translateDeep(o[k]); });
+      return r;
+    }
+    return o;
+  }
+  function applyContentLang() {
+    CONTENT_KEYS.forEach(function (k) {
+      if (!ORIG_CONTENT[k]) return;
+      window[k] = state.lang === 'en' ? translateDeep(ORIG_CONTENT[k]) : ORIG_CONTENT[k];
+    });
+    IMP = window.IMPORTANT || null;
+  }
+
+  var state = {
+    board: localStorage.getItem('bp_board') || 'jac',
+    lang: localStorage.getItem('bp_lang') || 'hi',
+    quiz: null,
+    subjKey: null,
+    subjType: 'all',
+    subjChap: 'all',
+    shown: 40,
+    paperFilter: 'all',
+    impSubj: 'maths'
+  };
+
+  var FREQ = {};
+  function rebuildFreq() {
+    FREQ = {};
+    if (bank()) {
+      var seen = {};
+      D.questions.forEach(function (q) {
+        var nm = q.chap || q.part || '';
+        var k = norm(nm);
+        if (!k) return;
+        if (!seen[k]) seen[k] = { topic: nm, times: 0, years: '', subj: q.subj };
+        seen[k].times++;
+      });
+      Object.keys(seen).forEach(function (k) { FREQ[k] = seen[k]; });
+    } else {
+      D.freq.forEach(function (r) {
+        var k = norm(r.topic);
+        if (k && !FREQ[k]) FREQ[k] = r;
+      });
+    }
+  }
+  rebuildFreq();
+
+  function norm(s) {
+    return String(s || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+  }
+
+  function t(key) {
+    var v = I18N[key];
+    if (!v) return key;
+    return v[state.lang] || v.hi;
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function board() { return MAP[state.board] || BOARDS[0]; }
+
+  // board ke apne prashn (jaise CBSE ka apna English bank)
+  function bank() { return BANK[state.board] || null; }
+
+  function applyBoardData() {
+    var b = bank();
+    if (b && b.questions) {
+      D.questions = b.questions;
+      if (b.subjects) D.subjects = b.subjects;
+      if (b.papers) D.papers = b.papers;
+    } else {
+      D.questions = ORIG.questions;
+      D.subjects = ORIG.subjects;
+      D.papers = ORIG.papers;
+    }
+    rebuildFreq();
+  }
+
+  function subj(key) {
+    if (SMAP[key]) return SMAP[key];
+    for (var i = 0; i < D.subjects.length; i++) {
+      if (D.subjects[i].key === key) return D.subjects[i];
+    }
+    return null;
+  }
+
+  // board ke subjects (unka order aur naam)
+  function boardSubjects() {
+    var b = board();
+    var list = [];
+    if (b.subjects) {
+      b.subjects.forEach(function (k) {
+        var s = SMAP[k];
+        if (s) list.push(s);
+      });
+    }
+    if (!list.length) list = D.subjects.slice();
+    return list;
+  }
+
+  function qsFor(key) {
+    var out = [];
+    for (var i = 0; i < D.questions.length; i++) {
+      if (!key || key === 'all' || D.questions[i].subj === key) out.push(D.questions[i]);
+    }
+    return out;
+  }
+
+  function chapters(key) {
+    var seen = [], hit = {};
+    qsFor(key).forEach(function (q) {
+      var c = q.chap || q.part || '';
+      if (c && !hit[c]) { hit[c] = 1; seen.push(c); }
+    });
+    return seen;
+  }
+
+  function freqBadge(q) {
+    var row = FREQ[norm(q.q)] || FREQ[norm(q.chap)];
+    if (!row) return '';
+    return '<span class="badge freq">' + esc(row.times) + '× · ' + esc(row.years) + '</span>';
+  }
+
+  function applyBoard() {
+    var b = board();
+    var r = document.documentElement.style;
+    r.setProperty('--accent', b.color || '#4f46e5');
+    r.setProperty('--accent-soft', b.color ? b.color + '1a' : '#eef0ff');
+    var mark = document.getElementById('brandMark');
+    if (mark) mark.style.background = b.color || '#4f46e5';
+    document.getElementById('boardChipText').textContent = b.name;
+    document.querySelector('.chip-btn .dot').style.background = b.color || '#10b981';
+    document.querySelector('meta[name=theme-color]').setAttribute('content', b.color || '#4f46e5');
+  }
+
+  /* ---------------- components ---------------- */
+
+  function subjectCard(s) {
+    var n = qsFor(s.key).length;
+    var mcq = qsFor(s.key).filter(function (q) { return q.type === 'mcq'; }).length;
+    var nm = state.lang === 'en' ? (s.en || s.name) : s.name;
+    return '<a class="card subj-card" href="#/subject/' + s.key + '" style="--sc:' + s.color + '">' +
+      '<h3>' + esc(nm) + '</h3>' + (state.lang === 'en' ? '' : '<p>' + esc(s.en) + '</p>') +
+      '<div class="count">' + n + ' ' + esc(t('questions_word')) + ' · ' + mcq + ' MCQ</div></a>';
+  }
+
+  function hubCard(href, icon, title, sub) {
+    return '<a class="hub-card" href="' + href + '">' +
+      '<span class="hub-ico">' + icon + '</span>' +
+      '<span><span class="ht">' + esc(title) + '</span><br><span class="hs">' + esc(sub) + '</span></span></a>';
+  }
+
+  function questionCard(q, i) {
+    var opts = '';
+    if (q.type === 'mcq' && q.opts && q.opts.length) {
+      opts = '<div class="opts">' + q.opts.map(function (o, k) {
+        var letter = 'ABCD'[k] || (k + 1);
+        return '<button class="opt" data-k="' + k + '"><span class="k">' + letter + '</span>' +
+          '<span>' + esc(o) + '</span></button>';
+      }).join('') + '</div>';
+    }
+    var ansIdx = '';
+    if (q.type === 'mcq' && q.opts && q.opts.length && q.ans) {
+      var n = String(q.ans).toUpperCase().charCodeAt(0) - 65;
+      if (n >= 0 && n < q.opts.length) ansIdx = ' data-ansidx="' + n + '"';
+    }
+    var ans = '';
+    if (q.type === 'write') {
+      ans = '<textarea class="writebox" placeholder="' + esc(t('quiz_write_hint')) + '"></textarea>' +
+        '<div class="ansbox" hidden>' + (q.exp ? esc(q.exp) : '') + '</div>' +
+        '<button class="link-btn" data-act="ans">' + t('show_answer') + '</button>';
+      if (i === 'quiz') {
+        ans += '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">' +
+          '<button class="btn btn-primary" data-act="selfright" style="flex:1;min-width:120px">' + esc(t('quiz_self_right')) + '</button>' +
+          '<button class="btn btn-ghost" data-act="selfwrong" style="flex:1;min-width:120px">' + esc(t('quiz_self_wrong')) + '</button></div>';
+      }
+    } else if (q.ans || q.exp) {
+      ans = '<div class="ansbox" hidden>' +
+        (q.ans ? '<b>' + esc(t('answer_label')) + '</b> ' + esc(q.ans) + '<br>' : '') +
+        (q.exp ? esc(q.exp) : '') + '</div>' +
+        '<button class="link-btn" data-act="ans">' + t('show_answer') + '</button>';
+    }
+    return '<div class="qcard" data-idx="' + i + '"' + ansIdx + '>' +
+      '<div class="qmeta"><span class="badge">' + esc(q.type === 'mcq' ? t('mcq') : t('written')) + '</span>' +
+      freqBadge(q) + '</div><div class="qtext">' + esc(q.q) + '</div>' + opts + ans + '</div>';
+  }
+
+  /* ---------------- views ---------------- */
+
+  function vHome() {
+    var total = D.questions.length;
+    var mcq = D.questions.filter(function (q) { return q.type === 'mcq'; }).length;
+    var chap = {};
+    D.questions.forEach(function (q) { var c = q.chap || ''; if (c) chap[c] = 1; });
+    var b = board();
+
+    var html = '<section class="hero">' +
+      '<div class="hero-top"><h1>' + esc(t('brand')) + '</h1>' +
+      '<span class="hero-board">' + esc(b.name) + '</span></div>' +
+      '<div class="sub">' + esc(t('home_board_note')) + '</div>' +
+      '<div class="hero-tags">' +
+      '<span class="tag">' + esc(b.exam) + '</span>' +
+      '<span class="tag">' + esc(b.pattern) + '</span>' +
+      '<span class="tag">' + esc(b.medium) + '</span>' +
+      '<span class="tag">' + esc(b.state) + '</span>' +
+      '</div>' +
+      '<div class="hero-cta">' +
+      '<a class="btn btn-primary" href="#/quiz">' + esc(t('home_start')) + '</a>' +
+      '<a class="btn btn-ghost" href="#/search">' + esc(t('home_search_btn')) + '</a>' +
+      '</div></section>';
+
+    html += '<div class="stats">' +
+      '<div class="stat"><b>' + total + '</b><span>' + esc(t('home_stats_q')) + '</span></div>' +
+      '<div class="stat"><b>' + mcq + '</b><span>MCQ</span></div>' +
+      '<div class="stat"><b>' + Object.keys(chap).length + '</b><span>' + esc(t('home_stats_chap')) + '</span></div>' +
+      '<div class="stat"><b>' + BOARDS.length + '</b><span>' + esc(t('home_stats_boards')) + '</span></div></div>';
+
+    html += '<section class="section"><div class="section-head">' +
+      '<h2>' + esc(t('tools_title')) + '</h2><a class="more" href="#/tools">' + esc(t('all')) + ' →</a></div>' +
+      '<div class="hub">' +
+      hubCard('#/quiz', '✎', t('nav_quiz'), t('hub_quiz_sub')) +
+      hubCard('#/models', '◈', '3D ' + t('models_word'), t('hub_models_sub')) +
+      hubCard('#/important', '★', t('tool_important'), t('hub_important_sub')) +
+      hubCard('#/formulas', '∑', t('tool_formulas'), t('hub_formulas_sub')) +
+      hubCard('#/periodic', '⚛', t('tool_periodic'), t('hub_periodic_sub')) +
+      hubCard('#/lab', '⚗', t('tool_lab'), t('hub_lab_sub')) +
+      hubCard('#/mathlab', 'ƒ', t('tool_mathlab'), t('hub_mathlab_sub')) +
+      hubCard('#/diagrams', '◉', t('tool_diagrams'), t('hub_diagrams_sub')) +
+      hubCard('#/timeline', '↝', t('tool_timeline'), t('hub_timeline_sub')) +
+      hubCard('#/stories', '❝', t('tool_stories'), t('hub_stories_sub')) +
+      hubCard('#/brain', '🧠', t('tool_brain'), t('hub_brain_sub')) +
+      hubCard('#/papers', '▦', t('tool_pdfs'), t('hub_pdfs_sub')) +
+      hubCard('#/subjects', '▤', t('nav_subjects'), t('hub_subjects_sub')) +
+      '</div></section>';
+
+    var en = state.lang === 'en';
+    html += '<section class="pattern"><h3>' + esc(t('board_pattern')) + ' — ' + esc(b.name) + '</h3>' +
+      '<div class="prow"><span>' + esc(t('board_exam')) + '</span><b>' + esc(b.exam) + '</b></div>' +
+      '<div class="prow"><span>' + esc(t('board_lang')) + '</span><b>' + esc(en ? b.medium_en : b.medium) + '</b></div>' +
+      '<div class="prow"><span>' + esc(t('board_pass')) + '</span><b>' + esc(String(b.passMarks)) + '%</b></div>' +
+      '<div class="prow"><span>' + esc(t('board_sections')) + '</span><b>' + esc(b.pattern) + '</b></div>' +
+      ((en ? b.sections_en : b.sections) || []).map(function (s) {
+        return '<div class="prow"><span>' + esc(s.t) + '</span><b>' + esc(s.d) + '</b></div>';
+      }).join('') +
+      '<div class="ptags"><span class="ptag">' + esc(b.full) + '</span></div></section>';
+
+    html += '<section class="section"><div class="section-head">' +
+      '<h2>' + esc(t('home_subjects_title')) + '</h2>' +
+      '<a class="more" href="#/subjects">' + esc(t('all')) + ' →</a></div>' +
+      '<div class="grid grid-3">' + boardSubjects().map(subjectCard).join('') + '</div></section>';
+
+    var top = Object.keys(FREQ).map(function (k) { return FREQ[k]; })
+      .sort(function (a, b) { return b.times - a.times; }).slice(0, 6);
+    if (top.length) {
+      html += '<section class="section"><div class="section-head"><h2>' + esc(t('freq_title')) + '</h2></div>';
+      top.forEach(function (r) {
+        html += '<div class="freq-row"><div><div>' + esc(r.topic) + '</div>' +
+          '<div class="yrs">' + esc(r.years) + ' · ' + esc((function (s) { return s ? (state.lang === 'en' ? (s.en || s.name) : s.name) : ''; })(subj(r.subj))) + '</div>' +
+          '<span class="xchip">' + esc(r.times) + '×</span></div>';
+      });
+      html += '</section>';
+    }
+
+    return html;
+  }
+
+  function vSubjects() {
+    return '<section class="section"><div class="section-head"><h2>' + esc(t('subjects_title')) + '</h2></div>' +
+      '<div class="grid grid-3">' + boardSubjects().map(subjectCard).join('') + '</div></section>';
+  }
+
+  function vSubject(key) {
+    var s = subj(key);
+    if (!s) return '<div class="empty">404</div>';
+    state.subjKey = key;
+    var chaps = chapters(key);
+    var list = qsFor(key).filter(function (q) {
+      if (state.subjType !== 'all' && q.type !== state.subjType) return false;
+      if (state.subjChap !== 'all' && (q.chap || q.part) !== state.subjChap) return false;
+      return true;
+    });
+    var show = list.slice(0, state.shown);
+
+    var html = '<a class="backlink" href="#/subjects">← ' + esc(t('back')) + '</a>' +
+      '<div class="section-head"><h2 style="color:' + s.color + '">' + esc(state.lang === 'en' ? (s.en || s.name) : s.name) + '</h2>' +
+      '<span class="note">' + list.length + ' ' + esc(t('questions_word')) + '</span></div>';
+
+    html += '<div class="chips">' +
+      [['all', t('all')], ['mcq', t('mcq')], ['write', t('written')]].map(function (c) {
+        return '<button class="fchip' + (state.subjType === c[0] ? ' on' : '') +
+          '" data-type="' + c[0] + '">' + esc(c[1]) + '</button>';
+      }).join('') + '</div>';
+
+    html += '<div class="field"><select id="chapSel">' +
+      '<option value="all">' + esc(t('quiz_all_chapters')) + '</option>' +
+      chaps.map(function (c) {
+        return '<option value="' + esc(c) + '"' + (state.subjChap === c ? ' selected' : '') + '>' + esc(c) + '</option>';
+      }).join('') + '</select></div>';
+
+    html += '<div id="qlist">' + (show.length ? show.map(questionCard).join('') :
+      '<div class="empty">' + esc(t('search_none')) + '</div>') + '</div>';
+
+    if (list.length > state.shown) {
+      html += '<button class="btn btn-accent btn-block" id="moreBtn">' + esc(t('load_more')) +
+        ' (' + (list.length - state.shown) + ')</button>';
+    }
+    return html;
+  }
+
+  function vSearch() {
+    return '<section class="section"><div class="section-head"><h2>' + esc(t('nav_search')) + '</h2></div>' +
+      '<input type="search" id="searchBox" placeholder="' + esc(t('search_placeholder')) + '" autocomplete="off">' +
+      '<div class="note">' + esc(t('search_hint')) + '</div>' +
+      '<div id="searchOut" style="margin-top:14px"></div></section>';
+  }
+
+  function doSearch(word) {
+    var out = document.getElementById('searchOut');
+    var w = norm(word);
+    if (!w) { out.innerHTML = ''; return; }
+    var hits = [];
+    for (var i = 0; i < D.questions.length; i++) {
+      var q = D.questions[i];
+      var hay = norm(q.q) + ' ' + norm(q.chap) + ' ' + norm((q.opts || []).join(' '));
+      if (hay.indexOf(w) !== -1) hits.push(q);
+      if (hits.length >= 300) break;
+    }
+    if (!hits.length) {
+      out.innerHTML = '<div class="empty">' + esc(t('search_none')) + '</div>';
+      return;
+    }
+    out.innerHTML = '<div class="note">' + hits.length + ' ' + esc(t('search_results')) + '</div>' +
+      hits.slice(0, 120).map(function (q, i) { return questionCard(q, i); }).join('');
+  }
+
+  function vQuizSetup() {
+    var b = board();
+    var html = '<section class="section"><div class="section-head"><h2>' + esc(t('quiz_setup')) + '</h2>' +
+      '<span class="note">' + esc(b.name) + ' · ' + esc(b.pattern) + '</span></div>';
+
+    html += '<div class="field"><label>' + esc(t('quiz_subj')) + '</label><div class="chips" id="qzSubj">' +
+      '<button class="fchip on" data-v="all">' + esc(t('all')) + '</button>' +
+      boardSubjects().map(function (s) {
+        return '<button class="fchip" data-v="' + s.key + '">' + esc(state.lang === 'en' ? (s.en || s.name) : s.name) + '</button>';
+      }).join('') + '</div></div>';
+
+    html += '<div class="field"><label>' + esc(t('quiz_chap')) + '</label><select id="qzChap">' +
+      '<option value="all">' + esc(t('quiz_all_chapters')) + '</option></select></div>';
+
+    html += '<div class="field"><label>' + esc(t('quiz_count')) + '</label><div class="chips" id="qzCount">' +
+      [10, 20, 30, 50].map(function (n, i) {
+        return '<button class="fchip' + (i === 0 ? ' on' : '') + '" data-v="' + n + '">' + n + '</button>';
+      }).join('') + '</div></div>';
+
+    html += '<div class="field"><label>' + esc(t('quiz_mode')) + '</label><div class="chips" id="qzMode">' +
+      [['mix', t('mixed_practice')], ['mcq', t('mcq')], ['write', t('written')]].map(function (m, i) {
+        return '<button class="fchip' + (i === 0 ? ' on' : '') + '" data-v="' + m[0] + '">' + esc(m[1]) + '</button>';
+      }).join('') + '</div></div>';
+
+    html += '<button class="btn btn-accent btn-block" id="qzStart">' + esc(t('quiz_start')) + '</button></section>';
+    return html;
+  }
+
+  function vQuizRun() {
+    var qz = state.quiz;
+    var q = qz.items[qz.i];
+    var p = Math.round((qz.i / qz.items.length) * 100);
+    var html = '<div class="quiz-top"><div class="progress"><i style="width:' + p + '%"></i></div>' +
+      '<div class="quiz-meta">' + (qz.i + 1) + '/' + qz.items.length + '</div></div>';
+    html += questionCard(q, 'quiz');
+    html += '<button class="btn btn-primary btn-block" id="qzNext" hidden>' + esc(t('quiz_next')) + '</button>';
+    html += '<div class="note">' + esc((subj(q.subj) || {}).name || '') + '</div>';
+    return html;
+  }
+
+  function vQuizResult() {
+    var qz = state.quiz;
+    var pct = Math.round((qz.right / qz.items.length) * 100);
+    var weak = {};
+    qz.items.forEach(function (q, i) {
+      if (!qz.ok[i]) weak[q.chap || q.subj] = (weak[q.chap || q.subj] || 0) + 1;
+    });
+    var weakList = Object.keys(weak).sort(function (a, b) { return weak[b] - weak[a]; }).slice(0, 5);
+    var html = '<section class="section"><div class="section-head"><h2>' + esc(t('quiz_result')) + '</h2></div>' +
+      '<div class="result-ring" style="--p:' + pct + '"><div>' + pct + '%</div></div>' +
+      '<div class="result-row"><span>' + esc(t('quiz_correct')) + '</span><b>' + qz.right + '</b></div>' +
+      '<div class="result-row"><span>' + esc(t('quiz_wrong')) + '</span><b>' + (qz.items.length - qz.right) + '</b></div>';
+    if (weakList.length) {
+      html += '<div class="section-head" style="margin-top:18px"><h2>' + esc(t('quiz_weak')) + '</h2></div>';
+      weakList.forEach(function (c) {
+        html += '<div class="result-row"><span>' + esc(c) + '</span><b>' + weak[c] + '</b></div>';
+      });
+    }
+    html += '<div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">' +
+      '<a class="btn btn-accent" href="#/quiz" id="qzRetry" style="flex:1">' + esc(t('quiz_retry')) + '</a>' +
+      '<a class="btn btn-primary" href="#/" style="flex:1">' + esc(t('quiz_home')) + '</a></div></section>';
+    return html;
+  }
+
+  function vPapers() {
+    var list = D.papers.filter(function (p) {
+      return state.paperFilter === 'all' || p.kind.toLowerCase() === state.paperFilter;
+    });
+    var html = '<section class="section"><div class="section-head"><h2>' + esc(t('papers_title')) + '</h2>' +
+      '<span class="note">' + esc(board().name) + '</span></div>' +
+      '<div class="chips">' +
+      [['all', t('papers_all')], ['pyq', t('papers_pyq')], ['model', t('papers_model')]].map(function (c) {
+        return '<button class="fchip' + (state.paperFilter === c[0] ? ' on' : '') +
+          '" data-f="' + c[0] + '">' + esc(c[1]) + '</button>';
+      }).join('') + '</div>';
+    if (!list.length) {
+      html += '<div class="empty">' + esc(t('papers_empty')) + '</div>';
+    } else {
+      var years = {};
+      list.forEach(function (p) { (years[p.year] = years[p.year] || []).push(p); });
+      Object.keys(years).sort().reverse().forEach(function (y) {
+        html += '<div class="board-group">' + esc(y) + '</div>';
+        years[y].forEach(function (p) {
+          html += '<div class="list-row"><div>' +
+            '<div class="t">' + esc(p.name) + '</div>' +
+            '<div class="s">' + esc(p.label) + '</div></div>' +
+            '<a class="btn btn-ghost" style="background:var(--accent);color:#fff;padding:8px 14px" href="' +
+            esc(p.url) + '" target="_blank" rel="noopener">' + esc(t('papers_open')) + '</a></div>';
+        });
+      });
+    }
+    return html + '</section>';
+  }
+
+  /* ---------------- important 2027 ---------------- */
+
+  function vImportant() {
+    if (!IMP) return '<div class="empty">No data</div>';
+    var sec = IMP.sections.filter(function (s) { return s.id === state.impSubj; })[0] || IMP.sections[0];
+    var html = '<section class="section"><div class="section-head"><h2>' + esc(t('imp_title')) + '</h2>' +
+      '<span class="note">' + esc(board().name) + ' · ' + esc(IMP.exam) + '</span></div>';
+    html += '<div class="chips">' + IMP.sections.map(function (s) {
+      return '<button class="fchip' + (s.id === sec.id ? ' on' : '') + '" data-imp="' + s.id + '">' + esc(state.lang === 'en' ? (s.en || s.title) : s.title) + '</button>';
+    }).join('') + '</div>';
+
+    sec.groups.forEach(function (g) {
+      html += '<div class="board-group">' + esc(g.title) + '</div>';
+      g.items.forEach(function (it, i) {
+        if (g.type === 'formula') {
+          html += '<div class="imp-item"><div class="num">' + (i + 1) + '</div><div>' +
+            '<div class="iq">' + esc(it.q) + '</div><div class="imp-ans">' + esc(it.f) + '</div></div></div>';
+          return;
+        }
+        html += '<div class="imp-item"><div class="num">' + (i + 1) + '</div><div>' +
+          '<div class="iq">' + esc(it.q) + '</div>';
+        if (it.opts) {
+          html += '<div class="imp-opts">' + it.opts.map(function (o, k) {
+            var ok = String(it.ans).toUpperCase() === 'ABCD'[k];
+            return '<span class="' + (ok ? 'ok' : '') + '">' + 'ABCD'[k] + '. ' + esc(o) + '</span>';
+          }).join('') + '</div>';
+        }
+        if (it.note) html += '<div class="in">' + esc(it.note) + '</div>';
+        if (it.ans && !it.opts) html += '<div class="imp-ans">' + esc(it.ans) + '</div>';
+        html += '</div></div>';
+      });
+    });
+
+    if (sec.id === IMP.sections[0].id) {
+      html += '<div class="board-group">' + esc(t('imp_timetable')) + '</div>';
+      IMP.timetable.forEach(function (r) {
+        html += '<div class="result-row"><span>' + esc(r.subj) + '</span><b>' + esc(r.time) + '</b></div>';
+        html += '<div class="note">' + esc(r.focus) + '</div>';
+      });
+    }
+    html += '</section>';
+    return html;
+  }
+
+  function vImportantMore() {
+    if (!IMP) return '';
+    var html = '<section class="section"><div class="section-head"><h2>' + esc(t('imp_strategy')) + '</h2></div>';
+    IMP.strategy.forEach(function (r) {
+      html += '<div class="result-row"><span>' + esc(r.week) + '</span><b>' + esc(r.work) + '</b></div>';
+    });
+    html += '</section>';
+    html += '<section class="section"><div class="section-head"><h2>' + esc(t('imp_tips')) + '</h2></div>';
+    IMP.tips.forEach(function (x) {
+      html += '<div class="imp-item"><div class="num">•</div><div><div class="iq">' + esc(x) + '</div></div></div>';
+    });
+    html += '</section>';
+    html += '<section class="section"><div class="section-head"><h2>' + esc(t('imp_faq')) + '</h2></div>';
+    IMP.faq.forEach(function (f) {
+      html += '<details class="block"><summary>' + esc(f.q) + '</summary><div class="body">' + esc(f.a) + '</div></details>';
+    });
+    return html + '</section>';
+  }
+
+  /* ---------------- quiz logic ---------------- */
+
+  function answerable(q) {
+    if (q.type === 'write') return true;
+    if (!q.opts || !q.opts.length || !q.ans) return false;
+    var n = String(q.ans).toUpperCase().charCodeAt(0) - 65;
+    return n >= 0 && n < q.opts.length;
+  }
+
+  function pickQuiz(subjKey, chap, count, mode) {
+    var pool = qsFor(subjKey).filter(function (q) {
+      if (mode !== 'mix' && q.type !== mode) return false;
+      if (chap !== 'all' && (q.chap || q.part) !== chap) return false;
+      if (!answerable(q)) return false;
+      return true;
+    });
+    for (var i = pool.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+    return pool.slice(0, Math.min(count, pool.length));
+  }
+
+  function fillChips(id, onPick) {
+    var box = document.getElementById(id);
+    if (!box) return;
+    box.addEventListener('click', function (e) {
+      var btn = e.target.closest('.fchip');
+      if (!btn) return;
+      box.querySelectorAll('.fchip').forEach(function (b) { b.classList.remove('on'); });
+      btn.classList.add('on');
+      onPick(btn.dataset.v);
+    });
+  }
+
+  /* ---------------- wiring ---------------- */
+
+  function bindCommon() {
+    var more = document.getElementById('moreBtn');
+    if (more) more.addEventListener('click', function () { state.shown += 40; render(); });
+
+    var chapSel = document.getElementById('chapSel');
+    if (chapSel) chapSel.addEventListener('change', function () {
+      state.subjChap = chapSel.value; state.shown = 40; render();
+    });
+
+    var searchBox = document.getElementById('searchBox');
+    if (searchBox) searchBox.addEventListener('input', function () { doSearch(searchBox.value); });
+
+    document.querySelectorAll('[data-type]').forEach(function (btn) {
+      btn.addEventListener('click', function () { state.subjType = btn.dataset.type; state.shown = 40; render(); });
+    });
+
+    document.querySelectorAll('[data-imp]').forEach(function (btn) {
+      btn.addEventListener('click', function () { state.impSubj = btn.dataset.imp; render(); });
+    });
+  }
+
+  function bindQuiz() {
+    var start = document.getElementById('qzStart');
+    if (start) {
+      fillChips('qzSubj', function (v) {
+        state.qzSubj = v;
+        var sel = document.getElementById('qzChap');
+        var chaps = v === 'all' ? [] : chapters(v);
+        sel.innerHTML = '<option value="all">' + esc(t('quiz_all_chapters')) + '</option>' +
+          chaps.map(function (c) { return '<option>' + esc(c) + '</option>'; }).join('');
+      });
+      fillChips('qzCount', function (v) { state.qzCount = Number(v); });
+      fillChips('qzMode', function (v) { state.qzMode = v; });
+      state.qzSubj = 'all'; state.qzCount = 10; state.qzMode = 'mix';
+      start.addEventListener('click', function () {
+        var items = pickQuiz(state.qzSubj, document.getElementById('qzChap').value,
+          state.qzCount, state.qzMode);
+        if (!items.length) return;
+        state.quiz = { items: items, i: 0, right: 0, ok: {} };
+        render();
+      });
+    }
+    var next = document.getElementById('qzNext');
+    if (next) next.addEventListener('click', function () {
+      state.quiz.i++;
+      if (state.quiz.i >= state.quiz.items.length) state.quiz.done = true;
+      render();
+    });
+    var retry = document.getElementById('qzRetry');
+    if (retry) retry.addEventListener('click', function () { state.quiz = null; render(); });
+  }
+
+  function bindPapers() {
+    document.querySelectorAll('[data-f]').forEach(function (btn) {
+      btn.addEventListener('click', function () { state.paperFilter = btn.dataset.f; render(); });
+    });
+  }
+
+  function applyI18n() {
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      el.textContent = t(el.dataset.i18n);
+    });
+    document.getElementById('langBtn').textContent = state.lang === 'hi' ? 'हि' : 'EN';
+    document.getElementById('boardChipText').textContent = board().name;
+    document.querySelectorAll('.bottomnav a span:last-child').forEach(function (s, i) {
+      var keys = ['nav_home', 'nav_subjects', 'nav_quiz', 'nav_tools', 'nav_search'];
+      if (keys[i]) s.textContent = t(keys[i]);
+    });
+  }
+
+  function route() {
+    var h = location.hash.replace(/^#/, '') || '/';
+    var parts = h.split('/').filter(Boolean);
+    if (parts[0] === 'subjects') return vSubjects();
+    if (parts[0] === 'subject' && parts[1]) return vSubject(parts[1]);
+    if (parts[0] === 'search') return vSearch();
+    if (parts[0] === 'papers') return vPapers();
+    if (parts[0] === 'important') return vImportant() + vImportantMore();
+    if (parts[0] === 'quiz') {
+      if (state.quiz && state.quiz.done) return vQuizResult();
+      if (state.quiz) return vQuizRun();
+      return vQuizSetup();
+    }
+    if (window.Tools && Tools.route(parts)) return Tools.route(parts);
+    return vHome();
+  }
+
+  function markNav() {
+    var h = location.hash.replace(/^#/, '') || '/';
+    var cur = h.split('/')[0] || '';
+    document.querySelectorAll('.bottomnav a').forEach(function (a) {
+      var n = a.dataset.nav;
+      var on = (cur === '' && n === 'home') || (cur === n) || (cur === 'subject' && n === 'subjects');
+      a.classList.toggle('on', !!on);
+    });
+  }
+
+  function render() {
+    view.innerHTML = route();
+    applyBoard();
+    applyI18n();
+    bindCommon();
+    bindQuiz();
+    bindPapers();
+    if (window.Tools) Tools.bind();
+    markNav();
+    window.scrollTo(0, 0);
+  }
+
+  function renderBoards() {
+    var groups = {};
+    BOARDS.forEach(function (b) { (groups[b.group] = groups[b.group] || []).push(b); });
+    var html = '';
+    ['national', 'state'].forEach(function (g) {
+      if (!groups[g]) return;
+      html += '<div class="board-group">' + esc(t('board_group_' + g)) + '</div>';
+      groups[g].forEach(function (b) {
+        html += '<button class="board-item' + (b.id === state.board ? ' on' : '') + '" data-id="' + b.id + '">' +
+          '<span><span class="bn">' + esc(b.name) + '</span><br>' +
+          '<span class="bf">' + esc(state.lang === 'en' ? (b.state_en || b.state) : b.state) + ' · ' + esc(b.exam) + '</span></span>' +
+          '<span class="bf">' + esc(b.pattern) + '</span></button>';
+      });
+    });
+    document.getElementById('boardList').innerHTML = html;
+    document.querySelectorAll('.board-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.board = btn.dataset.id;
+        var b = board();
+        state.lang = b.lang || 'hi';
+        localStorage.setItem('bp_board', state.board);
+        localStorage.setItem('bp_lang', state.lang);
+        document.getElementById('boardSheet').hidden = true;
+        applyBoardData();
+        applyContentLang();
+        render();
+      });
+    });
+  }
+
+  function boot() {
+    view.addEventListener('click', function (e) {
+      var selfBtn = e.target.closest('[data-act="selfright"],[data-act="selfwrong"]');
+      if (selfBtn) {
+        var scard = selfBtn.closest('.qcard');
+        if (scard && state.quiz && scard.dataset.idx === 'quiz') {
+          var sok = selfBtn.dataset.act === 'selfright';
+          state.quiz.ok[state.quiz.i] = sok;
+          if (sok) state.quiz.right++;
+          var sn = document.getElementById('qzNext');
+          if (sn) sn.hidden = false;
+        }
+        return;
+      }
+      var ansBtn = e.target.closest('[data-act="ans"]');
+      if (ansBtn) {
+        var card = ansBtn.closest('.qcard');
+        var box = card ? card.querySelector('.ansbox') : null;
+        if (box) {
+          box.hidden = !box.hidden;
+          ansBtn.textContent = box.hidden ? t('show_answer') : t('hide_answer');
+        }
+        return;
+      }
+      var opt = e.target.closest('.opt');
+      if (!opt) return;
+      var card2 = opt.closest('.qcard');
+      var rightIdx = Number(card2.dataset.ansidx);
+      if (isNaN(rightIdx)) {
+        var fb = card2.querySelector('.ansbox');
+        if (fb) fb.hidden = false;
+        return;
+      }
+      card2.querySelectorAll('.opt').forEach(function (o) {
+        o.disabled = true;
+        if (Number(o.dataset.k) === rightIdx) o.classList.add('right');
+        else if (o === opt) o.classList.add('wrong');
+        else o.classList.add('dim');
+      });
+      var ansBox = card2.querySelector('.ansbox');
+      if (ansBox) ansBox.hidden = false;
+      if (state.quiz && card2.dataset.idx === 'quiz') {
+        var got = Number(opt.dataset.k) === rightIdx;
+        state.quiz.ok[state.quiz.i] = got;
+        if (got) state.quiz.right++;
+        var next = document.getElementById('qzNext');
+        if (next) next.hidden = false;
+      }
+    });
+
+    renderBoards();
+    document.getElementById('boardChip').addEventListener('click', function () {
+      document.getElementById('boardSheet').hidden = false;
+    });
+    document.getElementById('boardClose').addEventListener('click', function () {
+      document.getElementById('boardSheet').hidden = true;
+    });
+    document.getElementById('boardSheet').addEventListener('click', function (e) {
+      if (e.target === this) this.hidden = true;
+    });
+    document.getElementById('langBtn').addEventListener('click', function () {
+      state.lang = state.lang === 'hi' ? 'en' : 'hi';
+      localStorage.setItem('bp_lang', state.lang);
+      applyContentLang();
+      render();
+    });
+    window.addEventListener('hashchange', render);
+    applyBoardData();
+    applyContentLang();
+    render();
+  }
+
+  window.BP = {
+    state: state, t: t, esc: esc, render: render, board: board,
+    subj: subj, qsFor: qsFor, chapters: chapters, norm: norm, D: D,
+    boardSubjects: boardSubjects, questionCard: questionCard
+  };
+
+  boot();
+})();

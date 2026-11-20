@@ -1,0 +1,162 @@
+[
+ {
+  "n": 1,
+  "q": "The graph of a quadratic polynomial p(x) passes through the points (-6,0), (0, -30), (4,-20) and (6,0). The zeroes of the polynomial are",
+  "opts": [
+   "- 6,0",
+   "4, 6",
+   "- 30,-20",
+   "- 6,6"
+  ]
+ },
+ {
+  "n": 2,
+  "q": "The value of k for which the system of equations 3x-ky= 7 and 6x+ 10y =3 is inconsistent, is",
+  "opts": [
+   "-10",
+   "-5",
+   "5",
+   "7"
+  ]
+ },
+ {
+  "n": 3,
+  "q": "Which of the following statements is not true?",
+  "opts": [
+   "A number of secants can be drawn at any point on the circle",
+   "Only one tangent can be drawn at any point on a circle",
+   "A chord is a line segment joining two points on the circle",
+   "From a point inside a circle only two tangents can be drawn"
+  ]
+ },
+ {
+  "n": 4,
+  "q": "If nth term of an A.P. is 7n-4 then the common difference of the A.P. is",
+  "opts": [
+   "7",
+   "7n",
+   "- 4",
+   "4"
+  ]
+ },
+ {
+  "n": 5,
+  "q": "The radius of the base of a right circular cone and the radius of a sphere are each 5 cm in length. If the volume of the cone is equal to the volume of the sphere then the height of the cone is",
+  "opts": [
+   "5 cm",
+   "20 cm",
+   "10 cm",
+   "4 cm 1 6. If tan𝜃 = 5 2 then"
+  ]
+ },
+ {
+  "n": 4,
+  "q": "𝑠𝑖𝑛𝜃  − 𝑐𝑜𝑠𝜃 is equal to",
+  "opts": [
+   "11 9",
+   "3 2",
+   "9 11",
+   "4"
+  ]
+ },
+ {
+  "n": 7,
+  "q": "In the given figure, a tangent has been drawn at a point P on the circle centred at O. If ∠ TPQ= 110𝑂 then ∠POQ is equal to",
+  "opts": [
+   "110𝑂",
+   "70𝑂",
+   "140𝑂",
+   "55𝑂 1 8. A quadratic polynomial having zeroes - √5 2 and √5 2 is A) 𝑥2 − 5√2 x +1 B) 8𝑥2 - 20 C) 15𝑥2- 6 D) 𝑥2 - 2√5 x -1"
+  ]
+ },
+ {
+  "n": 9,
+  "q": "Consider the frequency distribution of 45 observations. Class 0-10 10-20 20-30 30-40 40-50 Frequency 5 9 15 10 6 The upper limit of median class is",
+  "opts": [
+   "20",
+   "10",
+   "30",
+   "40"
+  ]
+ },
+ {
+  "n": 10,
+  "q": "O is the point of intersection of two chords AB and CD of a circle. If ∠𝐵𝑂𝐶 = 80𝑂 and OA = OD then 𝛥𝑂𝐷𝐴 𝑎𝑛𝑑 𝛥𝑂𝐵𝐶 are",
+  "opts": [
+   "equilateral and similar",
+   "isosceles and similar",
+   "isosceles but not similar",
+   "not similar 1 Q O P T A D B C O"
+  ]
+ },
+ {
+  "n": 11,
+  "q": "The roots of the quadratic equation 𝑥2+x-1 = 0 are",
+  "opts": [
+   "Irrational and distinct",
+   "not real C ) rational and distinct D) real and equal"
+  ]
+ },
+ {
+  "n": 12,
+  "q": "If 𝜃 = 30𝑜   then the value of 3tan𝜃   is",
+  "opts": [
+   "1",
+   "1 √3 C ) 3 √3 (D) not defined"
+  ]
+ },
+ {
+  "n": 13,
+  "q": "The  volume of a solid hemisphere is 396 7  𝑐𝑚3.The total surface area of the solid hemisphere (in sq.cm) is",
+  "opts": [
+   "396 7",
+   "594 7",
+   "549 7",
+   "604 7"
+  ]
+ },
+ {
+  "n": 15,
+  "q": "The point on the x- axis nearest to the point (-4,-5) is",
+  "opts": [
+   "(0, 0)",
+   "(-4, 0) C ) (-5, 0) D) (√41, 0)"
+  ]
+ },
+ {
+  "n": 16,
+  "q": "Which of the following gives the middle most observation of the data?",
+  "opts": [
+   "Median",
+   "Mean",
+   "Range",
+   "Mode"
+  ]
+ },
+ {
+  "n": 17,
+  "q": "A point on the x-axis divides the line segment joining the points A(2, -3) and B(5, 6) in the ratio 1:2. The point is",
+  "opts": [
+   "(4, 0)",
+   "( 7 2"
+  ]
+ },
+ {
+  "n": 18,
+  "q": "A card is drawn from a well shuffled deck of playing cards. The probability of getting red face card is 𝐴) 3 13 B) 1 2 C) 3 52 D) 3 26 1 DIRECTION: In the question number 19 and 20, a statement of Assertion",
+  "opts": [
+   "is followed by a statement of Reason (R). Choose the correct option A)Both assertion (A) and reason (R) are true and reason (R) is the correct explanation of assertion (A)",
+   "Both assertion (A) and reason (R) are true and reason (R) is not the correct explanation of assertion (A)",
+   "Assertion (A) is true but reason (R) is false",
+   "Assertion (A) is false but reason (R) is true"
+  ]
+ },
+ {
+  "n": 36,
+  "q": "Ms. Sheela visited a store near her house and found that the glass jars are arranged one above the other in a specific pattern. A B C P Q R On the top layer there are 3 jars. In the next layer there are 6 jars. In the 3rd layer from the top there are 9 jars and so on till the 8th layer. On the basis of the above situation answer the following questions. (i) Write an",
+  "opts": [
+   "P whose terms represent the number of jars in different layers starting from top . Also, find the common difference. (ii) Is it possible to arrange 34 jars in a layer if this pattern is continued? Justify your answer. (iii) (A) If there are ‘n’ number of rows in a layer then find the expression for finding the total number of jars in terms of n. Hence find 𝑆8 . OR (iii)",
+   "The shopkeeper added 3 jars in each layer. How many jars are there in the 5th layer from the top? . 1 1 2 2 37. Triangle is a very popular shape used in interior designing. The picture given above shows a cabinet designed by a famous interior designer. Here the largest triangle is represented by △ ABC and smallest one with shelf is represented by △ DEF. PQ is parallel to EF. (i) Show that △ DPQ ∼ △ DEF. 1 A B C D E F P Q (ii) If DP= 50 cm and PE = 70 cm then find 𝑃𝑄 𝐸𝐹 . (iii) (A) If 2AB = 5DE and △ ABC ∼ △ DEF then show that 𝑝𝑒𝑟𝑖𝑚𝑒𝑡𝑒𝑟 𝑜𝑓 △𝐴𝐵𝐶 𝑝𝑒𝑟𝑖𝑚𝑒𝑡𝑒𝑟 𝑜𝑓 △𝐷𝐸𝐹 is constant. OR (iii) (B) If AM and DN are medians of triangles ABC and DEF respectively then prove that △ ABM ∼ △ DEN. 1 2 2 38. Metallic silos are used by farmers for storing grains. Farmer Girdhar has decided to build a new metallic silo to store his harvested grains. It is in the shape of a cylinder mounted by a cone. Dimensions of the conical part of a silo is as follows: Radius of base = 1.5 m Height = 2 m Dimensions of the cylindrical part of a silo is as follows: Radius = 1.5 m Height = 7 m On the basis of the above information answer the following questions. (i) Calculate the slant height of the conical part of one silo. (ii) Find the curved surface area of the conical part of one silo. (iii)(A) Find the cost of metal sheet used to make the curved cylindrical part of 1 silo at the rate of ₹2000 per 𝑚2. OR (iii) (B) Find the total capacity of one silo to store grains. 1 1 2"
+  ]
+ }
+]

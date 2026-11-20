@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<title>Class 10 Board Prep</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/tools.css">
+<script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.js" } }</script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%234f46e5'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>10</text></svg>">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#/">
+      <span class="brand-mark" id="brandMark">10</span>
+      <span class="brand-text" id="brandText">Class 10 Prep</span>
+    </a>
+    <div class="top-actions">
+      <button class="chip-btn" id="boardChip" aria-label="board">
+        <span class="dot"></span><span id="boardChipText">JAC</span>
+      </button>
+      <button class="chip-btn" id="langBtn">हि</button>
+    </div>
+  </div>
+</header>
+
+<main id="view" class="view"></main>
+
+<nav class="bottomnav">
+  <a href="#/" data-nav="home"><span class="bn-ico">⌂</span><span>होम</span></a>
+  <a href="#/subjects" data-nav="subjects"><span class="bn-ico">▤</span><span>विषय</span></a>
+  <a href="#/quiz" data-nav="quiz"><span class="bn-ico">✎</span><span>क्विज़</span></a>
+  <a href="#/tools" data-nav="tools"><span class="bn-ico">⚒</span><span>टूल्स</span></a>
+  <a href="#/search" data-nav="search"><span class="bn-ico">⌕</span><span>खोज</span></a>
+</nav>
+
+<div class="sheet" id="boardSheet" hidden>
+  <div class="sheet-panel">
+    <div class="sheet-head">
+      <strong>बोर्ड चुनें</strong>
+      <button class="sheet-close" id="boardClose" aria-label="band">✕</button>
+    </div>
+    <div class="sheet-body" id="boardList"></div>
+  </div>
+</div>
+
+<script src="assets/data/data.js"></script>
+<script src="assets/data/board-bank.js"></script>
+<script src="assets/data/en-dict.js"></script>
+<script src="assets/data/important.js"></script>
+<script src="assets/data/formulas.js"></script>
+<script src="assets/data/periodic.js"></script>
+<script src="assets/data/lab.js"></script>
+<script src="assets/data/diagrams.js"></script>
+<script src="assets/data/timeline.js"></script>
+<script src="assets/data/brain.js"></script>
+<script src="assets/data/models3d.js"></script>
+<script src="assets/js/subjects.js"></script>
+<script src="assets/js/boards.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/tools.js"></script>
+<script type="module" src="assets/js/models3d-ui.js"></script>
+</body>
+</html>
