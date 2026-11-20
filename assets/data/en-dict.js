@@ -1827,5 +1827,21 @@ window.HI_EN = {
  "होम रूल लीग": "Home Rule League",
  "होल्मियम": "holmium",
  "√p अपरिमेय है यदि p अभाज्य हो": "√p is irrational if p is prime",
- "फ्रांस का कोड (Napoleonic Code) — समान नागरिक कानून, सामंतीवाद (जमींदारी) का अंत।": "Code of France (Napoleonic Code) — uniform civil law, end of feudalism (landlordism)."
+ "फ्रांस का कोड (Napoleonic Code) — समान नागरिक कानून, सामंतीवाद (जमींदारी) का अंत।": "Code of France (Napoleonic Code) — uniform civil law, end of feudalism (landlordism).",
+ "वस्तु 2F पर — छवि 2F पर, वास्तविक, उल्टी, समान आकार।": "Object at 2F — Image at 2F, real, inverted, same size.",
+ "वस्तु 2F व F के बीच — छवि 2F से परे, वास्तविक, उल्टी, बड़ी।": "Object between 2F and F — Image beyond 2F, real, inverted, larger.",
+ "वस्तु 2F व अनंत के बीच — छवि लेंस के पास, काल्पनिक, सीधी, छोटी।": "Object between 2F and infinity — Image near the lens, imaginary, erect, small.",
+ "वस्तु 2F से परे — छवि F व 2F के बीच, वास्तविक, उल्टी, छोटी।": "Object beyond 2F — Image between F and 2F, real, inverted, small.",
+ "वस्तु C पर — छवि C पर, वास्तविक, उल्टी, समान आकार।": "On object C — image on C, real, inverted, same size.",
+ "वस्तु C व F के बीच — छवि C से परे, वास्तविक, उल्टी, बड़ी।": "Between object C and F — Image beyond C, real, inverted, larger.",
+ "वस्तु C से परे — छवि C व F के बीच, वास्तविक, उल्टी, छोटी।": "Beyond object C — between images C and F, real, inverted, smaller.",
+ "वस्तु F के भीतर — छवि उसी तरफ, काल्पनिक, सीधी और बड़ी।": "Inside object F — image on the same side, imaginary, straight and large.",
+ "वस्तु F पर — छवि अनंत; किरण एक दूसरे के समांतर चलती हैं।": "On object F — image at infinity; The rays move parallel to each other.",
+ "वस्तु F पर — छवि अनंत; किरण एक दूसरे के समांतर निकलती हैं।": "On object F — image at infinity; The rays emerge parallel to each other.",
+ "वस्तु F व P के बीच — छवि P के पीछे, काल्पनिक, सीधी और बड़ी।": "Between object F and P — Image behind P, imaginary, erect and large.",
+ "वस्तु P व अनंत के बीच — छवि P के पीछे, काल्पनिक, सीधी, छोटी।": "Between object P and infinity — behind the image P, imaginary, straight, small.",
+ "वस्तु अनंत — छवि F के पास (दर्पण के पीछे), काल्पनिक, सीधी, छोटी।": "Object infinite — near image F (behind the mirror), imaginary, straight, small.",
+ "वस्तु अनंत — छवि F पर (उसी तरफ), काल्पनिक, सीधी, छोटी।": "Object infinite — at image F (same side), imaginary, straight, small.",
+ "वस्तु अनंत — छवि F पर, बिंदु-जैसी, वास्तविक और उल्टी।": "Object infinite — at image F, point-like, real and inverted.",
+ "वस्तु अनंत — छवि F पर, वास्तविक, उल्टी, बिंदु-जैसी।": "Object infinite — at image F, real, inverted, point-like."
 };
