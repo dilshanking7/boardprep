@@ -69,125 +69,213 @@ function finish(scene, list, keys) {
 
 /* ================= OPTICS ================= */
 
-// mirror: type 'concave' | 'convex', cases 1..6
-export function mirror(type, count) {
-  const s = sceneBase();
-  const keys = {};
-  const list = [];
-  const mirrorColor = 0xbfd4e6;
-  let surf;
-  if (type === 'concave') {
-    const g = new THREE.SphereGeometry(6, 40, 24, Math.PI / 2 - 0.32, 0.64, Math.PI / 2 - 0.35, 0.7);
-    surf = new THREE.Mesh(g, metalMat(0xe8eef5, THREE.DoubleSide));
-    surf.rotation.y = -Math.PI / 2;
-  } else {
-    const g = new THREE.SphereGeometry(6, 40, 24, Math.PI / 2 - 0.3, 0.6, Math.PI / 2 - 0.32, 0.64);
-    surf = new THREE.Mesh(g, metalMat(0xe8eef5, THREE.DoubleSide));
-    surf.rotation.y = Math.PI / 2;
-  }
-  surf.userData.key = 'mirror';
-  keys.mirror = [surf];
-  list.push(surf);
-  // stand
-  const stand = cyl(0.06, 0.06, 1.6, 0x64748b, 0, -0.9, 0);
-  list.push(stand);
+/* Optics ray diagrams — mirror/lens ke har case ke sahi kirane.
+   kind: 'concave-mirror' | 'convex-mirror' | 'convex-lens' | 'concave-lens' */
 
-  const F = 2.2, P = 3.2, C = 4.4;
-  const axisY = 0;
-  const cases = count || 6;
-  const rayColor = 0xfbbf24;
-  const imgColor = 0xf472b6;
-
-  function addRay(a, b, key) {
-    const r = line(a, b, rayColor, 0.03);
-    r.userData.key = key || 'ray';
-    (keys[key || 'ray'] = keys[key || 'ray'] || []).push(r);
-    list.push(r);
-  }
-  function addImg(a, b, key) {
-    const r = line(a, b, imgColor, 0.028);
-    r.userData.key = key || 'image';
-    (keys[key || 'image'] = keys[key || 'image'] || []).push(r);
-    list.push(r);
-  }
-  function addPoint(x, label) {
-    const p = sph(0.09, 0xef4444, x, axisY, 0);
-    p.userData.key = label;
-    (keys[label] = keys[label] || []).push(p);
-    list.push(p);
-  }
-
-  const objX = -5.2;
-  for (let i = 1; i <= cases; i++) {
-    let objH = 0.9;
-    let img = null;
-    if (type === 'concave') {
-      if (i === 1) { addPoint(objX + 0.0, 'C'); addRay([objX, axisY + objH, 0], [objX, axisY, 0], 'object'); }
-      // simplified: show object + principal ray + image for each case
-    }
-    const o = box(0.12, objH, 0.12, 0x38bdf8, objX, axisY + objH / 2, 0);
-    o.userData.key = 'object';
-    (keys.object = keys.object || []).push(o);
-    list.push(o);
-    const tip = [objX, axisY + objH, 0];
-    // parallel ray -> focus / centre
-    const hit = type === 'concave' ? [0, axisY + objH * 0.55, 0] : [0.2, axisY + objH * 0.8, 0];
-    addRay(tip, hit, 'incident');
-    if (type === 'concave') {
-      addRay(hit, [-F, axisY, 0], 'reflected');
-      addRay([objX, axisY, 0], [0, axisY, 0], 'base');
-      addRay([0, axisY, 0], [-C, axisY, 0], 'centre');
-      const ix = i <= 3 ? -4.6 : -2.6;
-      addImg([ix, axisY - objH * 0.5, 0], [ix, axisY, 0], 'image');
-    } else {
-      addRay(hit, [-3.4, axisY + objH * 0.4, 0], 'reflected');
-      addImg([-1.4, axisY + objH * 0.25, 0], [-1.4, axisY, 0], 'image');
-    }
-    break; // one representative ray set per model; cases listed in UI
-  }
-  addPoint(-F, 'F');
-  addPoint(-P, 'P');
-  if (type === 'concave') addPoint(-C, 'C');
-  // focal labels as small rings
-  return finish(s, list, keys);
+function axLine(s, list, keys, half) {
+  const m = line([-half, 0, 0], [half, 0, 0], 0x94a3b8, 0.02);
+  m.userData.key = 'axis';
+  (keys.axis = keys.axis || []).push(m);
+  list.push(m);
 }
 
-export function lens(type, count) {
+function ray3(a, b, col, key, list, keys, r) {
+  const m = line(a, b, col, r || 0.028);
+  m.userData.key = key;
+  (keys[key] = keys[key] || []).push(m);
+  list.push(m);
+  return m;
+}
+
+function dash3(a, b, key, list, keys) {
+  const m = line(a, b, 0x94a3b8, 0.016);
+  m.material.transparent = true;
+  m.material.opacity = 0.5;
+  m.userData.key = key;
+  (keys[key] = keys[key] || []).push(m);
+  list.push(m);
+  return m;
+}
+
+function arrow3(x, h, col, key, list, keys) {
+  ray3([x, 0, 0], [x, h, 0], col, key, list, keys, 0.05);
+  const head = new THREE.Mesh(new THREE.ConeGeometry(0.075, 0.2, 10), mat(col));
+  head.position.set(x, h + (h >= 0 ? 0.1 : -0.1), 0);
+  if (h < 0) head.rotation.z = Math.PI;
+  head.userData.key = key;
+  (keys[key] = keys[key] || []).push(head);
+  list.push(head);
+}
+
+function dot3(x, label, list, keys, col) {
+  const p = sph(0.1, col || 0xef4444, x, 0, 0);
+  p.userData.key = label;
+  (keys[label] = keys[label] || []).push(p);
+  list.push(p);
+}
+
+function label3(text, x, y, col, list, keys) {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 128;
+  const ctx = c.getContext('2d');
+  ctx.font = 'bold 70px system-ui, Segoe UI, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineWidth = 8;
+  ctx.strokeStyle = 'rgba(2,6,23,0.9)';
+  ctx.strokeText(text, 128, 64);
+  ctx.fillStyle = col || '#f8fafc';
+  ctx.fillText(text, 128, 64);
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = 4;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+  sp.scale.set(1.0, 0.5, 1);
+  sp.position.set(x, y, 0);
+  sp.userData.key = 'label';
+  (keys.label = keys.label || []).push(sp);
+  list.push(sp);
+  return sp;
+}
+
+export function optics(kind, caseIdx) {
   const s = sceneBase();
   const keys = {};
   const list = [];
-  let lens;
-  if (type === 'convex') {
-    lens = sph(1.5, 0x93c5fd, 0, 0, 0, 1, 1.5, 1.5);
-    lens.material = glassMat(0x93c5fd);
+  const f0 = 2.2;
+  const isMirror = kind.indexOf('mirror') >= 0;
+  const convex = kind.indexOf('convex') >= 0;
+  const f = isMirror ? (convex ? -f0 : f0) : (convex ? f0 : -f0);
+
+  const U = isMirror
+    ? (convex ? [1e6, 5.0] : [1e6, 6.2, 2 * f0, 3.3, f0, 1.4])
+    : (convex ? [1e6, 6.6, 2 * f0, 3.3, f0, 1.4] : [1e6, 5.0]);
+  const idx = Math.max(0, Math.min(caseIdx || 0, U.length - 1));
+  const u = U[idx];
+  const inf = u > 100;
+  const h = 0.9;
+
+  let v, imgX, imgH;
+  if (inf) {
+    v = f;
+    imgH = 0;
   } else {
-    lens = cyl(1.1, 1.1, 0.5, 0x93c5fd, 0, 0, 0, 'z');
-    lens.material = glassMat(0x93c5fd);
+    v = (u * f) / (u - f);
+    imgH = -h * v / u;
   }
-  lens.userData.key = 'lens';
-  keys.lens = [lens];
-  list.push(lens);
-  const F = 2.4;
-  [-F, F].forEach(function (x, i) {
-    const p = sph(0.09, 0xef4444, x, 0, 0);
-    p.userData.key = i === 0 ? 'F' : 'F2';
-    (keys[i === 0 ? 'F' : 'F2'] = [p]);
-    list.push(p);
-  });
-  const objX = -4.6;
-  const objH = 0.85;
-  const o = box(0.12, objH, 0.12, 0x38bdf8, objX, objH / 2, 0);
-  o.userData.key = 'object';
-  keys.object = [o];
-  list.push(o);
-  const tip = [objX, objH, 0];
-  const hit = [0, objH, 0];
-  const r1 = line(tip, hit, 0xfbbf24, 0.03);
-  r1.userData.key = 'incident'; keys.incident = [r1]; list.push(r1);
-  const r2 = line(hit, [F, 0, 0], 0xf472b6, 0.028);
-  r2.userData.key = 'refracted'; keys.refracted = [r2]; list.push(r2);
-  const r3 = line([objX, 0, 0], [F, 0, 0], 0x34d399, 0.024);
-  r3.userData.key = 'base'; keys.base = [r3]; list.push(r3);
+  imgX = isMirror ? -v : v;
+  const real = isMirror ? imgX < 0 : imgX > 0;
+  const atF = !inf && Math.abs(u - f) < 0.05;
+
+  const focusA = isMirror ? -f : f;
+  const focusB = -f;
+
+  axLine(s, list, keys, 7.5);
+
+  if (isMirror) {
+    let surf;
+    if (convex) {
+      const g = new THREE.SphereGeometry(6, 40, 24, Math.PI / 2 - 0.28, 0.56, Math.PI / 2 - 0.3, 0.6);
+      surf = new THREE.Mesh(g, metalMat(0xe8eef5, THREE.DoubleSide));
+      surf.rotation.y = Math.PI / 2;
+    } else {
+      const g = new THREE.SphereGeometry(6, 40, 24, -Math.PI / 2 - 0.28, 0.56, Math.PI / 2 - 0.3, 0.6);
+      surf = new THREE.Mesh(g, metalMat(0xe8eef5, THREE.DoubleSide));
+      surf.rotation.y = -Math.PI / 2;
+    }
+    surf.userData.key = 'mirror';
+    keys.mirror = [surf];
+    list.push(surf);
+  } else {
+    let lens;
+    if (convex) {
+      lens = sph(1.5, 0x93c5fd, 0, 0, 0, 0.55, 1.5, 1.5);
+    } else {
+      lens = cyl(1.1, 1.1, 0.4, 0x93c5fd, 0, 0, 0, 'z');
+    }
+    lens.material = glassMat(0x93c5fd);
+    lens.userData.key = 'lens';
+    keys.lens = [lens];
+    list.push(lens);
+  }
+
+  dot3(focusA, 'F', list, keys);
+  label3('F', focusA, 0.34, '#fca5a5', list, keys);
+  if (isMirror) {
+    const cx = convex ? -f : -2 * f0;
+    dot3(cx, 'C', list, keys);
+    label3('C', cx, 0.34, '#fca5a5', list, keys);
+  } else {
+    dot3(-focusA, 'F2', list, keys);
+    dot3(2 * focusA, '2F', list, keys);
+    dot3(-2 * focusA, '2F2', list, keys);
+    label3('2F', 2 * focusA, 0.34, '#fca5a5', list, keys);
+    label3('2F', -2 * focusA, 0.34, '#fca5a5', list, keys);
+  }
+
+  const objX = inf ? -6.8 : -u;
+
+  if (!inf) {
+    arrow3(objX, h, 0x38bdf8, 'object', list, keys);
+    label3('O', objX, h + 0.38, '#7dd3fc', list, keys);
+  }
+
+  const y2 = inf ? h : h * focusB / (focusB + u);
+  const outDir = isMirror ? -1 : 1;
+
+  if (inf) {
+    ray3([-7.5, h, 0], [0, h, 0], 0xfbbf24, 'incident', list, keys, 0.03);
+    if (isMirror) ray3([0, h, 0], [-Math.abs(focusA), 0, 0], 0xfbbf24, 'reflected', list, keys, 0.03);
+    else ray3([0, h, 0], [Math.abs(focusA), 0, 0], 0xfbbf24, 'refracted', list, keys, 0.03);
+  } else if (atF) {
+    // object at focus — image at infinity, kirane parallel nikalti hain
+    ray3([objX, h, 0], [0, h, 0], 0xfbbf24, 'incident', list, keys, 0.03);
+    ray3([0, h, 0], [focusA, 0, 0], 0xfbbf24, isMirror ? 'reflected' : 'refracted', list, keys, 0.03);
+    ray3([objX, h, 0], [0, 0, 0], 0x34d399, 'incident2', list, keys, 0.026);
+    ray3([0, 0, 0], [isMirror ? -Math.abs(f) : Math.abs(f), -h, 0], 0x34d399, isMirror ? 'reflected' : 'refracted', list, keys, 0.026);
+  } else {
+    ray3([objX, h, 0], [0, h, 0], 0xfbbf24, 'incident', list, keys, 0.03);
+    if (real) {
+      ray3([0, h, 0], [imgX, imgH, 0], 0xfbbf24, isMirror ? 'reflected' : 'refracted', list, keys, 0.03);
+    } else {
+      const ex = outDir * 3.4;
+      const ey = h + (0 - h) * (ex / focusA);
+      ray3([0, h, 0], [ex, ey, 0], 0xfbbf24, isMirror ? 'reflected' : 'refracted', list, keys, 0.03);
+      dash3([ex, ey, 0], [imgX, imgH, 0], 'extension', list, keys);
+    }
+    ray3([objX, h, 0], [0, y2, 0], 0x34d399, 'incident2', list, keys, 0.026);
+    if (real) {
+      ray3([0, y2, 0], [imgX, imgH, 0], 0x34d399, isMirror ? 'reflected' : 'refracted', list, keys, 0.026);
+    } else {
+      const ex = outDir * 3.4;
+      ray3([0, y2, 0], [ex, y2, 0], 0x34d399, isMirror ? 'reflected' : 'refracted', list, keys, 0.026);
+      dash3([ex, y2, 0], [imgX, imgH, 0], 'extension', list, keys);
+    }
+  }
+
+  if (inf) {
+    dot3(imgX, 'image', list, keys, 0xf472b6);
+    label3('I', imgX, 0.34, '#f9a8d4', list, keys);
+  } else if (atF) {
+    // image at infinity — kuch nahi (parallel kirane)
+  } else if (real) {
+    arrow3(imgX, imgH, 0xf472b6, 'image', list, keys);
+    label3('I', imgX, imgH + 0.38, '#f9a8d4', list, keys);
+  } else {
+    const m = line([imgX, 0, 0], [imgX, imgH, 0], 0xf472b6, 0.03);
+    m.material.transparent = true;
+    m.material.opacity = 0.55;
+    m.userData.key = 'image';
+    (keys.image = keys.image || []).push(m);
+    list.push(m);
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.18, 10), mat(0xf472b6));
+    head.position.set(imgX, imgH + (imgH >= 0 ? 0.09 : -0.09), 0);
+    if (imgH < 0) head.rotation.z = Math.PI;
+    head.userData.key = 'image';
+    (keys.image = keys.image || []).push(head);
+    list.push(head);
+    label3('I', imgX, imgH + 0.38, '#f9a8d4', list, keys);
+  }
+
   return finish(s, list, keys);
 }
 

@@ -54,6 +54,10 @@ assets/vendor/three/models/  anatomy-male.glb / anatomy-female.glb (CC BY 4.0)
 assets/vendor/three/catalog.json  147 named structures
 3D realism: ACESFilmic tone mapping, RoomEnvironment IBL, per-structure colour palette
 (models3d-ui.js REAL map), physical glass/transmission, metallic mirrors, glowing rays.
+Optics (mirror/lens) ray diagrams case-wise bante hain — `scenes3d.js` ka `optics(kind, caseIdx)`
+asli ray tracing (parallel ray + focus/centre ray) karta hai, aur model page pe case chips
+(`models3d-ui.js`) se 1-6 cases badalte hain. Optics scene ko `Viewer.frameFlat()` se seedha
+2D view milta hai (axis horizontal).
 assets/pdfs/              PYQ / model papers
 assets/pdfs/cbse-sqp/     CBSE official SQP + MS 2025-26 (aur 2024-25) + parser scripts
 build_data.py             data builder

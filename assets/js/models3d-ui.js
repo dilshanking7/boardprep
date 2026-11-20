@@ -23,8 +23,8 @@ function ensureCatalog() {
 function buildScene(item) {
   const s = item.scene;
   const p = item.param;
-  if (s === 'mirror') return SC.mirror(p === 'convex' ? 'convex' : 'concave', 6);
-  if (s === 'lens') return SC.lens(p === 'concave' ? 'concave' : 'convex', 6);
+  if (s === 'mirror') return SC.optics((p === 'convex' ? 'convex' : 'concave') + '-mirror', item.caseIdx || 0);
+  if (s === 'lens') return SC.optics((p === 'concave' ? 'concave' : 'convex') + '-lens', item.caseIdx || 0);
   if (s === 'glassSlab') return SC.glassSlab();
   if (s === 'prism') return SC.prism(p === 'true');
   if (s === 'eyeDefect') return SC.eyeDefect(p || 'myopia');
@@ -72,6 +72,34 @@ function realColor(key, cat) {
 
 export async function renderInto(container, item) {
   await ensureCatalog();
+  if (item.cases && item.cases.length) {
+    const crow = document.createElement('div');
+    crow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px';
+    item.cases.forEach(function (c, i) {
+      const b = document.createElement('button');
+      b.className = 'fchip' + (i === (item.caseIdx || 0) ? ' on' : '');
+      b.textContent = c.t;
+      b.title = c.d;
+      b.addEventListener('click', function () {
+        if (item.caseIdx === i) return;
+        item.caseIdx = i;
+        window.Models3DUI.unmount();
+        container.innerHTML = '';
+        renderInto(container, item);
+      });
+      crow.appendChild(b);
+    });
+    container.insertBefore(crow, container.firstChild);
+    const cnote = document.createElement('div');
+    cnote.id = 'caseNote';
+    cnote.style.cssText = 'font-size:13px;opacity:.85;margin-bottom:8px;line-height:1.5';
+    cnote.textContent = item.cases[item.caseIdx || 0].d;
+    container.insertBefore(cnote, container.firstChild);
+    crow.addEventListener('click', function () {
+      const on = crow.querySelector('.fchip.on');
+      if (on) cnote.textContent = item.cases[Array.prototype.indexOf.call(crow.children, on)].d;
+    });
+  }
   const holder = document.createElement('div');
   holder.style.cssText = 'position:relative;width:100%;height:min(58vh,460px);border-radius:18px;overflow:hidden;background:#0b1220';
   container.appendChild(holder);
@@ -148,18 +176,25 @@ export async function renderInto(container, item) {
     meshes.forEach(function (m) { (keys[m.userData.key] = keys[m.userData.key] || []).push(m); });
     scene.add(root);
     Viewer.setScene(scene, meshes, keys);
-    if (item.focus && keys[item.focus]) Viewer.focusKey(item.focus);
+    if (item.focus && keys[item.focus] && item.scene !== 'mirror' && item.scene !== 'lens') Viewer.focusKey(item.focus);
   } else {
     const built = buildScene(item);
     const keys = collectKeys(built.meshes);
     Viewer.setScene(built.scene, built.meshes, keys);
-    if (item.focus && keys[item.focus]) Viewer.focusKey(item.focus);
+    if (item.scene === 'mirror' || item.scene === 'lens') {
+      const bb = new THREE.Box3().setFromObject(built.scene);
+      const cc = bb.getCenter(new THREE.Vector3());
+      const sz = bb.getSize(new THREE.Vector3()).length() || 1;
+      Viewer.frameFlat(cc, sz);
+    } else if (item.focus && keys[item.focus]) {
+      Viewer.focusKey(item.focus);
+    }
   }
 
   // part chips
   const chips = document.createElement('div');
   chips.style.cssText = 'display:flex;flex-wrap:wrap;gap:7px;margin-top:12px';
-  const list = Object.keys(state.keys);
+  const list = Object.keys(state.keys).filter(function (k) { return k !== 'label'; });
   list.forEach(function (key) {
     const d = partInfo(item, key);
     const b = document.createElement('button');

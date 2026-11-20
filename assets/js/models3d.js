@@ -195,6 +195,18 @@ export const Viewer = {
     s.resize();
   },
 
+  frameFlat: function (c, size) {
+    const s = this.active;
+    if (!s) return;
+    const d = size * 0.75;
+    s.camera.position.set(c.x, 0, d);
+    s.camera.near = 0.01;
+    s.camera.far = size * 40;
+    s.camera.updateProjectionMatrix();
+    s.controls.target.set(c.x, 0, 0);
+    s.controls.update();
+  },
+
   focusKey: function (key) {
     const s = this.active;
     if (!s) return;
