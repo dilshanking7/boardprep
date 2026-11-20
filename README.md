@@ -1,5 +1,8 @@
 # BoardPrep — Class 10
 
+**Live:** https://dilshanking7.github.io/boardprep/
+Repo: https://github.com/dilshanking7/boardprep
+
 Mobile-first study app for Class 10 board exams. Ek hi website me sab boards,
 same format, Hindi/English UI. Har board ka apna pattern, bhasha aur color.
 
