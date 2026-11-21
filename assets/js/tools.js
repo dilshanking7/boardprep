@@ -451,7 +451,7 @@
     html += '<div class="imp-item" style="background:#f5f3ff;border-color:#c7d2fe"><div class="num" style="background:#e0e7ff;color:#3730a3">' +
       (window.BP_ICONS ? BP_ICON('phone') : '📱') + '</div><div><div class="iq">' +
       esc(L('Android app (APK) — free', 'एंड्रॉयड ऐप (APK) — फ्री')) + '</div>' +
-      '<div class="note"><a href="downloads/BoardPrep-v1.0.apk" download style="color:var(--accent);font-weight:700">downloads/BoardPrep-v1.0.apk</a></div></div></div>';
+      '<div class="note"><a href="downloads/BoardPrep-v2.0.apk" download style="color:var(--accent);font-weight:700">downloads/BoardPrep-v2.0.apk</a> (पूरा ऑफ़लाइन)</div></div></div>';
     return html + '</section>';
   }
 
