@@ -103,16 +103,13 @@
     return arr;
   }
   function streak() {
-    var n = 0, d = new Date();
-    for (; ;) {
-      var t = today(d);
-      if ((D.days[t] || {}).done > 0) { n++; d.setDate(d.getDate() - 1); }
-      else {
-        // aaj abhi start nahi hua to kal se ginna theek hai
-        d.setDate(d.getDate() + 1);
-        if ((D.days[today(d)] || {}).done > 0) { n++; d.setDate(d.getDate() - 1); continue; }
-        break;
-      }
+    var n = 0;
+    var d = new Date();
+    // agar aaj abhi kuch nahi kiya, to streak kal se ginna shuru karo
+    if (!((D.days[today(d)] || {}).done > 0)) d.setDate(d.getDate() - 1);
+    while ((D.days[today(d)] || {}).done > 0) {
+      n++;
+      d.setDate(d.getDate() - 1);
       if (n > 400) break;
     }
     return n;
