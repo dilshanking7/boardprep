@@ -130,7 +130,9 @@ export async function renderInto(container, item) {
 
   let result;
   if (item.type === 'anatomy') {
+    Viewer.setLoading(true, '3D model load ho रहा है… (pehli baar me internet chahiye)');
     const loaded = await loadAnatomy(item.model);
+    Viewer.setLoading(false);
     result = { scene: null, meshes: [], keys: {} };
     // hide everything, show only listed keys
     const root = loaded.root;

@@ -374,15 +374,26 @@
       '<div id="searchOut" style="margin-top:14px"></div></section>';
   }
 
+  // Search index — ek baar banta hai, har keystroke par poora DB scan nahi
+  var _sidx = null;
+  function searchIndex() {
+    if (_sidx) return _sidx;
+    _sidx = [];
+    for (var i = 0; i < D.questions.length; i++) {
+      var q = D.questions[i];
+      _sidx.push({ q: q, hay: norm(q.q) + ' ' + norm(q.chap) + ' ' + norm((q.opts || []).join(' ')) });
+    }
+    return _sidx;
+  }
+
   function doSearch(word) {
     var out = document.getElementById('searchOut');
     var w = norm(word);
     if (!w) { out.innerHTML = ''; return; }
     var hits = [];
-    for (var i = 0; i < D.questions.length; i++) {
-      var q = D.questions[i];
-      var hay = norm(q.q) + ' ' + norm(q.chap) + ' ' + norm((q.opts || []).join(' '));
-      if (hay.indexOf(w) !== -1) hits.push(q);
+    var idx = searchIndex();
+    for (var i = 0; i < idx.length; i++) {
+      if (idx[i].hay.indexOf(w) !== -1) hits.push(idx[i].q);
       if (hits.length >= 300) break;
     }
     if (!hits.length) {
@@ -646,7 +657,11 @@
     });
 
     var searchBox = document.getElementById('searchBox');
-    if (searchBox) searchBox.addEventListener('input', function () { doSearch(searchBox.value); });
+    if (searchBox) searchBox.addEventListener('input', function () {
+      clearTimeout(window.__schT);
+      var v = searchBox.value;
+      window.__schT = setTimeout(function () { doSearch(v); }, 160);
+    });
 
     document.querySelectorAll('[data-type]').forEach(function (btn) {
       btn.addEventListener('click', function () { state.subjType = btn.dataset.type; state.shown = 40; render(); });

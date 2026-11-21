@@ -92,9 +92,13 @@ export const Viewer = {
 
   mount: function (container, opts) {
     this.dispose();
-    const state = {
+    // Low-end phone? — antialias band + pixel ratio 1 (battery + memory bache)
+    var cores = navigator.hardwareConcurrency || 4;
+    var mem = navigator.deviceMemory || 4;
+    var lowEnd = (cores <= 4 && mem <= 4) || mem <= 2;
+    var state = {
       container: container,
-      renderer: new THREE.WebGLRenderer({ antialias: true, alpha: true }),
+      renderer: new THREE.WebGLRenderer({ antialias: !lowEnd, alpha: true, powerPreference: lowEnd ? 'low-power' : 'default' }),
       scene: null,
       camera: new THREE.PerspectiveCamera(45, 1, 0.01, 4000),
       controls: null,
@@ -105,9 +109,10 @@ export const Viewer = {
       pick: opts.pick || function (key) { return null; },
       labels: opts.labels || {},
       highlight: opts.highlight == null ? '#38bdf8' : opts.highlight,
-      isScene: false
+      isScene: false,
+      lowEnd: lowEnd
     };
-    state.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    state.renderer.setPixelRatio(lowEnd ? 1 : Math.min(window.devicePixelRatio || 1, 2));
     state.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     state.renderer.toneMappingExposure = 0.85;
     state.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -233,10 +238,41 @@ export const Viewer = {
     if (!s) return;
     cancelAnimationFrame(s.raf);
     window.removeEventListener('resize', s.resize);
+    // poori memory free karo — geometries, materials, textures
+    if (s.scene) {
+      s.scene.traverse(function (o) {
+        if (o.geometry) o.geometry.dispose();
+        var mats = Array.isArray(o.material) ? o.material : (o.material ? [o.material] : []);
+        mats.forEach(function (m) {
+          if (!m) return;
+          ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'emissiveMap', 'envMap'].forEach(function (k) {
+            if (m[k]) { try { m[k].dispose(); } catch (e) {} }
+          });
+          try { m.dispose(); } catch (e) {}
+        });
+      });
+    }
     s.controls.dispose();
     s.renderer.dispose();
     if (s.renderer.domElement.parentNode) s.renderer.domElement.parentNode.removeChild(s.renderer.domElement);
     this.active = null;
+  },
+
+  // Loading indicator — GLB load ke dauran dikhta hai
+  setLoading: function (on, label) {
+    const s = this.active;
+    if (!s) return;
+    var el = s.container && s.container.querySelector('.glb-load');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'glb-load';
+      el.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;' +
+        'background:rgba(11,18,32,.72);color:#e2e8f0;font:600 14px/1.4 system-ui;z-index:5;text-align:center;padding:12px';
+      s.container.style.position = 'relative';
+      s.container.appendChild(el);
+    }
+    el.textContent = label || '3D model load ho रहा है…';
+    el.style.display = on ? 'flex' : 'none';
   }
 };
 
