@@ -49,25 +49,34 @@
     var html = '<section class="section"><div class="section-head"><h2>' + esc(t('tools_title')) + '</h2>' +
       '<span class="note">' + esc(t('tools_sub')) + '</span></div><div class="hub">';
     var items = [
-      ['#/quiz', '✎', t('nav_quiz'), t('hub_quiz_sub')],
-      ['#/models', '◈', '3D ' + t('models_word'), t('hub_models_sub')],
-      ['#/formulas', '∑', t('tool_formulas'), t('tool_formulas_s')],
-      ['#/periodic', '⚛', t('tool_periodic'), t('tool_periodic_s')],
-      ['#/lab', '⚗', t('tool_lab'), t('tool_lab_s')],
-      ['#/mathlab', 'ƒ', t('tool_mathlab'), t('tool_mathlab_s')],
-      ['#/diagrams', '◉', t('tool_diagrams'), t('tool_diagrams_s')],
-      ['#/timeline', '↝', t('tool_timeline'), t('tool_timeline_s')],
-      ['#/stories', '❝', t('tool_stories'), t('tool_stories_s')],
-      ['#/brain', '🧠', t('tool_brain'), t('tool_brain_s')],
-      ['#/important', '★', t('tool_important'), t('tool_important_s')],
-      ['#/papers', '▦', t('tool_pdfs'), t('tool_pdfs_s')],
-      ['#/search', '⌕', t('nav_search'), t('home_search_btn')]
+      ['#/quiz', 'pencil', t('nav_quiz'), t('hub_quiz_sub')],
+      ['#/models', 'cube', '3D ' + t('models_word'), t('hub_models_sub')],
+      ['#/formulas', 'sigma', t('tool_formulas'), t('tool_formulas_s')],
+      ['#/periodic', 'atom', t('tool_periodic'), t('tool_periodic_s')],
+      ['#/lab', 'flask', t('tool_lab'), t('tool_lab_s')],
+      ['#/mathlab', 'calc', t('tool_mathlab'), t('tool_mathlab_s')],
+      ['#/diagrams', 'target', t('tool_diagrams'), t('tool_diagrams_s')],
+      ['#/timeline', 'timeline', t('tool_timeline'), t('tool_timeline_s')],
+      ['#/stories', 'book', t('tool_stories'), t('tool_stories_s')],
+      ['#/songs', 'music', t('hub_songs'), t('hub_songs_sub')],
+      ['#/brain', 'bulb', t('tool_brain'), t('tool_brain_s')],
+      ['#/important', 'star', t('tool_important'), t('tool_important_s')],
+      ['#/papers', 'papers', t('tool_pdfs'), t('tool_pdfs_s')],
+      ['#/search', 'search', t('nav_search'), t('home_search_btn')]
     ];
     items.forEach(function (x) {
-      html += '<a class="hub-card" href="' + x[0] + '"><span class="hub-ico">' + x[1] + '</span>' +
+      var ic = (window.BP_ICONS && window.BP_ICONS[x[1]]) ? BP_ICON(x[1]) : x[1];
+      html += '<a class="hub-card" href="' + x[0] + '"><span class="hub-ico">' + ic + '</span>' +
         '<span><span class="ht">' + esc(x[2]) + '</span><br><span class="hs">' + esc(x[3]) + '</span></span></a>';
     });
-    return html + '</div></section>';
+    html += '</div>';
+    html += '<div class="imp-item" style="margin-top:12px;background:#f0fdf4;border-color:#bbf7d0">' +
+      '<div class="num" style="background:#dcfce7;color:#166534">⬇</div><div>' +
+      '<div class="iq">' + esc(L('Sab offline karo', 'सब ऑफ़लाइन करो')) + '</div>' +
+      '<div class="note">' + esc(L('PDF + songs phone me save — internet band ho to bhi chalे', 'PDF + songs फ़ोन में सेव — इंटरनेट बंद हो तो भी चले')) + '</div>' +
+      '<button class="btn btn-accent" id="offBtn" style="margin-top:8px;padding:10px 14px">' + esc(L('Offline download', 'ऑफ़लाइन डाउनलोड')) + '</button>' +
+      '<div class="note" id="offStat"></div></div></div>';
+    return html + '</section>';
   }
 
   /* ---------------- formulas ---------------- */
@@ -583,6 +592,30 @@
         p.play();
         document.querySelectorAll('.song-card').forEach(function (x) { x.classList.remove('on'); });
         b.classList.add('on');
+      });
+    });
+    var offBtn = document.getElementById('offBtn');
+    if (offBtn) offBtn.addEventListener('click', function () {
+      var urls = [];
+      try {
+        (window.BOARD_DATA.papers || []).forEach(function (p) { urls.push(p.url); });
+        (window.SONGS || []).forEach(function (s) { urls.push(s.src); });
+      } catch (e) {}
+      var stat = document.getElementById('offStat');
+      if (!('serviceWorker' in navigator)) {
+        if (stat) stat.textContent = L('Is browser me offline support nahi hai', 'इस ब्राउज़र में ऑफ़लाइन सपोर्ट नहीं है');
+        return;
+      }
+      if (stat) stat.textContent = L('Starting…', 'शुरू हो रहा है…');
+      navigator.serviceWorker.ready.then(function (reg) {
+        var ctrl = reg.active || reg.installing;
+        if (!ctrl) { if (stat) stat.textContent = 'Service worker ready nahi hai'; return; }
+        navigator.serviceWorker.addEventListener('message', function (ev) {
+          var d = ev.data || {};
+          if (d.type === 'CACHE_PROGRESS' && stat) stat.textContent = L('Ho gaya', 'हो गया') + ' ' + d.done + '/' + d.total;
+          if (d.type === 'CACHE_DONE' && stat) stat.textContent = L('Done! Ab internet ke bina bhi sab chalega', 'हो गया! अब इंटरनेट के बिना भी सब चलेगा') + ' ✓';
+        });
+        ctrl.postMessage({ type: 'CACHE_ALL', urls: urls });
       });
     });
     document.querySelectorAll('[data-el]').forEach(function (b) {

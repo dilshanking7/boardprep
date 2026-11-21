@@ -188,8 +188,9 @@
   }
 
   function hubCard(href, icon, title, sub) {
+    var ic = (window.BP_ICONS && window.BP_ICONS[icon]) ? BP_ICON(icon) : icon;
     return '<a class="hub-card" href="' + href + '">' +
-      '<span class="hub-ico">' + icon + '</span>' +
+      '<span class="hub-ico">' + ic + '</span>' +
       '<span><span class="ht">' + esc(title) + '</span><br><span class="hs">' + esc(sub) + '</span></span></a>';
   }
 
@@ -258,27 +259,29 @@
       '<div class="stat"><b>' + Object.keys(chap).length + '</b><span>' + esc(t('home_stats_chap')) + '</span></div>' +
       '<div class="stat"><b>' + BOARDS.length + '</b><span>' + esc(t('home_stats_boards')) + '</span></div></div>';
 
-    html += '<a class="list-row" href="downloads/BoardPrep-v1.0.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
-      '<div class="t">📱 ' + esc(L('Android app (APK)', 'एंड्रॉयड ऐप (APK)')) + '</div>' +
-      '<div class="s">' + esc(L('Install on your phone — free, no ads', 'फ़ोन में इंस्टॉल करो — फ्री, कोई ads नहीं')) + '</div></div><span class="n">⬇</span></a>';
+    if (localStorage.getItem('bp_apk') !== '1') {
+      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v1.0.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
+        '<div class="t">📱 ' + esc(L('Android app (APK)', 'एंड्रॉयड ऐप (APK)')) + '</div>' +
+        '<div class="s">' + esc(L('Install on your phone — free, no ads', 'फ़ोन में इंस्टॉल करो — फ्री, कोई ads नहीं')) + '</div></div><span class="n">⬇</span></a>';
+    }
 
     html += '<section class="section"><div class="section-head">' +
       '<h2>' + esc(t('tools_title')) + '</h2><a class="more" href="#/tools">' + esc(t('all')) + ' →</a></div>' +
       '<div class="hub">' +
-      hubCard('#/quiz', '✎', t('nav_quiz'), t('hub_quiz_sub')) +
-      hubCard('#/models', '◈', '3D ' + t('models_word'), t('hub_models_sub')) +
-      hubCard('#/important', '★', t('tool_important'), t('hub_important_sub')) +
-      hubCard('#/formulas', '∑', t('tool_formulas'), t('hub_formulas_sub')) +
-      hubCard('#/periodic', '⚛', t('tool_periodic'), t('hub_periodic_sub')) +
-      hubCard('#/lab', '⚗', t('tool_lab'), t('hub_lab_sub')) +
-      hubCard('#/mathlab', 'ƒ', t('tool_mathlab'), t('hub_mathlab_sub')) +
-      hubCard('#/diagrams', '◉', t('tool_diagrams'), t('hub_diagrams_sub')) +
-      hubCard('#/timeline', '↝', t('tool_timeline'), t('hub_timeline_sub')) +
-      hubCard('#/stories', '❝', t('tool_stories'), t('hub_stories_sub')) +
-      hubCard('#/songs', '♪', t('hub_songs'), t('hub_songs_sub')) +
-      hubCard('#/brain', '🧠', t('tool_brain'), t('hub_brain_sub')) +
-      hubCard('#/papers', '▦', t('tool_pdfs'), t('hub_pdfs_sub')) +
-      hubCard('#/subjects', '▤', t('nav_subjects'), t('hub_subjects_sub')) +
+      hubCard('#/quiz', 'pencil', t('nav_quiz'), t('hub_quiz_sub')) +
+      hubCard('#/models', 'cube', '3D ' + t('models_word'), t('hub_models_sub')) +
+      hubCard('#/important', 'star', t('tool_important'), t('hub_important_sub')) +
+      hubCard('#/formulas', 'sigma', t('tool_formulas'), t('hub_formulas_sub')) +
+      hubCard('#/periodic', 'atom', t('tool_periodic'), t('hub_periodic_sub')) +
+      hubCard('#/lab', 'flask', t('tool_lab'), t('hub_lab_sub')) +
+      hubCard('#/mathlab', 'calc', t('tool_mathlab'), t('hub_mathlab_sub')) +
+      hubCard('#/diagrams', 'target', t('tool_diagrams'), t('hub_diagrams_sub')) +
+      hubCard('#/timeline', 'timeline', t('tool_timeline'), t('hub_timeline_sub')) +
+      hubCard('#/stories', 'book', t('tool_stories'), t('hub_stories_sub')) +
+      hubCard('#/songs', 'music', t('hub_songs'), t('hub_songs_sub')) +
+      hubCard('#/brain', 'bulb', t('tool_brain'), t('hub_brain_sub')) +
+      hubCard('#/papers', 'papers', t('tool_pdfs'), t('hub_pdfs_sub')) +
+      hubCard('#/subjects', 'grid', t('nav_subjects'), t('hub_subjects_sub')) +
       '</div></section>';
 
     var en = state.lang === 'en';
@@ -304,7 +307,7 @@
       top.forEach(function (r) {
         html += '<div class="freq-row"><div><div>' + esc(r.topic) + '</div>' +
           '<div class="yrs">' + esc(r.years) + ' · ' + esc((function (s) { return s ? (state.lang === 'en' ? (s.en || s.name) : s.name) : ''; })(subj(r.subj))) + '</div>' +
-          '<span class="xchip">' + esc(r.times) + '×</span></div>';
+          '<span class="xchip">' + esc(r.times) + '×</span></div></div>';
       });
       html += '</section>';
     }
@@ -460,6 +463,14 @@
     var shared = board().id !== 'jac' && !bank();
     var html = '<section class="section"><div class="section-head"><h2>' + esc(t('papers_title')) + '</h2>' +
       '<span class="note">' + esc(board().name) + '</span></div>';
+    // upar hi saal aur sankhya — kholte hi samajh aaye
+    var years2 = {};
+    D.papers.forEach(function (p) { years2[p.year] = (years2[p.year] || 0) + 1; });
+    var ys = Object.keys(years2).sort().reverse();
+    html += '<div class="imp-item" style="background:#eef2ff;border-color:#c7d2fe"><div class="num" style="background:#e0e7ff;color:#3730a3">' +
+      D.papers.length + '</div><div><div class="iq">' + esc(D.papers.length + ' PDF · ' +
+      ys.map(function (y) { return y + ' (' + years2[y] + ')'; }).join(' · ')) + '</div>' +
+      '<div class="note">' + esc(L('PYQ aur model papers — saal ke hisaab se neeche', 'PYQ और model papers — साल के अनुसार नीचे')) + '</div></div></div>';
     if (shared) {
       html += '<div class="imp-item" style="background:#fffbeb;border-color:#fcd34d"><div class="num" style="background:#fef3c7;color:#92400e">!</div><div>' +
         '<div class="iq">' + esc(L('These are the shared JAC model papers. Your board\'s own papers may differ.', 'ये JAC के साझा मॉडल पेपर हैं। तुम्हारे board के अपने पेपर अलग हो सकते हैं।')) + '</div></div></div>';
@@ -615,6 +626,13 @@
 
     document.querySelectorAll('[data-imp]').forEach(function (btn) {
       btn.addEventListener('click', function () { state.impSubj = btn.dataset.imp; render(); });
+    });
+
+    document.querySelectorAll('.apk-card').forEach(function (a) {
+      a.addEventListener('click', function () {
+        try { localStorage.setItem('bp_apk', '1'); } catch (e) {}
+        a.remove();
+      });
     });
   }
 

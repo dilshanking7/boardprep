@@ -9,6 +9,12 @@
 <link rel="stylesheet" href="assets/css/tools.css">
 <script type="importmap">{ "imports": { "three": "./assets/vendor/three/three.module.js" } }</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%234f46e5'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>10</text></svg>">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="BoardPrep">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 </head>
 <body>
 
@@ -19,8 +25,8 @@
       <span class="brand-text" id="brandText">Class 10 Prep</span>
     </a>
     <div class="top-actions">
-      <button class="chip-btn" id="boardChip" aria-label="board">
-        <span class="dot"></span><span id="boardChipText">JAC</span>
+      <button class="chip-btn" id="boardChip" aria-label="board" style="font-weight:800">
+        <span class="dot"></span><span id="boardChipText">JAC</span><span style="font-size:11px;opacity:.7">▾</span>
       </button>
       <button class="chip-btn" id="langBtn">हि</button>
     </div>
@@ -30,11 +36,11 @@
 <main id="view" class="view"></main>
 
 <nav class="bottomnav">
-  <a href="#/" data-nav="home"><span class="bn-ico">⌂</span><span>होम</span></a>
-  <a href="#/subjects" data-nav="subjects"><span class="bn-ico">▤</span><span>विषय</span></a>
-  <a href="#/quiz" data-nav="quiz"><span class="bn-ico">✎</span><span>क्विज़</span></a>
-  <a href="#/tools" data-nav="tools"><span class="bn-ico">⚒</span><span>टूल्स</span></a>
-  <a href="#/search" data-nav="search"><span class="bn-ico">⌕</span><span>खोज</span></a>
+  <a href="#/" data-nav="home"><span class="bn-ico" data-icon="home"></span><span class="bn-tx">होम</span></a>
+  <a href="#/subjects" data-nav="subjects"><span class="bn-ico" data-icon="grid"></span><span class="bn-tx">विषय</span></a>
+  <a href="#/quiz" data-nav="quiz"><span class="bn-ico" data-icon="pencil"></span><span class="bn-tx">क्विज़</span></a>
+  <a href="#/tools" data-nav="tools"><span class="bn-ico" data-icon="sliders"></span><span class="bn-tx">टूल्स</span></a>
+  <a href="#/search" data-nav="search"><span class="bn-ico" data-icon="search"></span><span class="bn-tx">खोज</span></a>
 </nav>
 
 <div class="sheet" id="boardSheet" hidden>
@@ -63,8 +69,14 @@
 <script src="assets/js/subjects.js"></script>
 <script src="assets/js/boards.js"></script>
 <script src="assets/js/i18n.js"></script>
+<script src="assets/js/icons.js"></script>
 <script src="assets/js/app.js"></script>
 <script src="assets/js/tools.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+}
+</script>
 <script type="module" src="assets/js/models3d-ui.js"></script>
 </body>
 </html>
