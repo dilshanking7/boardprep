@@ -63,7 +63,8 @@
       ['#/important', 'star', t('tool_important'), t('tool_important_s')],
       ['#/papers', 'papers', t('tool_pdfs'), t('tool_pdfs_s')],
       ['#/search', 'search', t('nav_search'), t('home_search_btn')],
-      ['#/help', 'check', t('hub_help'), t('hub_help_sub')]
+      ['#/help', 'check', t('hub_help'), t('hub_help_sub')],
+      ['#/notes', 'book', t('hub_notes'), t('hub_notes_sub')]
     ];
     items.forEach(function (x) {
       var ic = (window.BP_ICONS && window.BP_ICONS[x[1]]) ? BP_ICON(x[1]) : x[1];
@@ -429,6 +430,73 @@
     return html + '</section>';
   }
 
+  /* ---------------- notes ---------------- */
+
+  var NOTE_SUBS = ['science', 'maths', 'sst_history', 'sst_geo', 'sst_civics', 'sst_econ', 'hindi', 'english', 'sanskrit'];
+
+  function noteSubName(k) {
+    var m = {
+      science: 'विज्ञान', maths: 'गणित', sst_history: 'इतिहास', sst_geo: 'भूगोल',
+      sst_civics: 'नागरिकशास्त्र', sst_econ: 'अर्थशास्त्र', hindi: 'हिंदी', english: 'English', sanskrit: 'संस्कृत'
+    };
+    return m[k] || k;
+  }
+
+  function renderBlocks(blocks) {
+    var h = '';
+    blocks.forEach(function (b) {
+      var t = b[0];
+      if (t === 'h2') h += '<h2 class="nt-h2">' + esc(b[1]) + '</h2>';
+      else if (t === 'h3') h += '<h3 class="nt-h3">' + esc(b[1]) + '</h3>';
+      else if (t === 'p') h += '<p class="nt-p">' + esc(b[1]) + '</p>';
+      else if (t === 'ul') h += '<ul class="nt-ul">' + b[1].map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+      else if (t === 'hl') h += '<div class="nt-hl" style="border-left-color:' + (b[2] || '#7c3aed') + ';background:' + (b[2] || '#7c3aed') + '14">' + esc(b[1]) + '</div>';
+      else if (t === 'box') h += '<div class="nt-box"><b>' + esc(b[1]) + '</b><p>' + esc(b[2]) + '</p></div>';
+      else if (t === 'link') h += '<a class="nt-link" href="' + esc(b[2]) + '">' + esc(b[1]) + '</a>';
+    });
+    return h;
+  }
+
+  function vNotes(sub) {
+    var html = '<section class="section"><div class="section-head"><h2>' + esc(t('notes_title')) + '</h2>' +
+      '<span class="note">' + esc(t('notes_sub')) + '</span></div>';
+    if (!sub) {
+      html += '<div class="chips">' + NOTE_SUBS.map(function (k) {
+        var n = ((window.NOTES || {})[k] || []).length;
+        return '<a class="fchip" href="#/notes/' + k + '">' + esc(noteSubName(k)) + ' (' + n + ')</a>';
+      }).join('') + '</div>';
+      var tot = NOTE_SUBS.reduce(function (s, k) { return s + ((window.NOTES || {})[k] || []).length; }, 0);
+      html += '<div class="imp-item" style="background:#f5f3ff;border-color:#c7d2fe"><div class="num" style="background:#e0e7ff;color:#3730a3">' + tot + '</div><div>' +
+        '<div class="iq">' + esc(L('कुल chapter notes', 'कुल अध्याय नोट्स')) + '</div>' +
+        '<div class="note">' + esc(L('हर subject → हर chapter → रंगबिरंगा notes', 'हर subject → हर chapter → रंगीले notes')) + '</div></div></div>';
+      return html + '</section>';
+    }
+    var list = (window.NOTES || {})[sub] || [];
+    html += '<div class="chips"><a class="fchip" href="#/notes">← ' + esc(t('back')) + '</a>' + NOTE_SUBS.filter(function (k) { return k !== sub; }).map(function (k) {
+      return '<a class="fchip" href="#/notes/' + k + '">' + esc(noteSubName(k)) + '</a>';
+    }).join('') + '</div>';
+    html += '<div class="board-group">' + esc(noteSubName(sub)) + ' · ' + list.length + ' ' + L('chapters', 'अध्याय') + '</div>';
+    list.forEach(function (it) {
+      html += '<a class="list-row" href="#/note/' + sub + '/' + encodeURIComponent(it.ch) + '"><div>' +
+        '<div class="t">' + esc(it.ch) + '</div>' +
+        '<div class="s">' + (it.blocks.filter(function (b) { return b[0] === 'p'; })[0] ? esc(it.blocks.filter(function (b) { return b[0] === 'p'; })[0][1].slice(0, 60)) + '…' : '') + '</div></div>' +
+        '<span class="n">→</span></a>';
+    });
+    return html + '</section>';
+  }
+
+  function vNoteDetail(sub, ch) {
+    var it = ((window.NOTES || {})[sub] || []).filter(function (x) { return x.ch === ch; })[0];
+    if (!it) return '<section class="section"><div class="empty">404</div></section>';
+    var html = '<section class="section"><div class="section-head"><h2>' + esc(ch) + '</h2>' +
+      '<span class="note">' + esc(noteSubName(sub)) + '</span></div>';
+    html += renderBlocks(it.blocks);
+    html += '<div class="chips" style="margin-top:12px">' +
+      '<a class="fchip" href="#/notes/' + sub + '">← ' + esc(noteSubName(sub)) + '</a>' +
+      '<a class="fchip" href="#/notes">सभी notes</a></div>';
+    return html + '</section>';
+  }
+
   /* ---------------- help / kaise use karein ---------------- */
 
   function vHelp() {
@@ -574,6 +642,8 @@
     if (p === 'stories') return vStories(parts[1]);
     if (p === 'songs') return vSongs();
     if (p === 'help') return vHelp();
+    if (p === 'notes') return vNotes(parts[1]);
+    if (p === 'note') return vNoteDetail(parts[1], decodeURIComponent(parts[2] || ''));
     if (p === 'story') {
       var q = parseQuery(location.hash);
       return vStories(parts[1], q.c);

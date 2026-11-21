@@ -283,6 +283,7 @@
       hubCard('#/papers', 'papers', t('tool_pdfs'), t('hub_pdfs_sub')) +
       hubCard('#/subjects', 'grid', t('nav_subjects'), t('hub_subjects_sub')) +
       hubCard('#/help', 'check', t('hub_help'), t('hub_help_sub')) +
+      hubCard('#/notes', 'book', t('hub_notes'), t('hub_notes_sub')) +
       '</div></section>';
 
     var en = state.lang === 'en';
