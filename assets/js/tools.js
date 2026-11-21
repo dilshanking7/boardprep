@@ -419,6 +419,20 @@
     return html + '</section>';
   }
 
+  /* ---------------- songs ---------------- */
+
+  function vSongs() {
+    var list = window.SONGS || [];
+    var html = '<section class="section"><div class="section-head"><h2>' + esc(t('songs_title')) + '</h2>' +
+      '<span class="note">' + esc(t('songs_sub')) + '</span></div>';
+    html += '<div class="chips">' + list.map(function (s) {
+      return '<button class="fchip song-card" data-song="' + s.id + '">♪ ' + esc(pick(s.t, s.t_en)) + '</button>';
+    }).join('') + '</div>';
+    html += '<audio id="songPlayer" controls preload="auto" style="width:100%;margin-top:6px"></audio>';
+    html += '<div class="note" style="margin-top:8px">Free to use · T. Schürger / SoundHelix</div>';
+    return html + '</section>';
+  }
+
   /* ---------------- brain ---------------- */
 
   function vBrain() {
@@ -522,6 +536,7 @@
     if (p === 'diagrams' || p === 'diagram') return vDiagrams(parts[1]);
     if (p === 'timeline') return vTimeline();
     if (p === 'stories') return vStories(parts[1]);
+    if (p === 'songs') return vSongs();
     if (p === 'story') {
       var q = parseQuery(location.hash);
       return vStories(parts[1], q.c);
@@ -557,6 +572,18 @@
     });
     document.querySelectorAll('[data-prac]').forEach(function (b) {
       b.addEventListener('click', function () { goSubjectChap(b.dataset.prac, b.dataset.chap); });
+    });
+    document.querySelectorAll('[data-song]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var s = (window.SONGS || []).filter(function (x) { return String(x.id) === String(b.dataset.song); })[0];
+        if (!s) return;
+        var p = document.getElementById('songPlayer');
+        if (!p) return;
+        p.src = s.src;
+        p.play();
+        document.querySelectorAll('.song-card').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+      });
     });
     document.querySelectorAll('[data-el]').forEach(function (b) {
       b.addEventListener('click', function () { renderElement(b.dataset.el); });

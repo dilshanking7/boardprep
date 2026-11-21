@@ -20,6 +20,10 @@ window.I18N = {
 
   subjects_title: { hi: "सभी विषय", en: "All subjects" },
   back: { hi: "वापस", en: "Back" },
+  songs_title: { hi: "फोकस सांग", en: "Focus songs" },
+  songs_sub: { hi: "पढ़ाई के साथ चले — free", en: "Play while you study — free" },
+  hub_songs: { hi: "सांग", en: "Songs" },
+  hub_songs_sub: { hi: "पढ़ाई के साथ", en: "Study beats" },
   all: { hi: "सभी", en: "All" },
   mcq: { hi: "MCQ", en: "MCQ" },
   written: { hi: "लिखित", en: "Written" },
@@ -152,6 +156,10 @@ window.I18N = {
   story_questions: { hi: "प्रश्न", en: "questions" },
   story_read: { hi: "पढ़ें", en: "Read" },
   back: { hi: "वापस", en: "Back" },
+  songs_title: { hi: "फोकस सांग", en: "Focus songs" },
+  songs_sub: { hi: "पढ़ाई के साथ चले — free", en: "Play while you study — free" },
+  hub_songs: { hi: "सांग", en: "Songs" },
+  hub_songs_sub: { hi: "पढ़ाई के साथ", en: "Study beats" },
 
   brain_title: { hi: "ब्रेन लेवल टेस्ट", en: "Brain level test" },
   brain_sub: { hi: "20 सवाल — तारकी, गणित, भाषा, मेमोरी, अवलोकन", en: "20 questions — logic, math, language, memory, observation" },

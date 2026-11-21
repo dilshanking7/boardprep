@@ -275,6 +275,7 @@
       hubCard('#/diagrams', '◉', t('tool_diagrams'), t('hub_diagrams_sub')) +
       hubCard('#/timeline', '↝', t('tool_timeline'), t('hub_timeline_sub')) +
       hubCard('#/stories', '❝', t('tool_stories'), t('hub_stories_sub')) +
+      hubCard('#/songs', '♪', t('hub_songs'), t('hub_songs_sub')) +
       hubCard('#/brain', '🧠', t('tool_brain'), t('hub_brain_sub')) +
       hubCard('#/papers', '▦', t('tool_pdfs'), t('hub_pdfs_sub')) +
       hubCard('#/subjects', '▤', t('nav_subjects'), t('hub_subjects_sub')) +
