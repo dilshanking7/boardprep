@@ -258,6 +258,10 @@
       '<div class="stat"><b>' + Object.keys(chap).length + '</b><span>' + esc(t('home_stats_chap')) + '</span></div>' +
       '<div class="stat"><b>' + BOARDS.length + '</b><span>' + esc(t('home_stats_boards')) + '</span></div></div>';
 
+    html += '<a class="list-row" href="downloads/BoardPrep-v1.0.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
+      '<div class="t">📱 ' + esc(L('Android app (APK)', 'एंड्रॉयड ऐप (APK)')) + '</div>' +
+      '<div class="s">' + esc(L('Install on your phone — free, no ads', 'फ़ोन में इंस्टॉल करो — फ्री, कोई ads नहीं')) + '</div></div><span class="n">⬇</span></a>';
+
     html += '<section class="section"><div class="section-head">' +
       '<h2>' + esc(t('tools_title')) + '</h2><a class="more" href="#/tools">' + esc(t('all')) + ' →</a></div>' +
       '<div class="hub">' +
