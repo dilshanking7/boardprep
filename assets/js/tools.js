@@ -64,7 +64,11 @@
       ['#/papers', 'papers', t('tool_pdfs'), t('tool_pdfs_s')],
       ['#/search', 'search', t('nav_search'), t('home_search_btn')],
       ['#/help', 'check', t('hub_help'), t('hub_help_sub')],
-      ['#/notes', 'book', t('hub_notes'), t('hub_notes_sub')]
+      ['#/notes', 'book', t('hub_notes'), t('hub_notes_sub')],
+      ['#/progress', 'chart', t('hub_progress'), t('hub_progress_sub')],
+      ['#/exam', 'timer', t('hub_exam'), t('hub_exam_sub')],
+      ['#/revision', 'refresh', t('hub_revision'), t('hub_revision_sub')],
+      ['#/assistant', 'sparkle', t('hub_assistant'), t('hub_assistant_sub')]
     ];
     items.forEach(function (x) {
       var ic = (window.BP_ICONS && window.BP_ICONS[x[1]]) ? BP_ICON(x[1]) : x[1];
@@ -644,6 +648,10 @@
     if (p === 'help') return vHelp();
     if (p === 'notes') return vNotes(parts[1]);
     if (p === 'note') return vNoteDetail(parts[1], decodeURIComponent(parts[2] || ''));
+    if (p === 'progress') return window.vProgress ? window.vProgress() : '<section class="section"><div class="empty">…</div></section>';
+    if (p === 'revision') return window.vRevision ? window.vRevision() : '';
+    if (p === 'exam') return window.vExam ? window.vExam() : '';
+    if (p === 'assistant') return window.vAssistant ? window.vAssistant() : '';
     if (p === 'story') {
       var q = parseQuery(location.hash);
       return vStories(parts[1], q.c);
@@ -736,6 +744,100 @@
         if (d) showPart(d, g.dataset.part);
       });
     });
+
+    // ---- study features: progress / exam / revision / assistant ----
+    var exSubj = '[data-exsub]', exN = '[data-exn]', exMin = '[data-exmin]';
+    document.querySelectorAll(exSubj).forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll(exSubj).forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+      });
+    });
+    document.querySelectorAll(exN).forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll(exN).forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+      });
+    });
+    document.querySelectorAll(exMin).forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll(exMin).forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+      });
+    });
+    var exStart = document.getElementById('exStart');
+    if (exStart) exStart.addEventListener('click', function () {
+      var s = document.querySelector(exSubj + '.on');
+      var n = document.querySelector(exN + '.on');
+      var m = document.querySelector(exMin + '.on');
+      var subj = s ? s.dataset.exsub : ((window.SUBJECTS || [])[2] || {}).key;
+      var count = n ? Number(n.dataset.exn) : 20;
+      var mins = m ? Number(m.dataset.exmin) : 60;
+      if (window.examStart(subj, count, mins)) { window.BP && window.BP.render(); }
+    });
+    document.querySelectorAll('[data-pal]').forEach(function (b) {
+      b.addEventListener('click', function () { if (window.EXAM()) { window.examGo(Number(b.dataset.pal)); window.BP && window.BP.render(); } });
+    });
+    document.querySelectorAll('[data-exopt]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (window.EXAM()) { window.examAnswer(window.EXAM().i, Number(b.dataset.exopt)); window.BP && window.BP.render(); }
+      });
+    });
+    document.querySelectorAll('[data-exself]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (window.EXAM()) { window.examAnswer(window.EXAM().i, b.dataset.exself === '1'); window.BP && window.BP.render(); }
+      });
+    });
+    var exPrev = document.getElementById('exPrev');
+    if (exPrev) exPrev.addEventListener('click', function () { if (window.EXAM()) { window.examGo(window.EXAM().i - 1); window.BP && window.BP.render(); } });
+    var exNext = document.getElementById('exNext');
+    if (exNext) exNext.addEventListener('click', function () { if (window.EXAM()) { window.examGo(window.EXAM().i + 1); window.BP && window.BP.render(); } });
+    var exSubmit = document.getElementById('exSubmit');
+    if (exSubmit) exSubmit.addEventListener('click', function () { if (window.EXAM()) { window.examSubmit(); window.BP && window.BP.render(); } });
+    var exAgain = document.getElementById('exAgain');
+    if (exAgain) exAgain.addEventListener('click', function () { window.examReset(); window.BP && window.BP.render(); });
+    document.querySelectorAll('[data-rev]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        window.__revTab = b.dataset.rev;
+        document.querySelectorAll('[data-rev]').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        if (window.BP) window.BP.render();
+      });
+    });
+    var assBox = document.getElementById('assBox');
+    if (assBox) assBox.addEventListener('input', function () {
+      clearTimeout(window.__assT);
+      var v = assBox.value;
+      window.__assT = setTimeout(function () { window.assistAsk(v); }, 220);
+    });
+    document.querySelectorAll('[data-assub]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = b.dataset.assub;
+        var ch = null;
+        try { ch = window.chapters(k)[0]; } catch (e) {}
+        if (ch) { location.hash = '#/subject/' + k; }
+      });
+    });
+
+    // exam live timer (1s tick) + auto submit
+    if (window.__exTick) { clearInterval(window.__exTick); window.__exTick = null; }
+    if (window.EXAM && window.EXAM() && !window.EXAM().done) {
+      window.__exTick = setInterval(function () {
+        var e = window.EXAM();
+        if (!e || e.done) { clearInterval(window.__exTick); window.__exTick = null; return; }
+        var left = e.end - Date.now();
+        var el = document.getElementById('exTime');
+        if (el) {
+          var mm = Math.max(0, Math.floor(left / 60000)), ss = Math.max(0, Math.floor((left % 60000) / 1000));
+          el.textContent = mm + ':' + String(ss).padStart(2, '0');
+        }
+        if (left <= 0) {
+          clearInterval(window.__exTick); window.__exTick = null;
+          if (window.examSubmit) window.examSubmit();
+          if (window.BP) window.BP.render();
+        }
+      }, 1000);
+    }
 
     // lab
     var mix = document.getElementById('labMix');

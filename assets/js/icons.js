@@ -26,7 +26,11 @@
     clock: S + '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>' + E,
     check: S + '<path d="M5 12.5 10 17.5 19 7"/>' + E,
     chevron: S + '<path d="M9 6l6 6-6 6"/>' + E,
-    phone: S + '<rect x="6.5" y="3" width="11" height="18" rx="2.5"/><path d="M10.5 18.5h3"/>' + E
+    phone: S + '<rect x="6.5" y="3" width="11" height="18" rx="2.5"/><path d="M10.5 18.5h3"/>' + E,
+    chart: S + '<path d="M4 20.5h16"/><path d="M7 20v-6M12 20V8M17 20v-9"/><circle cx="7" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="6" r="1.4" fill="currentColor"/><circle cx="17" cy="9" r="1.4" fill="currentColor"/>' + E,
+    timer: S + '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 1.5"/><path d="M9.5 2.5h5M12 2.5v3"/>' + E,
+    refresh: S + '<path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4.5v4h-4"/>' + E,
+    sparkle: S + '<path d="M12 3.5l1.7 4.6 4.6 1.7-4.6 1.7L12 16.1l-1.7-4.6-4.6-1.7 4.6-1.7L12 3.5z"/><path d="M18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2z"/>' + E
   };
 
   function icon(name, size) {

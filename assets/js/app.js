@@ -233,7 +233,8 @@
     }
     return '<div class="qcard" data-idx="' + i + '"' + ansIdx + '>' +
       '<div class="qmeta"><span class="badge">' + esc(q.type === 'mcq' ? t('mcq') : t('written')) + '</span>' +
-      freqBadge(q) + '</div><div class="qtext">' + esc(q.q) + '</div>' + opts + ans + '</div>';
+      freqBadge(q) + '<button class="link-btn bm-btn" data-act="bookmark" title="bookmark" style="margin-left:auto;padding:4px 8px">☆</button></div>' +
+      '<div class="qtext">' + esc(q.q) + '</div>' + opts + ans + '</div>';
   }
 
   /* ---------------- views ---------------- */
@@ -291,6 +292,10 @@
       hubCard('#/subjects', 'grid', t('nav_subjects'), t('hub_subjects_sub')) +
       hubCard('#/help', 'check', t('hub_help'), t('hub_help_sub')) +
       hubCard('#/notes', 'book', t('hub_notes'), t('hub_notes_sub')) +
+      hubCard('#/progress', 'chart', t('hub_progress'), t('hub_progress_sub')) +
+      hubCard('#/exam', 'timer', t('hub_exam'), t('hub_exam_sub')) +
+      hubCard('#/revision', 'refresh', t('hub_revision'), t('hub_revision_sub')) +
+      hubCard('#/assistant', 'sparkle', t('hub_assistant'), t('hub_assistant_sub')) +
       '</div></section>';
 
     var en = state.lang === 'en';
@@ -340,6 +345,7 @@
       return true;
     });
     var show = list.slice(0, state.shown);
+    state.subjQs = show;
 
     var html = '<a class="backlink" href="#/subjects">← ' + esc(t('back')) + '</a>' +
       '<div class="section-head"><h2 style="color:' + s.color + '">' + esc(state.lang === 'en' ? (s.en || s.name) : s.name) + '</h2>' +
@@ -616,6 +622,14 @@
     if (Object.prototype.hasOwnProperty.call(qz.ok, i)) return false; // already locked
     qz.ok[i] = !!got;
     if (got) qz.right++;
+    // progress dashboard ke liye record (silent — koi crash nahi)
+    try {
+      var q = qz.items[i];
+      if (q && window.STUDY) {
+        window.STUDY.attempt(q.subj, q.chap || q.part || '', !!got, q.q);
+        if (!got) window.STUDY.wrong(q, q.subj, q.chap || q.part || '');
+      }
+    } catch (e) {}
     return true;
   }
 
@@ -800,7 +814,24 @@
   }
 
   function boot() {
+    window.QS_FOR = qsFor;
+    window.CHAPTERS_LIST = chapters;
     view.addEventListener('click', function (e) {
+      var bmBtn = e.target.closest('[data-act="bookmark"]');
+      if (bmBtn) {
+        var bcard = bmBtn.closest('.qcard');
+        var q = null;
+        try {
+          var bi = bcard && bcard.dataset.idx;
+          if (state.quiz && bi === 'quiz') q = state.quiz.items[state.quiz.i];
+          else if (bi !== undefined && bi !== 'quiz') q = (state.subjQs || [])[Number(bi)] || null;
+        } catch (err) {}
+        if (q && window.STUDY) {
+          var on = window.STUDY.book(q);
+          bmBtn.textContent = on ? '★' : '☆';
+        }
+        return;
+      }
       var selfBtn = e.target.closest('[data-act="selfright"],[data-act="selfwrong"]');
       if (selfBtn) {
         var scard = selfBtn.closest('.qcard');
