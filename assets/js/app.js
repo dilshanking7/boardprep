@@ -136,11 +136,21 @@
     return out;
   }
 
+  function isChapName(c) {
+    if (!c) return false;
+    if (/bank|question|mcq|pyq|model|paper|solution|objective|sample|important|अभ्यास|प्रश्न|उत्तर|व्याकरण/i.test(c)) return false;
+    if (/^chapter\s*\d+$/i.test(c)) return false;
+    return true;
+  }
+
   function chapters(key) {
     var seen = [], hit = {};
+    var S = (window.STORIES && window.STORIES[key]) || null;
     qsFor(key).forEach(function (q) {
       var c = q.chap || q.part || '';
-      if (c && !hit[c]) { hit[c] = 1; seen.push(c); }
+      var m = /^chapter\s*(\d+)$/i.exec(c);
+      if (m && S && S[Number(m[1]) - 1]) c = S[Number(m[1]) - 1].t;
+      if (isChapName(c) && !hit[c]) { hit[c] = 1; seen.push(c); }
     });
     return seen;
   }
@@ -642,6 +652,8 @@
 
   function route() {
     var h = location.hash.replace(/^#/, '') || '/';
+    var qi = h.indexOf('?');
+    if (qi >= 0) h = h.slice(0, qi);
     var parts = h.split('/').filter(Boolean);
     if (parts[0] === 'subjects') return vSubjects();
     if (parts[0] === 'subject' && parts[1]) return vSubject(parts[1]);

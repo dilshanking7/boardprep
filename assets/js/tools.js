@@ -370,41 +370,51 @@
 
   var STORY_SUBS = ['hindi', 'english', 'sanskrit'];
 
-  function vStories(subjKey) {
+  function storyList(k) {
+    if (window.STORIES && window.STORIES[k] && window.STORIES[k].length) return window.STORIES[k];
+    return storyChapters(k).map(function (c) { return { t: c }; });
+  }
+
+  function storyBody(k, name) {
+    return (window.STORIES && window.STORIES[k] || []).filter(function (x) { return x.t === name; })[0] || null;
+  }
+
+  function vStories(subjKey, chap) {
     var html = '<section class="section"><div class="section-head"><h2>' + esc(t('stories_title')) + '</h2>' +
       '<span class="note">' + esc(t('stories_sub')) + '</span></div>';
-    if (!subjKey) {
-      html += '<div class="chips">' + STORY_SUBS.map(function (k) {
-        var s = BP.subj(k) || {};
-        return '<button class="fchip" data-story="' + k + '">' + esc(pick(s.name, s.en) || k) + '</button>';
-      }).join('') + '</div>';
-      STORY_SUBS.forEach(function (k) {
-        var s = BP.subj(k) || {};
-        var ch = storyChapters(k);
-        if (!ch.length) return;
-        html += '<div class="board-group">' + esc(pick(s.name, s.en) || k) + ' · ' + ch.length + ' ' + (ch.length === 1 ? (state.lang === 'en' ? 'chapter' : 'अध्याय') : L('chapters', 'अध्याय')) + '</div>';
-        ch.forEach(function (c) {
-          var pts = keyPoints(k, c);
-          html += '<a class="list-row" href="#/story/' + k + '?c=' + encodeURIComponent(c) + '"><div>' +
-            '<div class="t">' + esc(c) + '</div>' +
-            '<div class="s">' + pts.length + ' ' + L('key points', 'मुख्य बातें') + ' · ' + BP.qsFor(k).filter(function (q) { return (q.chap || q.part) === c; }).length + ' ' + (BP.qsFor(k).filter(function (q) { return (q.chap || q.part) === c; }).length === 1 ? (state.lang === 'en' ? 'question' : 'प्रश्न') : L('questions', 'प्रश्न')) + '</div></div>' +
-            '<span class="n">→</span></a>';
-        });
-      });
+    html += '<div class="chips">' + STORY_SUBS.map(function (k) {
+      var s = BP.subj(k) || {};
+      return '<button class="fchip" data-story="' + k + '">' + esc(pick(s.name, s.en) || k) + '</button>';
+    }).join('') + '</div>';
+    var k = subjKey || STORY_SUBS[0];
+    var list = storyList(k);
+    var s = BP.subj(k) || {};
+    html += '<div class="board-group">' + esc(pick(s.name, s.en) || k) + ' · ' + list.length + ' ' +
+      (list.length === 1 ? (state.lang === 'en' ? 'chapter' : 'अध्याय') : L('chapters', 'अध्याय')) + '</div>';
+    if (chap) {
+      var it = storyBody(k, chap);
+      var pts = keyPoints(k, chap);
+      var nq = BP.qsFor(k).filter(function (q) { return (q.chap || q.part) === chap; }).length;
+      html += '<div class="story"><h3>' + esc(chap) + '</h3>';
+      if (it && it.a) html += '<div class="smeta">' + esc(pick(it.a, it.a)) + '</div>';
+      if (it && it.hi) html += '<p>' + esc(pick(it.hi, it.en)) + '</p>';
+      html += '<div class="smeta">' + pts.length + ' ' + L('key points', 'मुख्य बातें') +
+        (nq ? ' · ' + nq + ' ' + L('questions', 'प्रश्न') : '') + '</div>';
+      html += pts.map(function (p) { return '<p>• ' + esc(p) + '</p>'; }).join('');
+      if (nq) html += '<button class="story-link" data-prac="' + esc(k) + '" data-chap="' + esc(chap) + '">▶ ' +
+        esc(t('story_practice')) + ' (' + nq + ')</button>';
+      html += '<button class="btn" style="margin-top:10px" onclick="location.hash=\'#/stories/' + k + '\'">← ' +
+        esc(L('Back', 'वापस')) + '</button></div>';
       return html + '</section>';
     }
-    var s = BP.subj(subjKey) || {};
-    html += '<div class="chips">' + STORY_SUBS.map(function (k) {
-      var ss = BP.subj(k) || {};
-      return '<button class="fchip' + (k === subjKey ? ' on' : '') + '" data-story="' + k + '">' + esc(ss.name || k) + '</button>';
-    }).join('') + '</div>';
-    storyChapters(subjKey).forEach(function (c) {
-      var pts = keyPoints(subjKey, c);
-      html += '<div class="story"><h3>' + esc(c) + '</h3>' +
-        '<div class="smeta">' + esc(pick(s.name, s.en) || '') + ' · ' + pts.length + ' ' + L('key points', 'मुख्य बातें') + '</div>';
-      html += pts.map(function (p) { return '<p>• ' + esc(p) + '</p>'; }).join('');
-      html += '<button class="story-link" data-prac="' + esc(subjKey) + '" data-chap="' + esc(c) + '">▶ ' +
-        esc(t('story_practice')) + ' (' + BP.qsFor(subjKey).filter(function (q) { return (q.chap || q.part) === c; }).length + ')</button></div>';
+    list.forEach(function (it) {
+      var name = it.t || it;
+      var nq = BP.qsFor(k).filter(function (q) { return (q.chap || q.part) === name; }).length;
+      var sub = (it.a ? it.a + ' · ' : '') +
+        (it.hi ? (state.lang === 'en' ? 'summary' : 'सारांश') : (nq ? nq + ' ' + L('questions', 'प्रश्न') : ''));
+      html += '<a class="list-row" href="#/story/' + k + '?c=' + encodeURIComponent(name) + '"><div>' +
+        '<div class="t">' + esc(name) + '</div>' +
+        '<div class="s">' + esc(sub) + '</div></div><span class="n">→</span></a>';
     });
     return html + '</section>';
   }
@@ -514,7 +524,7 @@
     if (p === 'stories') return vStories(parts[1]);
     if (p === 'story') {
       var q = parseQuery(location.hash);
-      return vStories(parts[1]);
+      return vStories(parts[1], q.c);
     }
     if (p === 'brain') return vBrain();
     return null;

@@ -151,6 +151,7 @@ window.I18N = {
   story_practice: { hi: "इस अध्याय के प्रश्न", en: "Questions for this chapter" },
   story_questions: { hi: "प्रश्न", en: "questions" },
   story_read: { hi: "पढ़ें", en: "Read" },
+  back: { hi: "वापस", en: "Back" },
 
   brain_title: { hi: "ब्रेन लेवल टेस्ट", en: "Brain level test" },
   brain_sub: { hi: "20 सवाल — तारकी, गणित, भाषा, मेमोरी, अवलोकन", en: "20 questions — logic, math, language, memory, observation" },
