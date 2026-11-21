@@ -519,11 +519,20 @@
 
   /* ---------------- important 2027 ---------------- */
 
+  function impLabel() {
+    if (!IMP) return '';
+    var same = String(IMP.board || '').toLowerCase() === String(state.board || '').toLowerCase();
+    if (same) {
+      return board().name + ' · ' + IMP.exam + ' · ' + L('Board-specific practice (NCERT syllabus)', 'बोर्ड-विशिष्ट अभ्यास (NCERT पाठ्यक्रम)');
+    }
+    return L('NCERT-based General Practice Questions', 'NCERT-आधारित सामान्य अभ्यास प्रश्न') + ' · ' + IMP.exam;
+  }
+
   function vImportant() {
     if (!IMP) return '<div class="empty">No data</div>';
     var sec = IMP.sections.filter(function (s) { return s.id === state.impSubj; })[0] || IMP.sections[0];
     var html = '<section class="section"><div class="section-head"><h2>' + esc(t('imp_title')) + '</h2>' +
-      '<span class="note">' + esc(board().name) + ' · ' + esc(IMP.exam) + '</span></div>';
+      '<span class="note">' + esc(impLabel()) + '</span></div>';
     html += '<div class="chips">' + IMP.sections.map(function (s) {
       return '<button class="fchip' + (s.id === sec.id ? ' on' : '') + '" data-imp="' + s.id + '">' + esc(state.lang === 'en' ? (s.en || s.title) : s.title) + '</button>';
     }).join('') + '</div>';
