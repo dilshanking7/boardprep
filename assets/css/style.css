@@ -290,3 +290,7 @@ details.block .body { padding: 0 16px 14px; font-size: 14px; white-space: pre-wr
 .freq-row .yrs { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
 .freq-row > div > div { overflow-wrap: anywhere; }
 .xchip { background: #fef3c7; color: #92400e; font-weight: 800; font-size: 13px; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+
+/* quiz answer lock (v2 audit) */
+.btn:disabled,.link-btn:disabled{opacity:.55;cursor:not-allowed;filter:grayscale(.4)}
+.btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}

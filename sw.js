@@ -20,7 +20,6 @@ const SHELL = [
   'assets/js/models3d-ui.js',
   'assets/js/models3d.js',
   'assets/js/scenes3d.js',
-  'assets/js/_optics.js',
   'assets/data/data.js',
   'assets/data/board-bank.js',
   'assets/data/en-dict.js',
@@ -32,6 +31,16 @@ const SHELL = [
   'assets/data/timeline.js',
   'assets/data/stories.js',
   'assets/data/songs.js',
+  'assets/data/notes.js',
+  'assets/data/notes_science.js',
+  'assets/data/notes_maths.js',
+  'assets/data/notes_sst_history.js',
+  'assets/data/notes_sst_geo.js',
+  'assets/data/notes_sst_civics.js',
+  'assets/data/notes_sst_econ.js',
+  'assets/data/notes_hindi.js',
+  'assets/data/notes_english.js',
+  'assets/data/notes_sanskrit.js',
   'assets/data/brain.js',
   'assets/data/models3d.js',
   'assets/icons/icon-192.png',
@@ -43,15 +52,67 @@ const SHELL = [
 ];
 
 self.addEventListener('install', function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).then(function () {
-    return self.skipWaiting();
-  }).catch(function () { return self.skipWaiting(); }));
+  // Har file alag se cache hoti hai — koi ek fail ho to poora install fail NA ho
+  e.waitUntil(caches.open(CACHE).then(function (cache) {
+    var failed = [];
+    return Promise.all(SHELL.map(function (u) {
+      return cache.add(u).then(function () {}, function () { failed.push(u); });
+    })).then(function () {
+      self.__shellFailed = failed;
+      return self.skipWaiting();
+    });
+  }));
 });
 
 self.addEventListener('activate', function (e) {
   e.waitUntil(caches.keys().then(function (keys) {
     return Promise.all(keys.map(function (k) { if (k !== CACHE) return caches.delete(k); }));
   }).then(function () { return self.clients.claim(); }));
+});
+
+// App shell ki cached status report (missing resources ke liye)
+self.addEventListener('message', function (e) {
+  if (!e.data) return;
+  if (e.data.type === 'SHELL_STATUS') {
+    caches.open(CACHE).then(function (cache) {
+      return Promise.all(SHELL.map(function (u) {
+        return cache.match(u).then(function (r) { return { u: u, ok: !!r }; });
+      }));
+    }).then(function (list) {
+      if (e.source) e.source.postMessage({ type: 'SHELL_STATUS', list: list });
+    });
+    return;
+  }
+  if (e.data.type !== 'CACHE_ALL') return;
+  var urls = e.data.urls || [];
+  var sender = e.source;
+  caches.open(CACHE).then(function (cache) {
+    var done = 0, failed = [];
+    var total = urls.length;
+    function work(idx) {
+      if (idx >= total) {
+        if (sender) sender.postMessage({ type: 'CACHE_DONE', failed: failed.length, failedUrls: failed });
+        return null;
+      }
+      var u = urls[idx];
+      function attempt(n) {
+        return fetch(u, { credentials: 'omit' }).then(function (r) {
+          if (!r.ok) throw new Error('bad');
+          return cache.put(u, r);
+        }).catch(function () {
+          if (n > 0) return attempt(n - 1);
+          failed.push(u);
+          return null;
+        });
+      }
+      return attempt(1).then(function () {
+        done++;
+        if (sender) sender.postMessage({ type: 'CACHE_PROGRESS', done: done, total: total, failed: failed.length });
+        return work(idx + 1);
+      });
+    }
+    return work(0);
+  });
 });
 
 self.addEventListener('fetch', function (e) {
@@ -85,24 +146,3 @@ self.addEventListener('fetch', function (e) {
   }));
 });
 
-// Page se bheja gaya poora content (PDF + songs) cache karo
-self.addEventListener('message', function (e) {
-  if (!e.data || e.data.type !== 'CACHE_ALL') return;
-  const urls = e.data.urls || [];
-  const sender = e.source;
-  caches.open(CACHE).then(function (cache) {
-    let done = 0;
-    const total = urls.length;
-    return Promise.all(urls.map(function (u) {
-      return fetch(u, { credentials: 'omit' }).then(function (r) {
-        if (r.ok) return cache.put(u, r);
-        return null;
-      }).catch(function () { return null; }).then(function () {
-        done++;
-        if (sender) sender.postMessage({ type: 'CACHE_PROGRESS', done: done, total: total });
-      });
-    }));
-  }).then(function () {
-    if (sender) sender.postMessage({ type: 'CACHE_DONE' });
-  });
-});

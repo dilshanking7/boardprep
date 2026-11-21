@@ -694,28 +694,33 @@
     });
     var offBtn = document.getElementById('offBtn');
     if (offBtn) offBtn.addEventListener('click', function () {
-      var urls = [];
-      try {
-        (window.BOARD_DATA.papers || []).forEach(function (p) { urls.push(p.url); });
-        (window.SONGS || []).forEach(function (s) { urls.push(s.src); });
-      } catch (e) {}
-      var stat = document.getElementById('offStat');
-      if (!('serviceWorker' in navigator)) {
-        if (stat) stat.textContent = L('Is browser me offline support nahi hai', 'इस ब्राउज़र में ऑफ़लाइन सपोर्ट नहीं है');
-        return;
-      }
-      if (stat) stat.textContent = L('Starting…', 'शुरू हो रहा है…');
-      navigator.serviceWorker.ready.then(function (reg) {
-        var ctrl = reg.active || reg.installing;
-        if (!ctrl) { if (stat) stat.textContent = 'Service worker ready nahi hai'; return; }
-        navigator.serviceWorker.addEventListener('message', function (ev) {
-          var d = ev.data || {};
-          if (d.type === 'CACHE_PROGRESS' && stat) stat.textContent = L('Ho gaya', 'हो गया') + ' ' + d.done + '/' + d.total;
-          if (d.type === 'CACHE_DONE' && stat) stat.textContent = L('Done! Ab internet ke bina bhi sab chalega', 'हो गया! अब इंटरनेट के बिना भी सब चलेगा') + ' ✓';
+        var urls = [];
+        try {
+          (window.BOARD_DATA.papers || []).forEach(function (p) { urls.push(p.url); });
+          (window.SONGS || []).forEach(function (s) { urls.push(s.src); });
+          (window.MODELS3D || []).forEach(function (m) { if (m.src) urls.push(m.src); });
+          (window.DIAGRAMS || []).forEach(function (d) { if (d.img) urls.push(d.img); });
+        } catch (e) {}
+        var stat = document.getElementById('offStat');
+        if (!('serviceWorker' in navigator)) {
+          if (stat) stat.textContent = L('Is browser me offline support nahi hai', 'इस ब्राउज़र में ऑफ़लाइन सपोर्ट नहीं है');
+          return;
+        }
+        if (stat) stat.textContent = L('Starting…', 'शुरू हो रहा है…') + ' (0/' + urls.length + ')';
+        navigator.serviceWorker.ready.then(function (reg) {
+          var ctrl = reg.active || reg.installing;
+          if (!ctrl) { if (stat) stat.textContent = 'Service worker ready nahi hai'; return; }
+          navigator.serviceWorker.addEventListener('message', function (ev) {
+            var d = ev.data || {};
+            if (d.type === 'CACHE_PROGRESS' && stat) stat.textContent =
+              L('Ho gaya', 'हो गया') + ' ' + d.done + '/' + d.total +
+              (d.failed ? ' · ' + L('fail', 'फेल') + ' ' + d.failed : '');
+            if (d.type === 'CACHE_DONE' && stat) stat.textContent =
+              (d.failed ? L('Poora nahi hua — neeche dobara try karo', 'पूरा नहीं हुआ — नीचे दोबारा try करो') : L('Ho gaya! Ab internet ke bina bhi sab chalega', 'हो गया! अब इंटरनेट के बिना भी सब चलेगा')) + ' ✓ (' + urls.length + ')';
+          });
+          ctrl.postMessage({ type: 'CACHE_ALL', urls: urls });
         });
-        ctrl.postMessage({ type: 'CACHE_ALL', urls: urls });
       });
-    });
     document.querySelectorAll('[data-el]').forEach(function (b) {
       b.addEventListener('click', function () { renderElement(b.dataset.el); });
     });

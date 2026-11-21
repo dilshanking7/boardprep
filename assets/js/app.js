@@ -39,9 +39,16 @@
     IMP = window.IMPORTANT || null;
   }
 
+  // Safe storage helpers — storage unavailable hone par app crash NA ho
+  function storeGet(k, d) {
+    try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; }
+  }
+  function storeSet(k, v) {
+    try { localStorage.setItem(k, v); return true; } catch (e) { return false; }
+  }
   var state = {
-    board: localStorage.getItem('bp_board') || 'jac',
-    lang: localStorage.getItem('bp_lang') || 'hi',
+    board: storeGet('bp_board', 'jac'),
+    lang: storeGet('bp_lang', 'hi'),
     quiz: null,
     subjKey: null,
     subjType: 'all',
@@ -259,7 +266,7 @@
       '<div class="stat"><b>' + Object.keys(chap).length + '</b><span>' + esc(t('home_stats_chap')) + '</span></div>' +
       '<div class="stat"><b>' + BOARDS.length + '</b><span>' + esc(t('home_stats_boards')) + '</span></div></div>';
 
-    if (localStorage.getItem('bp_apk') !== '1') {
+    if (storeGet('bp_apk', '0') !== '1') {
       html += '<a class="list-row apk-card" href="downloads/BoardPrep-v2.0.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
         '<div class="t">📱 ' + esc(L('Android app v2.0 — full offline', 'एंड्रॉयड ऐप v2.0 — पूरा ऑफ़लाइन')) + '</div>' +
         '<div class="s">' + esc(L('App me hi sab hai — PDF, 3D models, songs. Internet ke bina bhi.', 'ऐप में ही सब है — PDF, 3D models, songs। इंटरनेट के बिना भी।')) + '</div></div><span class="n">⬇</span></a>';
@@ -582,6 +589,16 @@
     return n >= 0 && n < q.opts.length;
   }
 
+  // Centralized quiz scoring — har question ka score SIRF EK baar count hota hai
+  function quizMark(i, got) {
+    var qz = state.quiz;
+    if (!qz) return false;
+    if (Object.prototype.hasOwnProperty.call(qz.ok, i)) return false; // already locked
+    qz.ok[i] = !!got;
+    if (got) qz.right++;
+    return true;
+  }
+
   function pickQuiz(subjKey, chap, count, mode) {
     var pool = qsFor(subjKey).filter(function (q) {
       if (mode !== 'mix' && q.type !== mode) return false;
@@ -632,7 +649,7 @@
 
     document.querySelectorAll('.apk-card').forEach(function (a) {
       a.addEventListener('click', function () {
-        try { localStorage.setItem('bp_apk', '1'); } catch (e) {}
+        try { storeSet('bp_apk', '1'); } catch (e) {}
         a.remove();
       });
     });
@@ -748,8 +765,8 @@
         state.board = btn.dataset.id;
         var b = board();
         state.lang = b.lang || 'hi';
-        localStorage.setItem('bp_board', state.board);
-        localStorage.setItem('bp_lang', state.lang);
+        storeSet('bp_board', state.board);
+        storeSet('bp_lang', state.lang);
         document.getElementById('boardSheet').hidden = true;
         applyBoardData();
         applyContentLang();
@@ -764,11 +781,15 @@
       if (selfBtn) {
         var scard = selfBtn.closest('.qcard');
         if (scard && state.quiz && scard.dataset.idx === 'quiz') {
-          var sok = selfBtn.dataset.act === 'selfright';
-          state.quiz.ok[state.quiz.i] = sok;
-          if (sok) state.quiz.right++;
-          var sn = document.getElementById('qzNext');
-          if (sn) sn.hidden = false;
+          var picked = selfBtn.dataset.act === 'selfright';
+          if (quizMark(state.quiz.i, picked)) {
+            scard.querySelectorAll('[data-act="selfright"],[data-act="selfwrong"]').forEach(function (b) {
+              b.disabled = true;
+              b.classList.toggle('on', (b.dataset.act === 'selfright') === picked);
+            });
+            var sn = document.getElementById('qzNext');
+            if (sn) sn.hidden = false;
+          }
         }
         return;
       }
@@ -800,9 +821,7 @@
       var ansBox = card2.querySelector('.ansbox');
       if (ansBox) ansBox.hidden = false;
       if (state.quiz && card2.dataset.idx === 'quiz') {
-        var got = Number(opt.dataset.k) === rightIdx;
-        state.quiz.ok[state.quiz.i] = got;
-        if (got) state.quiz.right++;
+        quizMark(state.quiz.i, Number(opt.dataset.k) === rightIdx);
         var next = document.getElementById('qzNext');
         if (next) next.hidden = false;
       }
@@ -820,7 +839,7 @@
     });
     document.getElementById('langBtn').addEventListener('click', function () {
       state.lang = state.lang === 'hi' ? 'en' : 'hi';
-      localStorage.setItem('bp_lang', state.lang);
+      storeSet('bp_lang', state.lang);
       applyContentLang();
       render();
     });
