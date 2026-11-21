@@ -104,7 +104,7 @@ aaye to pehle `hi_strings.json` dobara nikalo, phir `translate.py` chalao — ca
 | `#/mathlab` | सूत्र याद, उत्तर लिखो, जाँचो + लिखने का पेज |
 | `#/diagrams`, `#/diagram/:id` | 20 diagrams, हर hisse पर टैप |
 | `#/timeline` | 77 घटनाएँ, साल-दर-साल |
-| `#/stories`, `#/story/:subj` | हर अध्याय की मुख्य बातें + अभ्यास लिंक |
+| `#/stories`, `#/stories/:subj`, `#/story/:subj?c=` | अध्यायवार कहानी/सारांश + मुख्य बातें + अभ्यास |
 | `#/brain` | 20 सवाल, brain level + category report |
 | `#/papers` | PYQ + model papers (sal ke hisaab se) |
 | `#/important` | 2027 के पक्के प्रश्न + strategy + tips + FAQ |
@@ -118,4 +118,4 @@ subject list, exam, pass marks aur pattern card sab badal jaate hain.
 
 - Data NCERT-syllabus based hai; board selection pattern/medium dikhata hai.
 - 547 MCQ me answer parse nahi hua — quiz unhe skip karta hai.
-- Stories ka poora pathya-text abhi book se jodna baaki hai (abhi chapter-wise मुख्य बातें + अभ्यास लिंक hai).
+- Stories: 81 अध्याय (हिंदी 37 + English 32 + Sanskrit 12) ka नाम, लेखक और Hindi/English सारांश `assets/data/stories.js` me hai; पूरा pathya-text book se jodna baaki hai.
