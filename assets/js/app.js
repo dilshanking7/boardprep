@@ -15,6 +15,8 @@
   var ORIG_CONTENT = {};
   CONTENT_KEYS.forEach(function (k) { if (window[k]) ORIG_CONTENT[k] = window[k]; });
 
+  function L(en, hi) { return state.lang === 'en' ? en : (hi == null ? en : hi); }
+
   function trStr(s) {
     if (state.lang !== 'en' || typeof s !== 'string') return s;
     return HI_EN[s] || s;
@@ -378,6 +380,10 @@
     var b = board();
     var html = '<section class="section"><div class="section-head"><h2>' + esc(t('quiz_setup')) + '</h2>' +
       '<span class="note">' + esc(b.name) + ' · ' + esc(b.pattern) + '</span></div>';
+    if (b.id !== 'jac' && !bank()) {
+      html += '<div class="imp-item" style="background:#fffbeb;border-color:#fcd34d"><div class="num" style="background:#fef3c7;color:#92400e">!</div><div>' +
+        '<div class="iq">' + esc(L('Questions here come from the shared JAC bank, not your board papers.', 'यहाँ के प्रश्न साझा JAC bank से हैं, तुम्हारे board के अपने पेपर से नहीं।')) + '</div></div></div>';
+    }
 
     html += '<div class="field"><label>' + esc(t('quiz_subj')) + '</label><div class="chips" id="qzSubj">' +
       '<button class="fchip on" data-v="all">' + esc(t('all')) + '</button>' +
@@ -446,9 +452,14 @@
       if (state.paperFilter === 'model') return k.indexOf('model') >= 0;
       return k === state.paperFilter;
     });
+    var shared = board().id !== 'jac' && !bank();
     var html = '<section class="section"><div class="section-head"><h2>' + esc(t('papers_title')) + '</h2>' +
-      '<span class="note">' + esc(board().name) + '</span></div>' +
-      '<div class="chips">' +
+      '<span class="note">' + esc(board().name) + '</span></div>';
+    if (shared) {
+      html += '<div class="imp-item" style="background:#fffbeb;border-color:#fcd34d"><div class="num" style="background:#fef3c7;color:#92400e">!</div><div>' +
+        '<div class="iq">' + esc(L('These are the shared JAC model papers. Your board\'s own papers may differ.', 'ये JAC के साझा मॉडल पेपर हैं। तुम्हारे board के अपने पेपर अलग हो सकते हैं।')) + '</div></div></div>';
+    }
+    html += '<div class="chips">' +
       [['all', t('papers_all')], ['pyq', t('papers_pyq')], ['model', t('papers_model')]].map(function (c) {
         return '<button class="fchip' + (state.paperFilter === c[0] ? ' on' : '') +
           '" data-f="' + c[0] + '">' + esc(c[1]) + '</button>';
@@ -469,6 +480,7 @@
           } else if (raw.indexOf('Sample Question Paper') < 0 && raw.indexOf('Marking Scheme') < 0) {
             title = raw + ' — ' + t('papers_pyq');
           }
+          if (shared) title = 'JAC ' + title;
           html += '<div class="list-row"><div>' +
             '<div class="t">' + esc(title) + '</div>' +
             '<div class="s">' + esc(p.label) + ' · ' + esc(p.year) + '</div></div>' +
