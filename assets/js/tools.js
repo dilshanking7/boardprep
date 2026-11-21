@@ -62,7 +62,8 @@
       ['#/brain', 'bulb', t('tool_brain'), t('tool_brain_s')],
       ['#/important', 'star', t('tool_important'), t('tool_important_s')],
       ['#/papers', 'papers', t('tool_pdfs'), t('tool_pdfs_s')],
-      ['#/search', 'search', t('nav_search'), t('home_search_btn')]
+      ['#/search', 'search', t('nav_search'), t('home_search_btn')],
+      ['#/help', 'check', t('hub_help'), t('hub_help_sub')]
     ];
     items.forEach(function (x) {
       var ic = (window.BP_ICONS && window.BP_ICONS[x[1]]) ? BP_ICON(x[1]) : x[1];
@@ -428,6 +429,32 @@
     return html + '</section>';
   }
 
+  /* ---------------- help / kaise use karein ---------------- */
+
+  function vHelp() {
+    var steps = [
+      ['board', '1. Board चुनो', 'ऊपर JAC chip पर टैप करो — अपना board चुन, pattern + भाषा अपने आप बदल जाएगी।'],
+      ['pencil', '2. विषय → chapter → quiz', 'विषय पर जाओ, chapter चुनो, कितने सवाल चाहिए वो चुनो, फिर "शुरू करें"।'],
+      ['cube', '3. 3D models घुमाओ', 'Tools → 3D models। हृदय, आँख, मस्तिष्क, दर्पण/लेंस — घुमाओ और हिस्सों पर टैप करो।'],
+      ['sigma', '4. Formulas · periodic · lab', 'Tools में सूत्र + ट्रिक, 118 तत्व, chemistry lab, maths lab, diagrams।'],
+      ['book', '5. Chapter stories + songs', 'पाठ्य पुस्तक में 81 अध्याय की कहानी, और सांग में पढ़ाई के साथ चलने वाले free songs।'],
+      ['papers', '6. PDF खोलो', 'पेपर और पीडीएफ में साल ऊपर दिखते हैं — PYQ + model papers, टैप करके खोलो।'],
+      ['download', '7. Offline + APK', 'Tools → "सब ऑफ़लाइन करो" से सब सेव। फ़ोन के लिए APK भी मुफ़्त है।']
+    ];
+    var html = '<section class="section"><div class="section-head"><h2>' + esc(t('help_title')) + '</h2>' +
+      '<span class="note">' + esc(t('help_sub')) + '</span></div>';
+    steps.forEach(function (s) {
+      var ic = (window.BP_ICONS && window.BP_ICONS[s[0]]) ? BP_ICON(s[0]) : s[0];
+      html += '<div class="imp-item"><div class="num" style="background:#eef2ff;color:#3730a3">' + ic + '</div><div>' +
+        '<div class="iq">' + esc(s[1]) + '</div><div class="note">' + esc(s[2]) + '</div></div></div>';
+    });
+    html += '<div class="imp-item" style="background:#f5f3ff;border-color:#c7d2fe"><div class="num" style="background:#e0e7ff;color:#3730a3">' +
+      (window.BP_ICONS ? BP_ICON('phone') : '📱') + '</div><div><div class="iq">' +
+      esc(L('Android app (APK) — free', 'एंड्रॉयड ऐप (APK) — फ्री')) + '</div>' +
+      '<div class="note"><a href="downloads/BoardPrep-v1.0.apk" download style="color:var(--accent);font-weight:700">downloads/BoardPrep-v1.0.apk</a></div></div></div>';
+    return html + '</section>';
+  }
+
   /* ---------------- songs ---------------- */
 
   function vSongs() {
@@ -546,6 +573,7 @@
     if (p === 'timeline') return vTimeline();
     if (p === 'stories') return vStories(parts[1]);
     if (p === 'songs') return vSongs();
+    if (p === 'help') return vHelp();
     if (p === 'story') {
       var q = parseQuery(location.hash);
       return vStories(parts[1], q.c);
