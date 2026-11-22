@@ -1,8 +1,8 @@
 {
-  "version": "4.9",
-  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v4.9.apk",
+  "version": "5.1",
+  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.1.apk",
   "release": "https://github.com/dilshanking7/boardprep/releases/tag/v1.0",
-  "note": "AI + cloud sync + study rooms LIVE (worker chalu)",
+  "note": "Clean UI, quiz timer + sound, unopened-chapter suggestions",
   "minVersion": "4.0",
   "api": "https://boardprep-api.dilshan-boardprep.workers.dev"
 }

@@ -16,7 +16,7 @@
   CONTENT_KEYS.forEach(function (k) { if (window[k]) ORIG_CONTENT[k] = window[k]; });
 
   // Is APK ki version — version.json se compare hoti hai (in-app update banner)
-  var APP_VERSION = '4.9';
+  var APP_VERSION = '5.1';
   var VER_URL = 'https://dilshanking7.github.io/boardprep/version.json';
 
   function cmpVer(a, b) {
@@ -332,12 +332,9 @@
     h += '<div class="card dash-today">' + ring +
       '<div class="dash-today-nums">' +
       '<div><b>' + todayN + '</b><span>' + esc(L('aaj ke sawal', 'आज के सवाल')) + '</span></div>' +
-      '<div><b>' + (st ? st.total : 0) + '</b><span>' + esc(L('kul prayatn', 'कुल प्रयास')) + '</span></div>' +
+      '<div><b>' + (st ? st.total : 0) + '</b><span>' + esc(L('kul sawal', 'कुल सवाल')) + '</span></div>' +
       '<div><b>' + (st ? st.streak : 0) + '</b><span>' + esc(L('din streak', 'दिन स्ट्रीक')) + '</span></div>' +
       '</div></div>';
-    if (st && st.total === 0) {
-      h += '<div class="note">' + esc(L('Abhi koi sawal nahi kiya — quiz se shuru karo.', 'अभी कोई सवाल नहीं किया — क्विज़ से शुरू करो।')) + '</div>';
-    }
 
     /* C. परीक्षा काउंटडाउन */
     var ec = examCountdown();
@@ -346,26 +343,20 @@
         ? '<b class="t-num">' + ec.days + '</b> ' + esc(L('din baaki', 'दिन बाकी'))
         : (ec.days === 0 ? esc(L('Aaj!', 'आज!')) : '<b>0</b> ' + esc(L('din baaki', 'दिन बाकी')));
       h += '<div class="card dash-exam">' +
-        '<div><div class="t-small">' + esc(L('Agla board exam', 'अगली बोर्ड परीक्षा')) + '</div>' +
-        '<div style="font-size:18px;font-weight:800">' + esc(ec.label) + '</div>' +
-        '<div class="t-secondary">' + eco + '</div></div>' +
+        '<div><div class="t-small">' + esc(L('Board exam', 'बोर्ड परीक्षा')) + '</div>' +
+        '<div style="font-size:18px;font-weight:800">' + eco + '</div>' +
+        '<div class="t-secondary">' + esc(ec.label) + '</div></div>' +
         '<span data-icon="timer" class="dash-exam-ic"></span></div>';
-      h += '<div class="note">' + esc(L('Din ginne ka matlab: mahine ke pehle din maan kar (1 ' + ec.label + ')। Aadhikarike taarikh board jari karega — yah sirf estimate hai.', 'दिन गिनने का मतलब: महीने के पहले दिन मान कर (1 ' + ec.label + ')। आधिकारिक तारीख बोर्ड जारी करेगा — यह सिर्फ़ अनुमान है।')) + '</div>';
     }
 
-    /* C2. Student ka apna target (agar set hai) */
+    /* C2. Student ka apna target */
     var cd = (window.STUDY && window.STUDY.countdown) ? window.STUDY.countdown() : null;
     if (cd) {
       h += '<div class="card dash-exam" style="border-color:#c4b5fd;background:#f5f3ff">' +
         '<div><div class="t-small">' + esc(L('Mera target', 'मेरा टारगेट')) + '</div>' +
         '<div style="font-size:18px;font-weight:800">' + cd.days + ' ' + esc(L('din bache', 'दिन बचे')) + '</div>' +
-        '<div class="t-secondary">' + esc(L('Exam:', 'एग्ज़ाम:')) + ' ' + esc(cd.exam) + ' · ' +
-        esc(L('Syllabus', 'सिलेबस')) + ' ' + cd.syllabus + '%</div>' +
-        '<div class="t-secondary">' + esc(L('Aaj se roz', 'आज से रोज़')) + ' <b class="t-num">' + cd.perDay + '</b> ' + esc(L('sawal', 'सवाल')) +
-        ' · ' + esc(L('bacha', 'बचा')) + ' ' + cd.left + '/' + cd.goal + '</div></div>' +
-        '<span data-icon="target" class="dash-exam-ic"></span></div>';
-      h += '<div class="note"><a href="#/target" style="color:var(--color-primary);font-weight:700">' + esc(L('Target badlo', 'टारगेट बदलो')) + ' →</a>' +
-        ' · ' + esc(L('Subah ka sandesh', 'सुबह का संदेश')) + ' ' + esc(cd.time) + '</div>';
+        '<div class="t-secondary">' + cd.perDay + ' ' + esc(L('sawal / din', 'सवाल / दिन')) + '</div></div>' +
+        '<a class="dash-exam-ic" href="#/target" aria-label="target"><span data-icon="target"></span></a></div>';
     }
 
     /* D. जहाँ से जारी रखें */
@@ -468,8 +459,8 @@
       '<button class="btn btn-accent" id="offBtn" style="padding:10px 14px;white-space:nowrap">' + esc(L('Offline download', 'ऑफ़लाइन डाउनलोड')) + '</button></a>';
 
     if (storeGet('bp_apk', '0') !== '1' && location.href.indexOf('appassets.androidplatform.net') < 0) {
-      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v4.9.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
-        '<div class="t">📱 ' + esc(L('Android app v4.9 — full offline', 'एंड्रॉयड ऐप v4.9 — पूरा ऑफ़लाइन')) + '</div>' +
+      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v5.1.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
+        '<div class="t">📱 ' + esc(L('Android app v5.1 — full offline', 'एंड्रॉयड ऐप v5.1 — पूरा ऑफ़लाइन')) + '</div>' +
         '<div class="s">' + esc(L('Sab kuch app me hi hai — PDF, 3D models, songs. Internet ke bina bhi.', 'सब कुछ ऐप में ही है — PDF, 3D models, songs। इंटरनेट के बिना भी।')) + '</div></div><span class="n">⬇</span></a>';
     }
 
@@ -616,7 +607,7 @@
   function vQuizSetup() {
     var b = board();
     var html = '<section class="section"><div class="section-head"><h2>' + esc(t('quiz_setup')) + '</h2>' +
-      '<span class="note">' + esc(b.name) + ' · ' + esc(b.pattern) + '</span></div>';
+      '<span class="note">' + esc(b.name) + '</span></div>';
     if (b.id !== 'jac' && !bank()) {
       html += '<div class="imp-item" style="background:#fffbeb;border-color:#fcd34d"><div class="num" style="background:#fef3c7;color:#92400e">!</div><div>' +
         '<div class="iq">' + esc(L('Questions here come from the shared JAC bank, not your board papers.', 'यहाँ के प्रश्न साझा JAC bank से हैं, तुम्हारे board के अपने पेपर से नहीं।')) + '</div></div></div>';
@@ -641,8 +632,13 @@
         return '<button class="fchip' + (i === 0 ? ' on' : '') + '" data-v="' + n + '">' + n + '</button>';
       }).join('') + '</div></div>';
 
-    html += '<div class="field"><label>' + esc(t('quiz_mode')) + '</label><div class="chips" id="qzMode">' +
+    html += '<div class="field"><label>' + esc(L('Question type', 'सवाल प्रकार')) + '</label><div class="chips" id="qzMode">' +
       [['mix', t('mixed_practice')], ['mcq', t('mcq')], ['write', t('written')]].map(function (m, i) {
+        return '<button class="fchip' + (i === 0 ? ' on' : '') + '" data-v="' + m[0] + '">' + esc(m[1]) + '</button>';
+      }).join('') + '</div></div>';
+
+    html += '<div class="field"><label>' + esc(L('Timer', 'टाइमर')) + '</label><div class="chips" id="qzTimer">' +
+      [[0, L('Off', 'बंद')], [10, '10 min'], [20, '20 min'], [30, '30 min']].map(function (m, i) {
         return '<button class="fchip' + (i === 0 ? ' on' : '') + '" data-v="' + m[0] + '">' + esc(m[1]) + '</button>';
       }).join('') + '</div></div>';
 
@@ -650,12 +646,56 @@
     return html;
   }
 
+  // timer की आवाज़ (WebAudio — कोई file नहीं)
+  function beep(freq, dur) {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      var ctx = window.__bpAC || (window.__bpAC = new AC());
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.value = 0.12;
+      o.connect(g); g.connect(ctx.destination);
+      o.start();
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+      o.stop(ctx.currentTime + dur);
+    } catch (e) { }
+  }
+
+  function startQuizClock() {
+    clearInterval(window.__qzT);
+    var qz = state.quiz;
+    if (!qz || !qz.timer) return;
+    window.__qzT = setInterval(function () {
+      var q = state.quiz;
+      if (!q || q.done) { clearInterval(window.__qzT); return; }
+      var left = Math.max(0, Math.round((q.end - Date.now()) / 1000));
+      var el = document.getElementById('qzClock');
+      if (el) {
+        el.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+        el.classList.toggle('low', left <= 10);
+      }
+      if (left <= 10 && left > 0) beep(880, 0.08);
+      if (left <= 0) {
+        clearInterval(window.__qzT);
+        beep(440, 0.5);
+        q.done = true;               // समय खत्म → अपने-आप submit
+        render();
+      }
+    }, 1000);
+  }
+
   function vQuizRun() {
     var qz = state.quiz;
     var q = qz.items[qz.i];
     var p = Math.round((qz.i / qz.items.length) * 100);
     var html = '<div class="quiz-top"><div class="progress"><i style="width:' + p + '%"></i></div>' +
-      '<div class="quiz-meta">' + (qz.i + 1) + '/' + qz.items.length + '</div></div>';
+      '<div class="quiz-meta">' + (qz.i + 1) + '/' + qz.items.length + '</div>';
+    if (qz.timer) {
+      var left = Math.max(0, Math.round((qz.end - Date.now()) / 1000));
+      html += '<div class="qz-clock" id="qzClock">' + Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0') + '</div>';
+    }
+    html += '</div>';
     html += questionCard(q, 'quiz');
     html += '<button class="btn btn-primary btn-block" id="qzNext" hidden>' + esc(t('quiz_next')) + '</button>';
     html += '<div class="note">' + esc((subj(q.subj) || {}).name || '') + '</div>';
@@ -678,6 +718,25 @@
       html += '<div class="section-head" style="margin-top:18px"><h2>' + esc(t('quiz_weak')) + '</h2></div>';
       weakList.forEach(function (c) {
         html += '<div class="result-row"><span>' + esc(c) + '</span><b>' + weak[c] + '</b></div>';
+      });
+    }
+    // अभी नहीं खोले गए अध्याय — पढ़ने का सुझाव
+    var unopened = [];
+    try {
+      var chMap = {};
+      (window.BOARD_DATA.questions || []).forEach(function (q) {
+        if (q.chap && !chMap[q.chap]) chMap[q.chap] = q.subj;
+      });
+      var done = {};
+      (window.STUDY.data().attempts || []).forEach(function (a) { if (a.c) done[a.c] = 1; });
+      Object.keys(chMap).forEach(function (c) { if (!done[c]) unopened.push({ c: c, s: chMap[c] }); });
+      unopened = unopened.slice(0, 5);
+    } catch (e) { }
+    if (unopened.length) {
+      html += '<div class="section-head" style="margin-top:18px"><h2>' + esc(L('Abhi nahi khule — padho', 'अभी नहीं खोले — पढ़ो')) + '</h2></div>';
+      unopened.forEach(function (x) {
+        html += '<a class="list-row" href="#/chapter/' + esc(x.s) + '/' + encodeURIComponent(x.c) + '"><div>' +
+          '<div class="t">' + esc(x.c) + '</div></div><span class="n">' + esc(L('Kholo', 'खोलो')) + ' →</span></a>';
       });
     }
     html += '<div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">' +
@@ -957,13 +1016,16 @@
       fillChips('qzCount', function (v) { state.qzCount = Number(v); });
       fillChips('qzMode', function (v) { state.qzMode = v; });
       fillChips('qzKind', function (v) { state.qzKind = v; });
-      state.qzSubj = 'all'; state.qzCount = 10; state.qzMode = 'mix'; state.qzKind = 'quick';
+      fillChips('qzTimer', function (v) { state.qzTimer = Number(v); });
+      state.qzSubj = 'all'; state.qzCount = 10; state.qzMode = 'mix'; state.qzKind = 'quick'; state.qzTimer = 0;
       start.addEventListener('click', function () {
         var items = pickQuizAdvanced(state.qzKind, state.qzSubj, document.getElementById('qzChap').value,
           state.qzCount, state.qzMode);
         if (!items.length) return;
-        state.quiz = { items: items, i: 0, right: 0, ok: {} };
+        state.quiz = { items: items, i: 0, right: 0, ok: {}, timer: state.qzTimer,
+                       end: state.qzTimer ? Date.now() + state.qzTimer * 60000 : 0 };
         render();
+        startQuizClock();
       });
     }
     var next = document.getElementById('qzNext');

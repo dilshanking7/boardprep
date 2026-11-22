@@ -507,10 +507,10 @@
         return '<div class="result-row"><span>' + esc(p.subj) + '</span><b>' + p.total + ' · ' + esc(p.time) + '</b></div>';
       }).join('');
     } else {
-      h += '<div class="note">' + esc(L('Is board ka verified pattern nahi mila — general pattern use hoga (verify).', 'इस बोर्ड का सत्यापित पैटर्न नहीं मिला — सामान्य पैटर्न उपयोग होगा (verify)।')) + '</div>';
+      h += '<div class="note">' + esc(L('General pattern (verify)', 'सामान्य पैटर्न (verify)')) + '</div>';
     }
     h += '<button class="btn btn-accent btn-block" id="exBegin">' + esc(L('Exam shuru karo', 'एग्ज़ाम शुरू करो')) + '</button>';
-    h += '<div class="note">' + esc(L('Ye ek practice simulator hai — asli board paper ke barabar nahi.', 'यह एक अभ्यास सिमुलेटर है — असली बोर्ड पेपर के बराबर नहीं।')) + '</div>';
+    h += '<div class="note">' + esc(L('Practice simulator', 'अभ्यास सिमुलेटर')) + '</div>';
     return h + '</section>';
   }
 
@@ -618,7 +618,7 @@
 
   window.vAssistant = function () {
     var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Study assistant', 'अध्ययन सहायक')) + '</h2>' +
-      '<span class="note">' + esc(L('Offline — chapter ke based par guidance (AI nahi, rules)', 'ऑफ़लाइन — अध्याय के आधार पर मार्गदर्शन (AI नहीं, नियम)')) + '</span></div>';
+      '<span class="note">' + esc(L('Offline', 'ऑफ़लाइन')) + '</span></div>';
     h += '<div class="board-group">' + esc(L('Chapter chuno', 'अध्याय चुनो')) + '</div>';
     var chaps = [];
     try { chaps = window.CHAPTERS_LIST ? window.CHAPTERS_LIST() : []; } catch (e) {}
@@ -633,8 +633,8 @@
     h += '<div id="assRes" style="margin-top:12px"></div>';
     h += '<button class="btn btn-accent btn-block" id="assAI" style="margin-top:8px">' + esc(L('AI se javab lo (cloud)', 'AI से जवाब लो (क्लाउड)')) + '</button>';
     h += '<div id="assAIOut" style="margin-top:10px"></div>';
-    h += '<div class="note" style="margin-top:10px">' + esc(L('Ye ek simple rule-based assistant hai — model nahi. Sawal Notes ya Quiz se match karta hai.', 'यह एक साधारण नियम-आधारित सहायक है — मॉडल नहीं। सवाल नोट्स या क्विज़ से मेल खाता है।')) +
-      ' ' + esc(L('AI जवाब के लिए cloud worker चाहिए (free) — guide dekho.', 'AI जवाब के लिए क्लाउड worker चाहिए (मुफ़्त) — गाइड देखो।')) + '</div>';
+    h += '<div class="note" style="margin-top:10px">' + esc(L('Notes + Quiz se jawab', 'नोट्स + क्विज़ से जवाब')) +
+      ' ' + esc(L('AI javab ke liye cloud chalu hai.', 'AI जवाब के लिए क्लाउड चालू है।')) + '</div>';
     return h + '</section>';
   };
 

@@ -100,7 +100,7 @@
       return '<button class="fchip' + (i === 0 ? ' on' : '') + '" data-ct="' + t[0] + '">' + esc(t[1]) + '</button>';
     }).join('') + '</div>';
     h += '<div id="calcBody"></div>';
-    h += '<div class="note">' + esc(L('Sirf practice ke liye — asli exam me calculator use nahi hota (verify).', 'सिर्फ अभ्यास के लिए — असली परीक्षा में कैलकुलेटर काम में नहीं (verify)।')) + '</div>';
+    h += '<div class="note">' + esc(L('Practice tool', 'अभ्यास टूल')) + '</div>';
     return h + '</section>';
   }
 

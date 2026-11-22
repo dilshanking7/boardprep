@@ -79,7 +79,7 @@
     html += '<div class="imp-item" style="margin-top:12px;background:#f0fdf4;border-color:#bbf7d0">' +
       '<div class="num" style="background:#dcfce7;color:#166534">⬇</div><div>' +
       '<div class="iq">' + esc(L('Sab offline karo', 'सब ऑफ़लाइन करो')) + '</div>' +
-      '<div class="note">' + esc(L('PDF + songs phone me save — internet band ho to bhi chalे', 'PDF + songs फ़ोन में सेव — इंटरनेट बंद हो तो भी चले')) + '</div>' +
+      '<div class="note">' + esc(L('PDF + songs', 'PDF + songs')) + '</div>' +
       '<button class="btn btn-accent" id="offBtn" style="margin-top:8px;padding:10px 14px">' + esc(L('Offline download', 'ऑफ़लाइन डाउनलोड')) + '</button>' +
       '<div class="note" id="offStat"></div></div></div>';
     return html + '</section>';
@@ -576,8 +576,8 @@
     h += '<div class="card profile-card">' +
       '<span class="avatar" data-icon="user"></span>' +
       '<div><div style="font-size:17px;font-weight:800">' + esc(name || L('Class 10 student', 'कक्षा 10 का विद्यार्थी')) + '</div>' +
-      '<div class="t-secondary">' + esc(b.name) + ' · ' + esc(b.medium || '') + '</div>' +
-      (s ? '<div class="t-secondary">' + s.total + ' ' + esc(L('attempted', 'किए')) + ' · ' + s.right + ' ' + esc(L('correct', 'सही')) + ' · ' + s.streak + ' ' + esc(L('day streak', 'दिन स्ट्रीक')) + '</div>' : '') +
+      '<div class="t-secondary">' + esc(b.medium || b.name) + '</div>' +
+      (s ? '<div class="t-secondary">' + s.total + ' ' + esc(L('sawal', 'सवाल')) + ' · ' + s.right + ' ' + esc(L('correct', 'सही')) + ' · ' + s.streak + ' ' + esc(L('day streak', 'दिन स्ट्रीक')) + '</div>' : '') +
       '</div></div>';
 
     h += '<div class="board-group">' + esc(L('Student details', 'विद्यार्थी विवरण')) + '</div>';
@@ -596,35 +596,27 @@
         return '<button class="fchip' + (fs === x[0] ? ' on' : '') + '" data-fs-set="' + x[0] + '">' + esc(x[1]) + '</button>';
       }).join('') + '</div></div>';
 
-    h += '<div class="board-group">' + esc(L('Downloads + data', 'डाउनलोड + डेटा')) + '</div>';
-    h += '<a class="setting-row" href="#/help" style="display:flex"><span>' + esc(L('Offline content', 'ऑफ़लाइन सामग्री')) + '</span><span class="setting-val">' + esc(L('Setup →', 'सेटअप →')) + '</span></a>';
-    h += '<button class="setting-row" id="bkExport" style="width:100%;text-align:left"><span>' + esc(L('Backup my data', 'मेरा डेटा बैकअप')) + '</span><span class="setting-val">↓</span></button>';
-    h += '<button class="setting-row" id="bkRestore" style="width:100%;text-align:left"><span>' + esc(L('Restore backup', 'बैकअप रिस्टोर')) + '</span><span class="setting-val">↑</span></button>';
-    h += '<button class="setting-row danger" id="bkClear" style="width:100%;text-align:left"><span>' + esc(L('Clear all progress', 'सारी प्रगति मिटाएँ')) + '</span><span class="setting-val">✕</span></button>';
-    h += '<div class="note">' + esc(L('Board badalne se progress nahi jayega — sirf syllabus/bhasha badlega.', 'बोर्ड बदलने से प्रगति नहीं जाएगी — सिर्फ़ पाठ्यक्रम/भाषा बदलेगी।')) + '</div>';
+    h += '<div class="board-group">' + esc(L('Data', 'डेटा')) + '</div>';
+    h += '<a class="setting-row" href="#/help"><span>' + esc(L('Offline content', 'ऑफ़लाइन सामग्री')) + '</span><span class="setting-val">→</span></a>';
+    h += '<button class="setting-row" id="bkExport" style="width:100%;text-align:left"><span>' + esc(L('Backup', 'बैकअप')) + '</span><span class="setting-val">↑</span></button>';
+    h += '<button class="setting-row" id="bkRestore" style="width:100%;text-align:left"><span>' + esc(L('Restore', 'रिस्टोर')) + '</span><span class="setting-val">↓</span></button>';
+    h += '<button class="setting-row danger" id="bkClear" style="width:100%;text-align:left"><span>' + esc(L('Clear progress', 'प्रगति मिटाएँ')) + '</span><span class="setting-val">✕</span></button>';
 
-    h += '<div class="board-group">' + esc(L('About', 'ऐप के बारे में')) + '</div>';
-    h += '<div class="setting-row"><span>' + esc(L('Version', 'संस्करण')) + '</span><span class="setting-val">v3.0</span></div>';
-    h += '<div class="setting-row"><span>' + esc(L('Content source', 'सामग्री स्रोत')) + '</span><span class="setting-val" style="max-width:60%;text-align:right">' + esc(L('NCERT syllabus based', 'NCERT पाठ्यक्रम आधारित')) + '</span></div>';
-    h += '<div class="setting-row"><span>' + esc(L('Privacy', 'गोपनीयता')) + '</span><span class="setting-val" style="max-width:60%;text-align:right">' + esc(L('Sab data is device par', 'सारा डेटा इसी डिवाइस पर')) + '</span></div>';
-    h += '<div class="board-group">' + esc(L('Licences', 'लाइसेंस')) + '</div>';
-    h += '<div class="setting-row" style="align-items:flex-start;flex-direction:column;gap:4px"><span>' + esc(L('3D anatomy models', '3D एनाटॉमी मॉडल')) + '</span><span class="t-small">BodyParts3D © DBCLS (CC BY 4.0); female organs: HuBMAP (CC BY 4.0); female body: MakeHuman (CC0). Adapted by open-anatomy-3d (CC BY 4.0).</span></div>';
-    h += '<div class="setting-row" style="align-items:flex-start;flex-direction:column;gap:4px"><span>' + esc(L('PDFs + audio', 'PDF + ऑडियो')) + '</span><span class="t-small">' + esc(L('NCERT/JAC material + free audio (licence verify)', 'NCERT/JAC सामग्री + मुफ़्त ऑडियो (लाइसेंस जाँचें — verify)')) + '</span></div>';
-    h += '<div class="note">' + esc(L('BoardPrep ek educational aid hai — koi bhi board-specific content sirf tab kehlata hai jab source verified ho.', 'BoardPrep एक शैक्षणिक साधन है — कोई भी बोर्ड-विशिष्ट सामग्री सिर्फ़ तब कहलाती है जब स्रोत सत्यापित हो।')) + '</div>';
-    h += '<div class="board-group" style="margin-top:12px">' + esc(L('Cloud sync', 'क्लाउड सिंक')) + '</div>';
-    h += '<div class="note">' + esc(L('Apni pragaṭi cloud par — doosre phone se bhi. Free worker chahiye (guide).', 'अपनी प्रगति क्लाउड पर — दूसरे फ़ोन से भी। मुफ़्त worker चाहिए (गाइड)।')) + '</div>';
-    h += '<div class="field"><label>' + esc(L('Cloud API URL (worker)', 'क्लाउड API URL (worker)')) + '</label>' +
-      '<input id="csUrl" value="' + esc(window.Cloud ? window.Cloud.getBase() : '') + '" placeholder="' + esc(L('Khud set karne ki zaroorat nahi', 'खुद सेट करने की ज़रूरत नहीं')) + '" style="width:100%"></div>';
-    h += '<label class="setting-row"><span>' + esc(L('Auto cloud sync', 'ऑटो क्लाउड सिंक')) + '</span>' +
+    h += '<div class="board-group" style="margin-top:12px">' + esc(L('Cloud', 'क्लाउड')) + '</div>';
+    h += '<label class="setting-row"><span>' + esc(L('Auto sync', 'ऑटो सिंक')) + '</span>' +
       '<input type="checkbox" id="csAuto"' + (csAuto ? ' checked' : '') + '></label>';
     h += '<div class="chips">' +
-      '<button class="fchip" id="csSave">' + esc(L('Cloud par save', 'क्लाउड पर सेव')) + '</button>' +
-      '<button class="fchip" id="csLoad">' + esc(L('Cloud se lao', 'क्लाउड से लाओ')) + '</button></div>';
+      '<button class="fchip" id="csSave">' + esc(L('Save', 'सेव')) + '</button>' +
+      '<button class="fchip" id="csLoad">' + esc(L('Load', 'लाओ')) + '</button></div>';
     h += '<div id="csOut" class="note" style="margin-top:6px"></div>';
+
+    h += '<div class="board-group" style="margin-top:12px">' + esc(L('App', 'ऐप')) + '</div>';
+    h += '<div class="setting-row"><span>' + esc(L('Version', 'संस्करण')) + '</span><span class="setting-val">v5.0</span></div>';
+    h += '<details class="setting-row" style="cursor:pointer"><summary style="list-style:none;display:flex;justify-content:space-between">' +
+      '<span>' + esc(L('Licences', 'लाइसेंस')) + '</span><span class="setting-val">▾</span></summary>' +
+      '<div class="t-small" style="padding:8px 0;color:var(--muted)">3D anatomy: BodyParts3D © DBCLS, HuBMAP, MakeHuman (CC BY 4.0 / CC0). PDF/audio: NCERT/JAC + free audio.</div></details>';
     if (window.BPApp && window.BPApp.exit) {
-      h += '<div class="board-group" style="margin-top:12px">' + esc(L('App', 'ऐप')) + '</div>';
       h += '<button class="btn btn-block" id="appExit" style="border-color:var(--line)">' + esc(L('ऐप बंद करें', 'ऐप बंद करें')) + '</button>';
-      h += '<div class="note" style="margin-top:6px">' + esc(L('Back button bhi kaam karta hai — home par dabao to app band ho jayega.', 'बैक बटन भी काम करता है — होम पर दबाओ तो ऐप बंद हो जाएगा।')) + '</div>';
     }
     return h + '</section>';
   }
@@ -658,7 +650,7 @@
       h += '<div class="prog-row card" style="padding:12px"><div class="prog-top"><span>' + esc(L('Aapka prayas', 'आपका प्रयास')) + '</span><b class="t-num">' + m.pct + '% (' + (m.n - Math.round(m.n * m.pct / 100)) + '/' + m.n + ' ' + esc(L('galat', 'गलत')) + ')</b></div>' +
         '<div class="prog"><i style="width:' + m.pct + '%;background:' + (m.pct >= 80 ? 'var(--color-success)' : m.pct >= 50 ? 'var(--color-warning)' : 'var(--color-error)') + '"></i></div></div>';
     } else {
-      h += '<div class="note">' + esc(L('Is chapter me abhi aapne koi sawal nahi kiya — neeche practice se shuru karo.', 'इस अध्याय में अभी आपने कोई सवाल नहीं किया — नीचे अभ्यास से शुरू करो।')) + '</div>';
+      h += '<div class="note">' + esc(L('Abhi koi sawal nahi kiya.', 'अभी कोई सवाल नहीं किया।')) + '</div>';
     }
     h += '<div class="chips" style="margin-top:10px">' +
       '<a class="fchip" href="#/subject/' + esc(subjKey) + '">' + esc(L('Practice', 'अभ्यास')) + '</a>' +
@@ -740,7 +732,7 @@
     }
     h += '</div>';
     h += '<button class="link-btn" id="nnExport">' + esc(L('Saari notes export karo (JSON)', 'सारी नोट्स एक्सपोर्ट करो (JSON)')) + '</button>';
-    h += '<div class="note">' + esc(L('Notes apne aap save hote hain — app band hone par bhi safe.', 'नोट्स अपने-आप सहेजे जाते हैं — ऐप बंद होने पर भी सुरक्षित।')) + '</div>';
+    h += '<div class="note">' + esc(L('Apne-aap save', 'अपने-आप सेव')) + '</div>';
     return h + '</section>';
   }
 
@@ -795,7 +787,7 @@
       '<button class="fchip" id="tmPause">' + esc(L('Ruko', 'रुको')) + '</button>' +
       '<button class="fchip" id="tmStop">' + esc(L('Ruk jao + save', 'रुक जाओ + सहेजो')) + '</button></div>' +
       '<div class="note" id="tmMsg"></div></div>';
-    h += '<div class="note">' + esc(L('Focus ke liye: 25 minute padho, 5 minute aaram — timer pause se samay bachta hai.', 'फ़ोकस के लिए: 25 मिनट पढ़ो, 5 मिनट आराम — टाइमर पॉज़ से समय बचता है।')) + '</div>';
+    h += '<div class="note">' + esc(L('25 padho, 5 aaram', '25 पढ़ो, 5 आराम')) + '</div>';
     return h + '</section>';
   }
 
@@ -808,7 +800,7 @@
       '<div class="chips" style="margin-top:10px">' + [3, 5, 10, 20].map(function (n) {
         return '<button class="fchip' + (goal === n ? ' on' : '') + '" data-goal="' + n + '">' + n + '</button>';
       }).join('') + '</div>' +
-      '<div class="note">' + esc(L('Lakshya chhota rakho — roz poora karna zaroori, pressure nahi.', 'लक्ष्य छोटा रखो — रोज़ पूरा करना ज़रूरी, दबाव नहीं।')) + '</div></div>';
+      '<div class="note">' + esc(L('Roz poora karo', 'रोज़ पूरा करो')) + '</div></div>';
 
     /* 7 din ka calendar */
     var max = Math.max.apply(null, st.last7.map(function (x) { return x.n; }).concat([goal, 1]));
@@ -842,7 +834,7 @@
         '<div class="prog"><i style="width:' + pct + '%;background:var(--color-primary)"></i></div></a>';
     }).join('');
 
-    h += '<div class="note">' + esc(L('Plan sirf aapki asli activity se banta hai — koi fixed timetable nahi.', 'प्लान सिर्फ़ आपकी असली गतिविधि से बनता है — कोई तय टाइमटेबल नहीं।')) + '</div>';
+    h += '<div class="note">' + esc(L('Aapki activity se', 'आपकी गतिविधि से')) + '</div>';
     return h + '</section>';
   }
 
@@ -869,7 +861,7 @@
       '<button class="fchip" id="bkPrev">← ' + esc(L('Pichla', 'पिछला')) + '</button>' +
       '<span class="note t-num" id="bkPage" style="align-self:center"></span>' +
       '<button class="fchip" id="bkNext">' + esc(L('Agla', 'अगला')) + ' →</button></div>';
-    h += '<div class="note">' + esc(L('Bookmark ke liye card par ☆ dabao; 547 bina-jawab MCQ chhote hue bhi list me nahi (quiz unhe skip karta hai).', 'बुकमार्क के लिए कार्ड पर ☆ दबाओ; 547 बिना-जवाब MCQ छोटे हुए भी सूची में नहीं (क्विज़ उन्हें छोड़ देता है)।')) + '</div>';
+    h += '<div class="note">' + esc(L('☆ = bookmark', '☆ = बुकमार्क')) + '</div>';
     return h + '</section>';
   }
 
@@ -925,7 +917,7 @@
     h += '<div class="field" style="display:flex;gap:8px;margin-top:10px">' +
       '<input id="rmMsg" placeholder="' + esc(L('Message likho…', 'संदेश लिखो…')) + '" style="flex:1">' +
       '<button class="btn btn-accent" id="rmSend">' + esc(L('Bhejo', 'भेजो')) + '</button></div>';
-    h += '<div class="note" style="margin-top:8px">' + esc(L('Ek hi code sabke liye same room kholta hai (jaise "maths10")। Internet chalega tabhi.', 'एक ही कोड सबके लिए समान रूम खोलता है (जैसे "maths10")। इंटरनेट चलेगा तभी।')) + '</div>';
+    h += '<div class="note" style="margin-top:8px">' + esc(L('Same code = same room', 'एक कोड = एक रूम')) + '</div>';
     h += '<div id="rmPoll" data-code="" style="display:none"></div>';
     return h + '</section>';
   }
@@ -974,7 +966,7 @@
     h += '<button class="btn btn-block" id="rmTest" style="margin-top:8px">' + esc(L('Test notification', 'टेस्ट सूचना')) + '</button>';
     h += '<div id="rmOut" class="note" style="margin-top:8px"></div>';
     h += '<div class="board-group" style="margin-top:12px">' + esc(L('Dhyan dein', 'ध्यान दें')) + '</div>';
-    h += '<div class="note">' + esc(L('Browser/APK notification ke liye permission chahiye. Android WebView me native notification ke bina sirf in-app reminder chalega (verify).', 'ब्राउज़र/APK सूचना के लिए अनुमति चाहिए। Android WebView में नेटिव सूचना के बिना सिर्फ़ इन-ऐप अनुस्मारक चलेगा (verify)।')) + '</div></div>';
+    h += '<div class="note">' + esc(L('Notification ke liye permission chahiye.', 'सूचना के लिए अनुमति चाहिए।')) + '</div></div>';
     return h + '</section>';
   }
 

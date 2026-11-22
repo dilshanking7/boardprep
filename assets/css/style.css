@@ -573,3 +573,17 @@ html[data-theme="dark"] .xchip, html[data-theme="dark"] .badge.freq { color: #fc
 .upd-bar .upd-t { flex: 1; min-width: 0; }
 .upd-btn { background: #fff; color: var(--color-primary); border: 0; border-radius: 10px;
   padding: 8px 14px; font-weight: 800; font-size: 13px; white-space: nowrap; cursor: pointer; }
+
+/* quiz timer */
+.qz-clock { font-variant-numeric: tabular-nums; font-weight: 800; font-size: 15px;
+  color: var(--color-primary); min-width: 58px; text-align: right; }
+.qz-clock.low { color: #dc2626; }
+
+/* banner chhupna zaroori hai (display:flex [hidden] ko harata hai) */
+.upd-bar[hidden] { display: none !important; }
+
+/* field labels saaf, gehra */
+.field label { color: var(--color-text-primary) !important; opacity: .82; }
+
+/* hero ka ghost button saaf */
+.hero-cta .btn-ghost { border: 1.5px solid rgba(255,255,255,.75); color: #fff; }
