@@ -172,3 +172,38 @@ versionCode 6, signed, 62.6 MB; calc.js/study.js/tools routes/notes_science2/not
 
 ### APK v4.4
 versionCode 8, signed, 62.6 MB — target/srs/update sab andar.
+
+## Phase 6 — browser-only "real app" (Nov 22, 2026)
+
+### Code splitting (lazy loading)
+| Check | Result |
+|---|---|
+| Boot par NOTES/Calc load | नहीं (undefined) |
+| `#/notes` पर load | 141 notes, 10 subject chips |
+| `#/notes/science` | 16 rows |
+| `#/calc` पर load | CalcTool object |
+| पहली load पर ~400KB कम | हाँ (notes+calc lazy) |
+
+### Retrieval assistant (TF-IDF, browser me hi)
+| Query | Top result |
+|---|---|
+| "अम्ल क्षारक" | अम्ल, क्षारक एवं लवण (165 docs matched) |
+| "जल विद्युत" | अध्याय 3: जल संसाधन (769 docs matched) |
+
+### Deep analytics
+Chapter accuracy, weak chapters (n≥3), sabse zyada galat kiye questions (n≥2), overall accuracy.
+
+### Service Worker
+stale-while-revalidate (पहले cache → turant; background me update), version.json network-only,
+activate par purane cache delete, HTML network-first + offline fallback.
+
+### Bugs fixed
+- **Bottom-nav highlight कभी काम नहीं करता था** — `hash.split('/')[0]` leading-slash bug (`#/quiz` → `''` → home)।
+  Ab `#/quiz` → practice, `#/notes` → learn, `#/assistant` → progress.
+- L() argument order (app.js) — APK card के strings उल्टे थे.
+
+### Route sweep
+38 routes, 0 exceptions.
+
+### APK v4.5
+versionCode 9, signed, 62.6 MB — lazy loader, retrieval, insights, nav fix, sw v26 sab andar.
