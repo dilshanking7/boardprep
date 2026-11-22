@@ -81,3 +81,61 @@
 
 ## Route sweep (27 routes, 0 exceptions)
 `/` `subjects` `subject/maths` `quiz` `search` `papers` `important` `models` `formulas` `periodic` `lab` `mathlab` `diagrams` `timeline` `stories` `songs` `brain` `notes` `notes/science` `progress` `exam` `revision` `assistant` `help` `tools` — sab render, koi exception nahi.
+
+## Phase 4-6 tests (Nov 22, 2026)
+
+### Question bank (`#/bank`)
+| Check | Result |
+|---|---|
+| Total count | 8356 सवाल |
+| Subject filter (विज्ञान) | 2344 सवाल, 28 chapter options |
+| Type filter (MCQ) | 1482 |
+| Answer-status (बिना जवाब) | 900 |
+| Search "ऊर्जा" | 119 |
+| Pagination | 20/page, 418 pages, prev/next works |
+| Route sweep | 38 routes, 0 exceptions |
+
+### Quiz modes
+तेज़ 10 · अध्याय · विषय · मिक्स · कमज़ोर (weak chapters) · रिवीज़न (wrong+bookmarked) · रैंडम · रोज़ की चुनौती (date-seeded — us din सबके लिए वही set)
+
+### Exam simulator
+| Check | Result |
+|---|---|
+| Instructions screen (कुल सवाल/अंक/समय + नियम + pattern) | PASS |
+| Begin → run | PASS |
+| Mark for review → palette chip marker | PASS |
+| Timer auto-submit | PASS |
+
+### Subject tools (`#/calc`) — असली मानों से तुलना
+| Input | Expected | Got |
+|---|---|---|
+| H2SO4 | 98.07 | 98.07 ✓ |
+| Ca(OH)2 | 74.10 | 74.09 ✓ |
+| CuSO4.5H2O | 249.68 | 249.68 ✓ |
+| Al2(SO4)3 | 342.15 | 342.13 ✓ |
+| C6H12O6 | 180.16 | 180.16 ✓ |
+| NaCl / HCl / KOH / CaCO3 / NH3 | — | सब ✓ |
+| pH 3 → [H+] | 1.0e-3 | 1.000e-3 ✓ |
+| V=12, I=2 | R=6Ω, P=24W | ✓ |
+| f=-20, u=-30 | v=-12 cm | ✓ |
+| Punnett Tt×Tt | 1:2:1 (3:1) | ✓ |
+| x²-2x-3 | 3, -1 | ✓ |
+| HCF/LCM 12,18 | 6 / 36 | ✓ |
+| Mean/Median/Mode 4,8,6,5,7 | 6/6/nahi | ✓ |
+
+### Reminders
+| Check | Result |
+|---|---|
+| Save (time + msg) | PASS (localStorage bp_remind_v1) |
+| remindCheck fires at set time | PASS |
+| Same day dobara nahi | PASS (null) |
+| Notification API + in-app toast | PASS (permission-based) |
+
+### Offline download (home page)
+| Check | Result |
+|---|---|
+| Button reachable (पहले dead code था — fix) | PASS |
+| 26 PDF + 5 songs cache | PASS (31/31, cache boardprep-v21) |
+
+### APK v4.2
+versionCode 6, signed, 62.6 MB; calc.js/study.js/tools routes/notes_science2/notes_jharkhand/sw v21 sab andar.
