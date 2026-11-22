@@ -109,13 +109,26 @@
     try {
       if (!('speechSynthesis' in window)) return;
       if (VP.mute || VP.mode === 'chat') return;
-      window.speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance(String(text || '').replace(/[*\n]/g, ' ').slice(0, 500));
       var L2 = lang || langOf(text);
+      var body = String(text || '').replace(/[*\n]/g, ' ').slice(0, 400);
+      var v = pickVoiceByName(VP.voice) || bestVoice(L2);
+      if (!v) {
+        // device par voice nahi — Google se hi awaaz (hamesha chalti hai)
+        if (VP.mute) return;
+        try { window.speechSynthesis.cancel(); } catch (e) { }
+        var url = 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=' +
+          (L2 === 'hi' ? 'hi' : 'en') + '&q=' + encodeURIComponent(body);
+        var au = new Audio(url);
+        au.playbackRate = VP.speed;
+        au.onended = function () { if (VP.mode === 'voice' && !VP.mute) setTimeout(startVoice, 220); };
+        au.play().catch(function () { });
+        return;
+      }
+      window.speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(body);
       u.lang = L2 === 'hi' ? 'hi-IN' : 'en-IN';
       u.rate = VP.speed;
-      var v = pickVoiceByName(VP.voice) || bestVoice(L2);
-      if (v) u.voice = v;
+      u.voice = v;
       window.speechSynthesis.speak(u);
       // voice mode: javab khatam hote hi dobara suno
       u.onend = function () { if (VP.mode === 'voice' && !VP.mute) setTimeout(startVoice, 220); };
@@ -172,10 +185,12 @@
     var lang = (window.BP && window.BP.state && window.BP.state.lang === 'en') ? 'en' : 'hi';
     var hits = vs.filter(function (v) { return new RegExp('^' + lang, 'i').test(v.lang); });
     if (!hits.length) hits = vs.slice(0, 10);
+    var extra = '<button class="vrow-b' + (VP.voice === '__google__' ? ' on' : '') + '" data-v="__google__">' +
+      esc(L('हिंदी / English (Google)', 'हिंदी / English (Google)')) + ' <span class="vlang">हमेशा चलती है</span></button>';
     box.innerHTML = hits.map(function (v) {
       var on = v.name === VP.voice ? ' on' : '';
       return '<button class="vrow-b' + on + '" data-v="' + esc(v.name) + '">' + esc(v.name) + ' <span class="vlang">' + esc(v.lang) + '</span></button>';
-    }).join('') || '<div class="sheet-empty">' + esc(L('इस डिवाइस पर voice नहीं मिली।', 'No voice found on this device.')) + '</div>';
+    }).join('') + extra;
     Array.prototype.forEach.call(box.querySelectorAll('.vrow-b'), function (b) {
       b.addEventListener('click', function () {
         VP.voice = b.getAttribute('data-v'); saveVP(); renderVoiceList();

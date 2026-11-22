@@ -1,8 +1,8 @@
 {
-  "version": "5.9",
-  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.9.apk",
+  "version": "5.10",
+  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.10.apk",
   "release": "https://github.com/dilshanking7/boardprep/releases/tag/v1.0",
-  "note": "chat/voice mode, voice picker, language match, youtube links, image gen, Gemini",
+  "note": "voice picker (device + Google fallback), continuous voice mode, mute, image gen",
   "minVersion": "4.0",
   "api": "https://boardprep-api.dilshan-boardprep.workers.dev"
 }
