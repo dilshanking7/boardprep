@@ -149,5 +149,28 @@
 })();
 </script>
 <script type="module" src="assets/js/models3d-ui.js"></script>
+<!-- AI — har jagah kone me -->
+<button id="aiFab" aria-label="AI chat">
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9"
+    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 3l1.7 4.3L18 9l-4.3 1.7L12 15l-1.7-4.3L6 9l4.3-1.7z"/>
+    <path d="M18.5 14.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>
+    <circle cx="6" cy="17.5" r="1.1" fill="currentColor" stroke="none"/>
+  </svg>
+  <span>AI</span>
+</button>
+<script>
+(function () {
+  var fab = document.getElementById('aiFab');
+  if (!fab) return;
+  var sync = function () {
+    var p = (location.hash.replace(/^#/, '').split('/').filter(Boolean)[0] || '');
+    fab.style.display = (p === 'chat' || p === 'assistant') ? 'none' : 'flex';
+  };
+  fab.addEventListener('click', function () { location.hash = '#/chat'; });
+  window.addEventListener('hashchange', sync);
+  sync();
+})();
+</script>
 </body>
 </html>

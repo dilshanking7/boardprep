@@ -1,8 +1,8 @@
 {
-  "version": "5.2",
-  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.2.apk",
+  "version": "5.3",
+  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.3.apk",
   "release": "https://github.com/dilshanking7/boardprep/releases/tag/v1.0",
-  "note": "AI chat (ChatGPT jaisa) + web search + rate limit + free model chain",
+  "note": "AI floating button \u2014 har jagah kone me, chat ek tap",
   "minVersion": "4.0",
   "api": "https://boardprep-api.dilshan-boardprep.workers.dev"
 }

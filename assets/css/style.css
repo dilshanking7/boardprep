@@ -605,3 +605,13 @@ html[data-theme="dark"] .xchip, html[data-theme="dark"] .badge.freq { color: #fc
   background: var(--color-surface); color: var(--color-text-primary); font-size: 15px; }
 .chatact { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
 .chatact .link-btn { font-size: 12.5px; }
+
+/* AI floating button — har jagah kone me */
+#aiFab { position: fixed; right: 16px; bottom: calc(84px + env(safe-area-inset-bottom));
+  z-index: 900; display: flex; flex-direction: column; align-items: center; gap: 1px;
+  width: 56px; height: 56px; border: 0; border-radius: 18px; cursor: pointer;
+  background: linear-gradient(135deg, var(--color-primary), #7c3aed);
+  color: #fff; box-shadow: 0 8px 22px rgba(79,70,229,.38);
+  font-size: 11px; font-weight: 800; }
+#aiFab svg { display: block; }
+#aiFab:active { transform: scale(.94); }
