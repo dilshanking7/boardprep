@@ -139,3 +139,36 @@
 
 ### APK v4.2
 versionCode 6, signed, 62.6 MB; calc.js/study.js/tools routes/notes_science2/notes_jharkhand/sw v21 sab andar.
+
+## Phase 5 — target, update, adaptive (Nov 22, 2026)
+
+### Exam target + countdown (student khud set karta hai)
+| Check | Result |
+|---|---|
+| Pehli baar kholne par `#/target` | PASS (hash `#/target`) |
+| Save → target store | `{"exam":"2027-02-01","syllabus":60,"daily":25,"time":"07:30"}` |
+| Countdown | `{"days":72,"goal":5014,"done":137,"left":4877,"perDay":68,...}` |
+| Reminder auto-on | PASS |
+| Home dashboard card | PASS — "मेरा टारगेट 72 दिन बचे · एग्ज़ाम: 2027-02-01 · सिलेबस 70% · आज से रोज़ 82 सवाल" |
+| Skip option | PASS (`bp_target_skip`) |
+
+### In-app update banner
+| Check | Result |
+|---|---|
+| version.json live | 200 |
+| 4.4 == 4.4 → banner chhupa | PASS |
+| 9.9 (test) → banner dikha | PASS — "नया अपडेट आया: v9.9 · TEST banner" + URL + बटन |
+| APK me BPApp.update(url) | PASS (dex me mojood) |
+| Web par link kholo | PASS |
+
+### Spaced repetition (SM-2 lite, offline)
+| Check | Result |
+|---|---|
+| srsUpdate(ok) | learned 1, due 0 |
+| srsUpdate(wrong) | due 1 |
+| srsDue(5) | 1 |
+| quiz → srs wiring | PASS (quizMark में) |
+| revision mode due questions pehle | PASS |
+
+### APK v4.4
+versionCode 8, signed, 62.6 MB — target/srs/update sab andar.
