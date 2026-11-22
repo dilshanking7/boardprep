@@ -62,5 +62,22 @@
 | Textbook chapters with author | 81/81 |
 | Brain test answers valid | 20/20 |
 
+## Phase 2 UI/UX tests
+| Test | Result |
+|---|---|
+| Design tokens load (light) | PASS (bg rgb(248,250,252)) |
+| Dark theme toggle | PASS (bg rgb(11,17,32)) |
+| System theme follow | PASS |
+| Text size Small/Normal/Large | PASS |
+| 5-tab bottom nav labels (hi+en) | PASS |
+| Learn page (subjects + resources) | PASS |
+| Practice page (bank/quiz/mock/papers) | PASS |
+| Profile page (settings rows) | PASS |
+| Home dashboard sections | PASS (ring, exam countdown, subject progress, quick actions, tasks) |
+| Exam countdown honest estimate | PASS (label + "estimate" note) |
+| Toast messages | PASS |
+| 27-route sweep, 0 exceptions | PASS |
+| Mobile viewport no overflow | PASS (2103/2120 desktop, 420 mobile ok) |
+
 ## Route sweep (27 routes, 0 exceptions)
 `/` `subjects` `subject/maths` `quiz` `search` `papers` `important` `models` `formulas` `periodic` `lab` `mathlab` `diagrams` `timeline` `stories` `songs` `brain` `notes` `notes/science` `progress` `exam` `revision` `assistant` `help` `tools` — sab render, koi exception nahi.
