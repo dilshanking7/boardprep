@@ -1,4 +1,4 @@
-// BoardPrep Class 10 Science notes
+// BoardPrep Class 10 Science notes (Hindi + English)
 window.NOTES_SCIENCE = [
  {
   "ch": "रासायनिक अभिक्रियाएँ एवं समीकरण",
@@ -154,6 +154,115 @@ window.NOTES_SCIENCE = [
     "box",
     "त्वरित पुनरावृत्ति",
     "अभिकारक = शुरुआती पदार्थ; उत्पाद = बनने वाले पदार्थ। संयोजन में कई अभिकारक मिलकर एक उत्पाद बनाते हैं। वियोजन में एक यौगिक टूटता है। ऑक्सीकरण और अपचयन साथ हों तो रेडॉक्स कहते हैं।"
+   ],
+   [
+    "h2",
+    "Chapter 1: Chemical Reactions and Equations (English Notes)"
+   ],
+   [
+    "p",
+    "A chemical reaction is a process in which one or more substances change into new substances with different properties. The starting substances are called reactants, while the substances formed are called products. Rusting of iron, digestion of food, burning of fuel, curdling of milk and cooking are familiar examples. A chemical change is usually difficult to reverse by simple physical methods because the chemical composition of the material changes."
+   ],
+   [
+    "h3",
+    "How can we identify a chemical reaction?"
+   ],
+   [
+    "p",
+    "Common indicators include a change in colour, evolution of a gas, formation of a precipitate, change in temperature or change in state. For example, when zinc reacts with dilute sulphuric acid, hydrogen gas is released and zinc sulphate is formed: Zn + H₂SO₄ → ZnSO₄ + H₂↑. No single indicator is compulsory in every reaction; the formation of a new substance is the key idea."
+   ],
+   [
+    "h3",
+    "Chemical equations and balancing"
+   ],
+   [
+    "p",
+    "A chemical equation represents a reaction using symbols and formulae. Reactants are written on the left and products on the right, separated by an arrow. A word equation can first be converted into a formula equation. The equation must then be balanced so that the number of atoms of every element is equal on both sides. This follows the law of conservation of mass: matter is neither created nor destroyed in a chemical reaction."
+   ],
+   [
+    "box",
+    "Worked example: formation of water",
+    "Unbalanced: H₂ + O₂ → H₂O. Put coefficient 2 before H₂O to balance oxygen, then put 2 before H₂ to balance hydrogen. Balanced equation: 2H₂ + O₂ → 2H₂O. Never change the small subscripts in a chemical formula while balancing; change only the coefficients."
+   ],
+   [
+    "h3",
+    "Symbols and physical states"
+   ],
+   [
+    "p",
+    "The symbols (s), (l), (g) and (aq) represent solid, liquid, gas and aqueous solution respectively. A downward arrow (↓) may indicate an insoluble precipitate, while an upward arrow (↑) indicates a gas. The symbol Δ above the arrow indicates heating. These notations make an equation more informative. For example: 2H₂(g) + O₂(g) → 2H₂O(l)."
+   ],
+   [
+    "h3",
+    "Types of chemical reactions"
+   ],
+   [
+    "ul",
+    [
+     "Combination reaction: two or more reactants form a single product. Example: CaO + H₂O → Ca(OH)₂. Heat is released in this reaction.",
+     "Decomposition reaction: one compound breaks into two or more simpler substances. Thermal decomposition: CaCO₃ → CaO + CO₂. Electrolysis of water: 2H₂O → 2H₂ + O₂.",
+     "Displacement reaction: a more reactive element displaces a less reactive element from its compound. Example: Fe + CuSO₄ → FeSO₄ + Cu.",
+     "Double displacement reaction: ions are exchanged between two compounds. Example: Na₂SO₄ + BaCl₂ → BaSO₄↓ + 2NaCl. The insoluble barium sulphate appears as a white precipitate.",
+     "Exothermic reaction: energy is released, often as heat. Combustion and respiration are examples. Endothermic reaction: energy is absorbed; photosynthesis needs energy from sunlight."
+    ]
+   ],
+   [
+    "h3",
+    "Oxidation and reduction"
+   ],
+   [
+    "p",
+    "Oxidation can be described as the addition of oxygen or removal of hydrogen. Reduction is the removal of oxygen or addition of hydrogen. These processes occur together in a redox reaction. In CuO + H₂ → Cu + H₂O, copper oxide loses oxygen and is reduced to copper, while hydrogen gains oxygen and is oxidised to water."
+   ],
+   [
+    "h3",
+    "Corrosion and rancidity"
+   ],
+   [
+    "p",
+    "Corrosion is the gradual damage of a metal due to its reaction with air, moisture or chemicals. Rusting of iron requires oxygen and water. Painting, oiling, greasing, galvanisation and making suitable alloys can protect metals. Rancidity is the oxidation of fats and oils that produces an unpleasant smell and taste. It can be slowed by airtight packaging, refrigeration, keeping food away from light and using antioxidants. Nitrogen is often filled in packets of chips to reduce contact with oxygen."
+   ],
+   [
+    "h3",
+    "Chemical reactions in everyday life"
+   ],
+   [
+    "p",
+    "Respiration is an exothermic process in which glucose is broken down in cells and energy is released for life activities. Photosynthesis uses light energy to convert carbon dioxide and water into glucose and oxygen. Digestion involves many chemical reactions that convert complex food into simpler substances. Burning fuels releases energy, while rusting slowly damages iron objects. Understanding these reactions helps explain both natural processes and useful technologies."
+   ],
+   [
+    "h3",
+    "Solved and important examination questions"
+   ],
+   [
+    "qa",
+    "What is a chemical reaction?",
+    "A process in which reactants undergo a chemical change to form new substances called products."
+   ],
+   [
+    "qa",
+    "Why must a chemical equation be balanced?",
+    "To obey the law of conservation of mass and keep the number of atoms of each element equal on both sides."
+   ],
+   [
+    "qa",
+    "Balance the burning of magnesium.",
+    "2Mg + O₂ → 2MgO. There are two magnesium atoms and two oxygen atoms on each side."
+   ],
+   [
+    "qa",
+    "Why is respiration exothermic?",
+    "Because the breakdown and oxidation of glucose in cells releases energy."
+   ],
+   [
+    "qa",
+    "What is the difference between corrosion and rancidity?",
+    "Corrosion is the deterioration of metals due to environmental reactions; rancidity is the oxidation of fats and oils that spoils food."
+   ],
+   [
+    "box",
+    "Quick revision",
+    "Reactants are starting substances; products are formed substances. Balance equations using coefficients only. Combination forms one product; decomposition breaks a compound; displacement replaces an element; double displacement exchanges ions. Oxidation and reduction occur together in redox reactions."
    ]
   ]
  },
