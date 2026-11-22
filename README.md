@@ -100,12 +100,15 @@ aaye to pehle `hi_strings.json` dobara nikalo, phir `translate.py` chalao — ca
 | `#/progress` | analytics — attempted/correct/wrong, streak, 7-din chart, weak chapters, mock history |
 | `#/profile` | नाम, board, भाषा, थीम, टेक्स्ट साइज़, बैकअप/रिस्टोर/क्लियर, अबाउट, प्राइवेसी |
 | `#/revision` | गलत + bookmarked सवाल |
-| `#/exam` | mock exam — timer, auto-submit, palette, review |
-| `#/assistant` | अध्ययन सहायक (offline, rule-based) |
+| `#/exam` | mock exam — instructions + timer, auto-submit, palette, mark-for-review |
+| `#/bank` | प्रश्न बैंक — subject/type/answer-status/chapter filter, search, pagination |
+| `#/calc` | विषय टूल — molar mass (hydrate/bracket), pH, Ohm, दर्पण/लेंस, Punnett, वर्गमूल, HCF/LCM, stats |
+| `#/remind` | अध्ययन अनुस्मारक — समय/संदेश, रोज़ एक बार (ऑफ़लाइन) |
+| `#/quiz` | 8 modes — तेज़/अध्याय/विषय/मिक्स/कमज़ोर/रिवीज़न/रैंडम/रोज़ |
 | `#/subjects`, `#/subject/:key` | chapter/type filter, pagination |
 | `#/quiz` | setup → checking → result + weak chapters |
 | `#/search` | Hindi + English search |
-| `#/notes`, `#/notes/:group`, `#/note/:group/:ch` | 131 अध्याय नोट्स (रंगबिरंगा) |
+| `#/notes`, `#/notes/:group`, `#/note/:group/:ch` | 140 अध्याय नोट्स + 81 भाषा अध्याय (रंगबिरंगा) |
 | `#/tools` | saare tools ka hub |
 | `#/models`, `#/model/biology/:id`, `#/model/physics/:id` | 3D मॉडल — घुमाओ, हिस्सा छूकर देखो |
 | `#/formulas` | maths/physics/chemistry/bio — 127 formulas + tricks |
