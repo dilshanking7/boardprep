@@ -890,7 +890,7 @@
     var cur = h.split('/')[0] || '';
     var map = { '': 'home', 'learn': 'learn', 'subjects': 'learn', 'subject': 'learn', 'chapter': 'learn', 'stories': 'learn', 'notes': 'learn', 'note': 'learn', 'help': 'learn',
       'practice': 'practice', 'quiz': 'practice', 'papers': 'practice', 'important': 'practice', 'exam': 'practice',
-      'progress': 'progress', 'revision': 'progress', 'assistant': 'progress',
+      'progress': 'progress', 'revision': 'progress', 'assistant': 'progress', 'planner': 'progress', 'mynotes': 'progress', 'timer': 'progress',
       'profile': 'profile', 'settings': 'profile' };
     var on = map[cur] || 'home';
     document.querySelectorAll('.bottomnav a').forEach(function (a) {

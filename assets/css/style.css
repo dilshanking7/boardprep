@@ -539,3 +539,10 @@ html[data-theme="dark"] .fc-opt.ok { background: rgba(22,163,74,.2); }
 /* personal notes */
 .note-card { margin-bottom: 10px; }
 .nt-edit { font-size: 14px; }
+
+/* study timer + planner */
+.tm-clock { font-size: 46px; font-weight: 800; letter-spacing: -.02em; color: var(--color-text-primary); margin: 6px 0; }
+.cal7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cal7-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cal7-bar { width: 100%; max-width: 34px; border-radius: 6px 6px 2px 2px; }
+html[data-theme="dark"] .cal7-bar { opacity: .9; }

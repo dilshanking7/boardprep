@@ -553,6 +553,8 @@
       ['#/brain', 'bulb', L('Brain test', 'ब्रेन टेस्ट'), L('20 questions', '20 सवाल')],
       ['#/songs', 'music', L('Focus songs', 'फ़ोकस गाने'), L('offline audio', 'ऑफ़लाइन')],
       ['#/mynotes', 'book', L('Meri notes', 'मेरी नोट्स'), L('apni notes banao', 'अपनी नोट्स बनाओ')],
+      ['#/planner', 'chart', L('Planner', 'योजना'), L('goals + calendar', 'लक्ष्य + कैलेंडर')],
+      ['#/timer', 'timer', L('Study timer', 'अध्ययन टाइमर'), L('focus sessions', 'फ़ोकस सत्र')],
       ['#/flash/science/all', 'repeat', L('Flashcards', 'फ़्लैशकार्ड'), L('subject / chapter', 'विषय / अध्याय')]
     ]);
     return h + '</section>';
@@ -743,6 +745,83 @@
     return h + '</section>';
   }
 
+  /* ---------------- study timer + planner ---------------- */
+
+  function fmtSec(s) {
+    s = Math.max(0, Math.floor(s));
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+    return (h ? h + ':' + String(m).padStart(2, '0') : String(m)) + ':' + String(ss).padStart(2, '0');
+  }
+
+  function vTimer() {
+    var st = window.STUDY.stats();
+    var t = st.last7[0] || { secs: 0 };
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Study timer', 'अध्ययन टाइमर')) + '</h2>' +
+      '<span class="note">' + esc(L('Timer chalne se samay record hota hai', 'टाइमर चलने से समय रिकॉर्ड होता है')) + '</span></div>';
+    h += '<div class="card" style="text-align:center;padding:22px">' +
+      '<div class="t-small" id="tmToday">' + esc(L('Aaj ka samay', 'आज का समय')) + ': <b class="t-num">' + fmtSec(t.secs) + '</b></div>' +
+      '<div class="tm-clock t-num" id="tmClock">00:00</div>' +
+      '<div class="field" style="margin-top:10px"><select id="tmSubj" style="text-align:center">' +
+      '<option value="">— ' + esc(L('Subject (vait)', 'विषय (वैकल्पिक)')) + ' —</option>' +
+      (window.SUBJECTS || []).filter(function (s) { return ['maths', 'science', 'sst', 'hindi', 'english', 'sanskrit'].indexOf(s.key) >= 0; })
+        .map(function (s) { return '<option value="' + esc(s.key) + '">' + esc((window.BP.state.lang === 'en' ? s.en : s.name)) + '</option>'; }).join('') +
+      '</select></div>' +
+      '<div class="chips" style="justify-content:center;margin-top:12px">' +
+      '<button class="fchip" id="tmStart">' + esc(L('Shuru', 'शुरू')) + '</button>' +
+      '<button class="fchip" id="tmPause">' + esc(L('Ruko', 'रुको')) + '</button>' +
+      '<button class="fchip" id="tmStop">' + esc(L('Ruk jao + save', 'रुक जाओ + सहेजो')) + '</button></div>' +
+      '<div class="note" id="tmMsg"></div></div>';
+    h += '<div class="note">' + esc(L('Focus ke liye: 25 minute padho, 5 minute aaram — timer pause se samay bachta hai.', 'फ़ोकस के लिए: 25 मिनट पढ़ो, 5 मिनट आराम — टाइमर पॉज़ से समय बचता है।')) + '</div>';
+    return h + '</section>';
+  }
+
+  function vPlanner() {
+    var st = window.STUDY.stats();
+    var goal = st.goal || 5;
+    var due = window.STUDY.revDueCount ? window.STUDY.revDueCount() : 0;
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Study planner', 'अध्ययन योजना')) + '</h2></div>';
+    h += '<div class="card"><div class="prog-top"><span>' + esc(L('Daily goal (sawal)', 'रोज़ का लक्ष्य (सवाल)')) + '</span><b class="t-num">' + goal + '</b></div>' +
+      '<div class="chips" style="margin-top:10px">' + [3, 5, 10, 20].map(function (n) {
+        return '<button class="fchip' + (goal === n ? ' on' : '') + '" data-goal="' + n + '">' + n + '</button>';
+      }).join('') + '</div>' +
+      '<div class="note">' + esc(L('Lakshya chhota rakho — roz poora karna zaroori, pressure nahi.', 'लक्ष्य छोटा रखो — रोज़ पूरा करना ज़रूरी, दबाव नहीं।')) + '</div></div>';
+
+    /* 7 din ka calendar */
+    var max = Math.max.apply(null, st.last7.map(function (x) { return x.n; }).concat([goal, 1]));
+    h += '<div class="board-group">' + esc(L('Pichle 7 din', 'पिछले 7 दिन')) + '</div>';
+    h += '<div class="cal7">' + st.last7.map(function (x) {
+      var pct = Math.round((x.n / max) * 100);
+      var col = x.n >= goal ? 'var(--color-success)' : (x.n > 0 ? 'var(--color-warning)' : 'var(--color-surface-secondary)');
+      return '<div class="cal7-cell"><div class="cal7-bar" style="height:' + Math.max(6, pct) + 'px;background:' + col + '"></div>' +
+        '<div class="t-small">' + x.d.slice(8) + '</div><div class="t-small">' + x.n + '/' + goal + '</div></div>';
+    }).join('') + '</div>';
+
+    /* weekly summary */
+    var weekN = st.last7.reduce(function (s, x) { return s + x.n; }, 0);
+    h += '<div class="card" style="margin-top:12px"><div class="prog-top"><span>' + esc(L('Is hafte', 'इस हफ़्ते')) + '</span><b class="t-num">' + weekN + ' ' + esc(L('sawal', 'सवाल')) + '</b></div>' +
+      '<div class="t-secondary">' + esc(L('Rozana ' + goal + ' maan kar ' + (goal * 7) + ' chahiye', 'रोज़ाना ' + goal + ' मान कर ' + (goal * 7) + ' चाहिए')) + '</div></div>';
+
+    /* revision due */
+    h += '<div class="board-group">' + esc(L('Revision (spaced repetition)', 'रिवीज़न (स्पेस्ड रिपीटीशन)')) + '</div>';
+    h += '<a class="list-row" href="#/revision"><div><div class="t">' + esc(L('Aaj due', 'आज बाकी')) + '</div>' +
+      '<div class="s">' + due + ' ' + esc(L('sawal') ) + ' · ' + esc(L('1, 3, 7, 14, 30 din ka schedule', '1, 3, 7, 14, 30 दिन का शेड्यूल')) + '</div></div><span class="n">→</span></a>';
+
+    /* subject plan */
+    h += '<div class="board-group">' + esc(L('Subject plan', 'विषय योजना')) + '</div>';
+    var subs = (window.SUBJECTS || []).filter(function (s) { return ['maths', 'science', 'sst', 'hindi', 'english', 'sanskrit'].indexOf(s.key) >= 0; });
+    h += subs.map(function (s) {
+      var x = st.subj[s.key];
+      var pct = x ? x.pct : 0;
+      var nm = window.BP.state.lang === 'en' ? (s.en || s.name) : s.name;
+      return '<a class="prog-row card" style="padding:12px;display:block" href="#/subject/' + esc(s.key) + '">' +
+        '<div class="prog-top"><span>' + esc(nm) + '</span><b class="t-num">' + pct + '%</b></div>' +
+        '<div class="prog"><i style="width:' + pct + '%;background:var(--color-primary)"></i></div></a>';
+    }).join('');
+
+    h += '<div class="note">' + esc(L('Plan sirf aapki asli activity se banta hai — koi fixed timetable nahi.', 'प्लान सिर्फ़ आपकी असली गतिविधि से बनता है — कोई तय टाइमटेबल नहीं।')) + '</div>';
+    return h + '</section>';
+  }
+
   /* ---------------- help / kaise use karein ---------------- */
 
   function vHelp() {
@@ -894,6 +973,8 @@
     if (p === 'learn') return vLearn();
     if (p === 'chapter') return vChapter(parts[1], decodeURIComponent(parts[2] || ''));
     if (p === 'mynotes') return vMyNotes();
+    if (p === 'planner') return vPlanner();
+    if (p === 'timer') return vTimer();
     if (p === 'flash') return vFlash(parts[1], decodeURIComponent(parts[2] || 'all'));
     if (p === 'practice') return vPractice();
     if (p === 'profile') return vProfile();
@@ -1266,6 +1347,76 @@
     var fcReset = document.getElementById('fcReset');
     if (fcReset) fcReset.addEventListener('click', function () { window.__fcIdx = 0; window.__fcFlipped = false; window.__fcKnown = 0; window.__fcUnknown = 0; fcShow(); });
     if (window.__fcCards && document.getElementById('fcCard')) fcShow();
+
+    // ---- study timer ----
+    function tmTick() {
+      var el = document.getElementById('tmClock');
+      var t = window.__tm || { acc: 0, running: false };
+      if (!el) { if (window.__tmTick) { clearInterval(window.__tmTick); window.__tmTick = null; } return; }
+      var cur = t.acc + (t.running ? (Date.now() - t.start) : 0);
+      el.textContent = fmtSec(cur / 1000);
+    }
+    var tmStart = document.getElementById('tmStart');
+    if (tmStart) tmStart.addEventListener('click', function () {
+      var t = window.__tm || { acc: 0, running: false };
+      if (t.running) return;
+      t.start = Date.now(); t.running = true; window.__tm = t;
+      if (!window.__tmTick) window.__tmTick = setInterval(tmTick, 500);
+      tmStart.textContent = L('Chal raha hai…', 'चल रहा है…');
+      var m = document.getElementById('tmMsg'); if (m) m.textContent = L('Padh rahe hain — pause dabao jab aaram chahiye.', 'पढ़ रहे हैं — पॉज़ दबाओ जब आराम चाहिए।');
+    });
+    var tmPause = document.getElementById('tmPause');
+    if (tmPause) tmPause.addEventListener('click', function () {
+      var t = window.__tm || { acc: 0, running: false };
+      if (t.running) { t.acc += Date.now() - t.start; t.running = false; window.__tm = t; }
+      if (window.__tmTick) { clearInterval(window.__tmTick); window.__tmTick = null; }
+      tmTick();
+      var m = document.getElementById('tmMsg'); if (m) m.textContent = L('Ruka hua — samay is waqt save nahi hoga.', 'रुका हुआ — समय इस वक़्त सहेजा नहीं जाएगा।');
+    });
+    var tmStop = document.getElementById('tmStop');
+    if (tmStop) tmStop.addEventListener('click', function () {
+      var t = window.__tm || { acc: 0, running: false };
+      var cur = t.acc + (t.running ? (Date.now() - t.start) : 0);
+      var secs = Math.floor(cur / 1000);
+      if (secs > 0) {
+        window.STUDY.markSec(secs);
+        var m = document.getElementById('tmMsg');
+        if (m) m.textContent = L('Session save: ' + fmtSec(secs) + ' record hua.', 'सत्र सहेजा: ' + fmtSec(secs) + ' रिकॉर्ड हुआ।');
+        if (window.toast) window.toast(L('Samay save ho gaya', 'समय सहेज हो गया') + ' ✓');
+      } else {
+        var m2 = document.getElementById('tmMsg'); if (m2) m2.textContent = L('Pehle timer shuru karo.', 'पहले टाइमर शुरू करो।');
+      }
+      window.__tm = { acc: 0, running: false };
+      if (window.__tmTick) { clearInterval(window.__tmTick); window.__tmTick = null; }
+      var c = document.getElementById('tmClock'); if (c) c.textContent = '00:00';
+      var s = document.getElementById('tmStart'); if (s) s.textContent = L('Shuru', 'शुरू');
+      var td = document.getElementById('tmToday');
+      if (td) { var st = window.STUDY.stats(); td.innerHTML = esc(L('Aaj ka samay', 'आज का समय')) + ': <b class="t-num">' + fmtSec((st.last7[0] || {}).secs || 0) + '</b>'; }
+    });
+
+    // ---- planner goal ----
+    document.querySelectorAll('[data-goal]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-goal]').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        window.STUDY.setGoal(Number(b.dataset.goal));
+        if (window.toast) window.toast(L('Daily goal set: ' + b.dataset.goal, 'रोज़ का लक्ष्य: ' + b.dataset.goal));
+        window.BP && window.BP.render();
+      });
+    });
+
+    // ---- spaced repetition answer ----
+    document.querySelectorAll('[data-revans]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var raw = b.getAttribute('data-revans');
+        var sep = raw.lastIndexOf('|');
+        var id = decodeURIComponent(raw.slice(0, sep));
+        var ok = raw.slice(sep + 1) === '1';
+        window.STUDY.revAnswer(id, ok);
+        if (window.toast) window.toast(ok ? L('Agla revision ' + window.STUDY.revIntervals[0] + ' din baad', 'अगला रिवीज़न ' + window.STUDY.revIntervals[0] + ' दिन बाद') : L('Phir se aaj', 'फिर से आज'));
+        window.BP && window.BP.render();
+      });
+    });
 
     // exam live timer (1s tick) + auto submit
     if (window.__exTick) { clearInterval(window.__exTick); window.__exTick = null; }

@@ -117,7 +117,8 @@
   function last7() {
     var out = [], d = new Date();
     for (var i = 6; i >= 0; i--) {
-      var t = today(d); out.push({ d: t, n: (D.days[t] || {}).done || 0, goal: D.goal || 5 });
+      var t = today(d);
+      out.push({ d: t, n: (D.days[t] || {}).done || 0, secs: (D.days[t] || {}).secs || 0, goal: D.goal || 5 });
       d.setDate(d.getDate() - 1);
     }
     return out;
@@ -255,6 +256,23 @@
       return h + '</div></section>';
     }
     var list = d.wrong;
+    // spaced repetition — aaj due
+    var due = revSchedule();
+    if (due.length) {
+      h += '<div class="board-group">' + esc(L('Aaj revision due', 'आज रिवीज़न बाकी')) + ' · ' + due.length + '</div>';
+      due.slice(0, 8).forEach(function (x) {
+        h += '<div class="imp-item" style="margin-bottom:10px"><div class="num" style="background:#ede9fe;color:#4c1d95">' + (x.stage + 1) + '</div><div>' +
+          '<div class="iq">' + esc(x.q && x.q.q) + '</div>' +
+          '<div class="note">' + esc(x.s) + (x.c ? ' · ' + esc(x.c) : '') + ' · ' + esc(L('agla: ' + REV_INTERVALS[x.stage] + ' din baad', 'अगला: ' + REV_INTERVALS[x.stage] + ' दिन बाद')) + '</div>';
+        if (x.q && x.q.opts) {
+          var ai = String(x.q.ans || '').toUpperCase().charCodeAt(0) - 65;
+          h += '<div class="imp-opts">' + x.q.opts.map(function (o, k) { return '<span class="' + (k === ai ? 'ok' : '') + '">' + 'ABCD'[k] + '. ' + esc(o) + '</span>'; }).join('') + '</div>';
+        }
+        h += '<div class="chips" style="margin-top:6px">' +
+          '<button class="fchip" data-revans="' + encodeURIComponent(x.id) + '|1">' + esc(L('Aaja', 'आ गया')) + '</button>' +
+          '<button class="fchip" data-revans="' + encodeURIComponent(x.id) + '|0">' + esc(L('Nahi aaya', 'नहीं आया')) + '</button></div></div></div>';
+      });
+    }
     if (!list.length) {
       h += '<div class="empty">' + esc(L('Abhi koi galti nahi — quiz khelkar dekho', 'अभी कोई गलती नहीं — क्विज़ खेलकर देखो')) + '</div>';
     } else {
@@ -494,5 +512,40 @@
   window.STUDY.noteUpdate = noteUpdate;
   window.STUDY.noteDel = noteDel;
   window.STUDY.noteExport = noteExport;
+
+  /* ---------------- spaced repetition (revision schedule) ---------------- */
+
+  var REVKEY = 'bp_rev_v1';
+  var REV_INTERVALS = [1, 3, 7, 14, 30]; // din — saaf schedule, koi mystery nahi
+  function revLoad() { try { return JSON.parse(localStorage.getItem(REVKEY)) || {}; } catch (e) { return {}; } }
+  function revSave(r) { try { localStorage.setItem(REVKEY, JSON.stringify(r)); return true; } catch (e) { return false; } }
+
+  function revSchedule() {
+    var r = revLoad();
+    var due = [];
+    (D.wrong || []).slice(-100).forEach(function (w) {
+      var id = qid(w.q);
+      var st = r[id];
+      var dueTs = st ? st.due : 0;
+      if (!st || dueTs <= Date.now()) {
+        due.push({ id: id, q: w.q, s: w.s, c: w.c, stage: st ? st.stage : 0, due: dueTs });
+      }
+    });
+    return due;
+  }
+  function revAnswer(id, ok) {
+    var r = revLoad();
+    var st = r[id] || { stage: 0, due: 0 };
+    st.stage = ok ? Math.min(st.stage + 1, REV_INTERVALS.length - 1) : 0;
+    st.due = Date.now() + REV_INTERVALS[st.stage] * 86400000;
+    r[id] = st;
+    revSave(r);
+    return st;
+  }
+
+  window.STUDY.revSchedule = revSchedule;
+  window.STUDY.revAnswer = revAnswer;
+  window.STUDY.revDueCount = function () { return revSchedule().length; };
+  window.STUDY.revIntervals = REV_INTERVALS;
 
 })();
