@@ -3,7 +3,7 @@
    - baaki sab (PDF, audio, 3D models) cache-first; network par aaye to cache ho jaye
    - "offline करो" button se poora content cache ho sakta hai
 */
-const CACHE = 'boardprep-v15';
+const CACHE = 'boardprep-v17';
 
 const SHELL = [
   './',
@@ -17,6 +17,8 @@ const SHELL = [
   'assets/js/i18n.js',
   'assets/js/app.js',
   'assets/js/tools.js',
+  'assets/js/study.js',
+  'assets/js/calc.js',
   'assets/js/models3d-ui.js',
   'assets/js/models3d.js',
   'assets/js/scenes3d.js',

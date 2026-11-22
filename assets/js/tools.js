@@ -532,6 +532,7 @@
       ['#/diagrams', 'target', L('Diagrams', 'चित्र'), L('20 interactive', '20 इंटरैक्टिव')],
       ['#/models', 'cube', L('3D models', '3D मॉडल'), L('Biology + Physics', 'जीव + भौतिक')],
       ['#/formulas', 'sigma', L('Formulas', 'सूत्र'), L('127 formulas', '127 सूत्र')],
+      ['#/calc', 'wrench', L('Subject tools', 'विषय टूल'), L('offline calculator', 'ऑफ़लाइन कैलकुलेटर')],
       ['#/periodic', 'atom', L('Periodic table', 'आवर्त सारणी'), L('118 elements', '118 तत्व')],
       ['#/timeline', 'timeline', L('Timeline', 'समयरेखा'), L('77 events', '77 घटनाएँ')],
       ['#/lab', 'flask', L('Chemistry lab', 'रसायन प्रयोगशाला'), L('36 reactions', '36 अभिक्रियाएँ')],
@@ -1048,6 +1049,7 @@
     if (p === 'practice') return vPractice();
     if (p === 'profile') return vProfile();
     if (p === 'revision') return window.vRevision ? window.vRevision() : '';
+    if (p === 'calc') return window.CalcTool ? window.CalcTool.view() : '';
     if (p === 'exam') return window.vExam ? window.vExam() : '';
     if (p === 'assistant') return window.vAssistant ? window.vAssistant() : '';
     if (p === 'story') {
@@ -1475,6 +1477,17 @@
     var bkNext = document.getElementById('bkNext');
     if (bkNext) bkNext.addEventListener('click', function () { window.BP.state.bankPage = (window.BP.state.bankPage || 0) + 1; renderBank(); });
     if (document.getElementById('bkList')) { fillBankChaps(); renderBank(); }
+
+    // ---- subject tools ----
+    document.querySelectorAll('[data-ct]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-ct]').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        window.BP.state.calcTab = b.dataset.ct;
+        window.CalcTool.run();
+      });
+    });
+    if (document.getElementById('calcBody')) { window.CalcTool.run(); }
 
     // ---- study timer ----
     function tmTick() {
