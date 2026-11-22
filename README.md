@@ -35,8 +35,10 @@ assets/data/board-bank.js  board-specific banks (CBSE: 84 official MCQ)
 assets/js/subjects.js   subject list + map (saare boards)
 assets/js/boards.js       board config (29) — pattern, bhasha, color, sections
 assets/js/i18n.js         Hindi/English labels
-assets/js/app.js          state, router, home, subjects, quiz, search, papers, important
-assets/js/tools.js        formulas, periodic, lab, mathlab, diagrams, timeline, stories, brain
+assets/js/app.js          state, router, home dashboard, subjects, quiz, search, papers, important
+assets/js/tools.js        learn/practice/profile, notes, formulas, periodic, lab, mathlab, diagrams, timeline, stories, brain, settings
+assets/js/study.js        progress, streak, mock exam, revision, study assistant (offline)
+assets/js/icons.js        ek jaisa SVG icon set (Lucide-style, stroke)
 assets/data/data.js       generated questions (8356) + freq + papers
 assets/data/important.js  important questions 2027 (clean, numbered)
 assets/data/formulas.js   maths 14 chapters + physics/chemistry/bio formulas + tricks
@@ -92,10 +94,18 @@ aaye to pehle `hi_strings.json` dobara nikalo, phir `translate.py` chalao — ca
 
 | Route | Kya hai |
 |---|---|
-| `#/` | home hub — stats, tools, board pattern, subjects |
+| `#/` | home dashboard — आज का लक्ष्य (ring), exam countdown, continue learning, विषय प्रगति, quick actions, weak chapters, आज के काम, tools |
+| `#/learn` | subjects + सीखने के साधन (notes, stories, diagrams, 3D, formulas, periodic, timeline, lab) |
+| `#/practice` | question bank, quiz, mock exam, papers, important, revision, search, brain, songs |
+| `#/progress` | analytics — attempted/correct/wrong, streak, 7-din chart, weak chapters, mock history |
+| `#/profile` | नाम, board, भाषा, थीम, टेक्स्ट साइज़, बैकअप/रिस्टोर/क्लियर, अबाउट, प्राइवेसी |
+| `#/revision` | गलत + bookmarked सवाल |
+| `#/exam` | mock exam — timer, auto-submit, palette, review |
+| `#/assistant` | अध्ययन सहायक (offline, rule-based) |
 | `#/subjects`, `#/subject/:key` | chapter/type filter, pagination |
 | `#/quiz` | setup → checking → result + weak chapters |
 | `#/search` | Hindi + English search |
+| `#/notes`, `#/notes/:group`, `#/note/:group/:ch` | 131 अध्याय नोट्स (रंगबिरंगा) |
 | `#/tools` | saare tools ka hub |
 | `#/models`, `#/model/biology/:id`, `#/model/physics/:id` | 3D मॉडल — घुमाओ, हिस्सा छूकर देखो |
 | `#/formulas` | maths/physics/chemistry/bio — 127 formulas + tricks |
@@ -107,7 +117,39 @@ aaye to pehle `hi_strings.json` dobara nikalo, phir `translate.py` chalao — ca
 | `#/stories`, `#/stories/:subj`, `#/story/:subj?c=` | अध्यायवार कहानी/सारांश + मुख्य बातें + अभ्यास |
 | `#/brain` | 20 सवाल, brain level + category report |
 | `#/papers` | PYQ + model papers (sal ke hisaab se) |
-| `#/important` | 2027 के पक्के प्रश्न + strategy + tips + FAQ |
+| `#/important` | 2027 के महत्वपूर्ण प्रश्न + strategy + tips + FAQ |
+| `#/songs` | फ़ोकस गीत (audio player) |
+| `#/help` | कैसे use करें — 7 steps |
+
+## v3.0 design system
+
+- **Tokens** — `assets/css/style.css` ke `:root` me `--color-*`, `--radius-*`, `--shadow-*`,
+  `--space-*`, `--fs-*`. Board ka rang `--accent`/`--accent-soft` me aata hai; baaki
+  semantic tokens usi par depend karte hain, isliye har board par UI consistent rehta hai.
+- **Dark theme** — `html[data-theme="dark"]` + Profile → Theme (System/Light/Dark).
+  System preference bhi respect hoti hai.
+- **Text size** — Small / Normal / Large (Profile → Text size).
+- **Typography** — Inter → Roboto → Noto Sans → Noto Sans Devanagari → Mangal fallback
+  (Devanagari Android par bhi sahi render hota hai).
+- **Icons** — `assets/js/icons.js` ka ek hi SVG set (stroke-based, 24px). Koi emoji nahi.
+- **Accessibility** — `:focus-visible`, `prefers-reduced-motion`, safe-area insets,
+  touch targets ≥ 44px, colour ke saath saath icon/label bhi status dikhata hai.
+- **Micro-interactions** — button press feedback, card transitions, toast, skeleton
+  shimmer, sheet/slide-up animation.
+
+## Reports (repo me)
+
+`BUG_REPORT.md`, `SECURITY_REPORT.md`, `PERFORMANCE_REPORT.md`, `TEST_RESULTS.md`,
+`FEATURES.md`, `audit_report.md`, `missing_answers.md`
+
+## Notes
+
+- Data NCERT-syllabus based hai; board selection pattern/medium dikhata hai.
+- 547 MCQ me answer parse nahi hua — quiz unhe skip karta hai (`missing_answers.md`).
+- 28 boards ka apna bank nahi — shared NCERT/JAC practice + साफ़ लेबल.
+- Stories: 81 अध्याय का नाम, लेखक और Hindi/English सारांश `assets/data/stories.js` में;
+  पूरा पाठ्य-पुस्तक text book se jodna baaki hai.
+- Sab progress localStorage में (device par hi) — कोई server/analytics नहीं।
 
 ## Board switching
 
