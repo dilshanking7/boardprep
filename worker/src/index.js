@@ -6,7 +6,7 @@
 
 import { ensureSchema, getSetting, setSetting } from "./db.js";
 import { nousChat } from "./nous.js";
-import { webSearch, askAI, rateLimit, callCF, callGroq, callGemini, callOpenRouter, probe } from "./ai.js";
+import { webSearch, askAI, rateLimit, callCF, callGroq, callGemini, callOpenRouter, probe, probeCFVision } from "./ai.js";
 
 const json = (data, opts = {}) => new Response(JSON.stringify(data), {
   status: opts.status || 200,
@@ -64,6 +64,20 @@ export default {
           "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-flash", "gemini-1.5-flash",
           "gemini-1.5-flash-8b", "gemini-2.5-flash-lite", "gemini-2.0-flash-exp",
         ]) });
+        if (prov === "groqv") return json({ ok: true, list: await probe(env, "groqv", [
+          "llama-3.2-90b-vision-preview", "llama-3.2-11b-vision-preview", "meta-llama/llama-4-scout-17b-16e-instruct",
+        ]) });
+        if (prov === "cfv") return json({ ok: true, list: await probeCFVision(env, [
+          "@cf/llava/llava-1.5-7b-hf", "@cf/unum/uform-gen2-qwen-500m",
+        ]) });
+        if (prov === "groqall") {
+          const r = await fetch('https://api.groq.com/openai/v1/models', {
+            headers: { Authorization: 'Bearer ' + (env.GROQ_KEY || '') },
+          });
+          const j = await r.json();
+          const ids = (j && j.data || []).map(function (m) { return m.id; });
+          return json({ ok: r.ok, models: ids });
+        }
         const out = [];
         const one = async function (name, fn) {
           const t0 = Date.now();
@@ -77,6 +91,113 @@ export default {
         await one("openrouter", function () { return callOpenRouter(env, [{ role: 'user', content: 'अम्ल लिटमस को कैसे बदलता है? एक लाइन में बताओ।' }]); });
         return json({ ok: true, providers: out });
       }
+      // ---------- voice: audio -> text (Groq Whisper, free) ----------
+      if (p === "/api/stt" && req.method === "POST") {
+        const b = await req.json().catch(() => ({}));
+        const b64 = String(b.audio || "").split(",").pop();
+        const mime = String(b.mime || "audio/webm");
+        if (!b64) return json({ ok: false, error: "audio required" }, { status: 400 });
+        const key = env.GROQ_KEY || "";
+        if (!key) return json({ ok: false, error: "no groq key" }, { status: 502 });
+        let buf;
+        try { buf = Uint8Array.from(atob(b64), function (c) { return c.charCodeAt(0); }); }
+        catch (e) { return json({ ok: false, error: "bad audio" }, { status: 400 }); }
+        const ext = mime.indexOf("ogg") >= 0 ? "ogg" : (mime.indexOf("mp4") >= 0 || mime.indexOf("m4a") >= 0 ? "m4a" : "webm");
+        const fd = new FormData();
+        fd.append("file", new Blob([buf], { type: mime }), "v." + ext);
+        fd.append("model", "whisper-large-v3-turbo");
+        fd.append("response_format", "json");
+        const r = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
+          method: "POST", headers: { Authorization: "Bearer " + key }, body: fd,
+        });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) return json({ ok: false, error: "stt " + r.status }, { status: 502 });
+        return json({ ok: true, text: String((j && j.text) || "").trim() });
+      }
+
+      // ---------- photo: image -> javab (OpenRouter free vision) ----------
+      if (p === "/api/vision" && req.method === "POST") {
+        const b = await req.json().catch(() => ({}));
+        const img = String(b.image || "");
+        const q = String(b.q || "इस फोटो/नोट को पढ़कर समझाओ।").slice(0, 400);
+        if (!img) return json({ ok: false, error: "image required" }, { status: 400 });
+        const key = env.OPENROUTER_KEY || "";
+        if (!key) {
+          return json({ ok: false, error: "photo-ke-liye-openrouter-key", noKey: true });
+        }
+        const models = [
+          "google/gemma-3-27b-it:free",
+          "qwen/qwen2.5-vl-72b-instruct:free",
+          "meta-llama/llama-3.2-90b-vision-instruct:free",
+          "meta-llama/llama-3.2-11b-vision-instruct:free",
+        ];
+        let last = "";
+        for (let i = 0; i < models.length; i++) {
+          try {
+            const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: "Bearer " + key },
+              body: JSON.stringify({
+                model: models[i],
+                messages: [{
+                  role: "user",
+                  content: [
+                    { type: "text", text: "तुम कक्षा 10 के विद्यार्थी के होमवर्क/नोट्स की मदद करते हो। फोटो में जो लिखा/दिखा है उसे पढ़ो और हिंदी/Hinglish में सरल, स्पष्ट जवाब दो — पढ़ाओ, समझाओ, उदाहरण दो। 250 शब्दों के अंदर।" },
+                    { type: "image_url", image_url: { url: img.indexOf("data:") === 0 ? img : "data:image/jpeg;base64," + img } },
+                  ],
+                }],
+                max_tokens: 800,
+              }),
+            });
+            if (!r.ok) { last = "HTTP " + r.status + " " + (await r.text()).slice(0, 90); continue; }
+            const j = await r.json();
+            const t = (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || "";
+            if (t) return json({ ok: true, answer: String(t).trim(), model: models[i] });
+            last = "empty";
+          } catch (e) { last = String(e.message || e).slice(0, 80); }
+        }
+        return json({ ok: false, error: "vision: " + last }, { status: 502 });
+      }
+
+      // ---------- feedback: AI khud seekhe (user ka data se) ----------
+      if (p === "/api/feedback" && req.method === "POST") {
+        const b = await req.json().catch(() => ({}));
+        const id = uid(b.id);
+        const topic = String(b.topic || "general").slice(0, 60);
+        const good = b.good ? 1 : -1;
+        await ensureSchema(env.DB);
+        const raw = await getSetting(env.DB, "fb_" + id, null);
+        let rec = {};
+        try { rec = raw ? JSON.parse(raw) : {}; } catch (e) { }
+        if (!rec[topic]) rec[topic] = { up: 0, down: 0 };
+        if (good > 0) rec[topic].up++; else rec[topic].down++;
+        await setSetting(env.DB, "fb_" + id, JSON.stringify(rec));
+        return json({ ok: true });
+      }
+
+      // user ka pradarshan (kamzor/norm) — prompt me judta hai
+      async function userContext(db, id) {
+        try {
+          const r = await loadProgress(db, id);
+          const study = r && r.data && r.data.study;
+          if (!study || !Array.isArray(study.attempts) || !study.attempts.length) return "";
+          const by = {};
+          study.attempts.forEach(function (a) {
+            var k = String(a.c || "").slice(0, 60);
+            if (!k) return;
+            by[k] = by[k] || { n: 0, ok: 0 };
+            by[k].n++; if (a.ok) by[k].ok++;
+          });
+          var rows = Object.keys(by).map(function (k) { return { c: k, n: by[k].n, pct: Math.round(by[k].ok / by[k].n * 100) }; });
+          var weak = rows.filter(function (x) { return x.n >= 2; }).sort(function (a, b) { return a.pct - b.pct; }).slice(0, 3);
+          var strong = rows.filter(function (x) { return x.n >= 2; }).sort(function (a, b) { return b.pct - a.pct; }).slice(0, 2);
+          var s = "";
+          if (weak.length) s += "तुम्हारे कमज़ोर अध्याय (जिनमें ज़्यादा गलती हुई): " + weak.map(function (x) { return x.c + " " + x.pct + "%"; }).join(", ") + "। ";
+          if (strong.length) s += "मज़बूत: " + strong.map(function (x) { return x.c + " " + x.pct + "%"; }).join(", ") + "। ";
+          return s;
+        } catch (e) { return ""; }
+      }
+
       if (p === "/api/quota" && req.method === "GET") {
         const id = uid(url.searchParams.get("id"));
         await ensureSchema(env.DB);
@@ -118,8 +239,10 @@ export default {
           if (needsWeb) webCtx = await webSearch(q);
         } catch (e) { }
 
+        const ctx = await userContext(env.DB, id);
         const sys =
           "तुम BoardPrep के शिक्षक-सहायक हो — कक्षा 10 (JAC/CBSE) के विद्यार्थी की मदद करते हो। " +
+          (ctx ? ctx + "इन कमज़ोर चीज़ों को समझाते समय ख़ास ध्यान दो और आसान उदाहरण दो। " : "") +
           "नियम: (1) सीधा और छोटा जवाब दो, अगल-बढ़कर न लिखो। (2) संदिग्ध सवाल (जैसे 'hii', 'hello') का जवाब " +
           "सादा अभिवादन दो और काम का सवाल पूछो — अंदाज़ा या सूची मत बनाओ। (3) पढ़ाई/क्विज़/किताब के सवाल " +
           "स्पष्ट उदाहरण सहित समझाओ। (4) बाहर की ताज़ा जानकारी के लिए नीचे दिए search नतीजो से जवाब दो; " +

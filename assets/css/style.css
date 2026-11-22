@@ -634,3 +634,11 @@ html[data-theme="dark"] .xchip, html[data-theme="dark"] .badge.freq { color: #fc
 .sdel { flex: none; width: 28px; height: 28px; border: 0; border-radius: 8px; background: transparent;
   color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; }
 .sdel:hover { color: #b91c1c; background: rgba(185,28,28,.1); }
+#chatMic { padding: 0 10px; font-size: 17px; line-height: 1; }
+#chatMic.on { background: #b91c1c; }
+.chatbar .btn-sm { flex: none; }
+.cfb { display: flex; gap: 4px; margin-top: 4px; padding-left: 4px; }
+.cfb-b { border: 0; background: transparent; font-size: 14px; cursor: pointer; opacity: .6;
+  border-radius: 6px; padding: 2px 4px; }
+.cfb-b:hover { opacity: 1; background: var(--color-surface-secondary); }
+.cfb-ok { font-size: 11px; color: var(--muted); }

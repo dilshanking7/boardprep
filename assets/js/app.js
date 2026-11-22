@@ -16,7 +16,7 @@
   CONTENT_KEYS.forEach(function (k) { if (window[k]) ORIG_CONTENT[k] = window[k]; });
 
   // Is APK ki version — version.json se compare hoti hai (in-app update banner)
-  var APP_VERSION = '5.7';
+  var APP_VERSION = '5.8';
   var VER_URL = 'https://dilshanking7.github.io/boardprep/version.json';
 
   function cmpVer(a, b) {
@@ -387,7 +387,7 @@
     /* F. क्विक एक्शन */
     h += dashSec(L('Quick actions', 'क्विक एक्शन'), '<div class="qa-grid">' +
       [['#/quiz', 'pencil', L('Quiz', 'क्विज़')], ['#/exam', 'timer', L('Mock exam', 'मॉक एग्ज़ाम')],
-       ['#/assistant', 'bot', L('Ask AI', 'AI से पूछो')], ['#/search', 'search', L('Search', 'खोज')],
+       ['#/search', 'search', L('Search', 'खोज')],
        ['#/notes', 'book', L('Notes', 'नोट्स')], ['#/revision', 'repeat', L('Revise', 'रिवीज़न')]].map(function (x) {
         return '<a class="qa" href="' + x[0] + '"><span data-icon="' + x[1] + '"></span>' + esc(x[2]) + '</a>';
       }).join('') + '</div>');
@@ -459,8 +459,8 @@
       '<button class="btn btn-accent" id="offBtn" style="padding:10px 14px;white-space:nowrap">' + esc(L('Offline download', 'ऑफ़लाइन डाउनलोड')) + '</button></a>';
 
     if (storeGet('bp_apk', '0') !== '1' && location.href.indexOf('appassets.androidplatform.net') < 0) {
-      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v5.7.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
-        '<div class="t">📱 ' + esc(L('Android app v5.7 — full offline', 'एंड्रॉयड ऐप v5.7 — पूरा ऑफ़लाइन')) + '</div>' +
+      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v5.8.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
+        '<div class="t">📱 ' + esc(L('Android app v5.8 — full offline', 'एंड्रॉयड ऐप v5.8 — पूरा ऑफ़लाइन')) + '</div>' +
         '<div class="s">' + esc(L('Sab kuch app me hi hai — PDF, 3D models, songs. Internet ke bina bhi.', 'सब कुछ ऐप में ही है — PDF, 3D models, songs। इंटरनेट के बिना भी।')) + '</div></div><span class="n">⬇</span></a>';
     }
 
@@ -1103,6 +1103,18 @@
       }
     }
     view.innerHTML = route();
+    // pichla screen yaad rakho — AI "screen dekho" ke liye (chat page khud ko nahi likhta)
+    try {
+      var seg = location.hash.replace(/^#\//, '').split('/')[0];
+      if (seg !== 'chat') {
+        var hd = view.querySelector('h1, h2');
+        window.BP.lastScreen = {
+          hash: location.hash,
+          title: hd ? String(hd.textContent || '').replace(/\s+/g, ' ').trim() : '',
+          text: (view.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 900)
+        };
+      }
+    } catch (e) { }
     applyBoard();
     applyI18n();
     bindCommon();

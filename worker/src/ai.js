@@ -187,7 +187,24 @@ async function probe(env, provider, models) {
     const m = models[i];
     try {
       let r;
-      if (provider === 'groq') {
+      if (provider === "groqv") {
+        const url = 'https://api.groq.com/openai/v1/chat/completions';
+        r = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (env.GROQ_KEY || '') },
+          body: JSON.stringify({
+            model: m,
+            messages: [{
+              role: 'user',
+              content: [
+                { type: 'text', text: 'Is this a blank image? answer yes/no' },
+                { type: 'image_url', image_url: { url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==' } },
+              ],
+            }],
+            max_tokens: 40,
+          }),
+        });
+      } else if (provider === 'groq') {
         r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (env.GROQ_KEY || '') },
@@ -214,4 +231,21 @@ async function probe(env, provider, models) {
   return out;
 }
 
-export { webSearch, askAI, rateLimit, callCF, callGroq, callGemini, callOpenRouter, probe };
+// CF vision (photo samajhna)
+async function probeCFVision(env, models) {
+  const out = [];
+  const b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+  for (let i = 0; i < models.length; i++) {
+    try {
+      const r = await env.AI.run(models[i], {
+        image: b64,
+        prompt: "Is this a blank image? answer yes/no",
+        max_tokens: 20,
+      });
+      out.push({ model: models[i], ok: true, a: String((r && (r.response || r.text)) || '').slice(0, 60) });
+    } catch (e) { out.push({ model: models[i], ok: false, e: String(e.message || e).slice(0, 90) }); }
+  }
+  return out;
+}
+
+export { webSearch, askAI, rateLimit, callCF, callGroq, callGemini, callOpenRouter, probe, probeCFVision };

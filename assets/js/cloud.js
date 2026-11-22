@@ -79,6 +79,18 @@
     return post('/api/chat', { id: deviceId(), q: q, history: history || [], web: web !== false });
   }
   function quota() { return get('/api/quota?id=' + encodeURIComponent(deviceId())); }
+  // voice: audio (base64) -> text
+  function stt(audio, mime) {
+    return post('/api/stt', { audio: audio, mime: mime || 'audio/webm' });
+  }
+  // photo: image (base64) -> javab
+  function vision(image, q) {
+    return post('/api/vision', { image: image, q: q || '' });
+  }
+  // feedback (AI khud seekhe)
+  function feedback(topic, good) {
+    return post('/api/feedback', { id: deviceId(), topic: topic, good: good });
+  }
   function roomCreate(code, name) { return post('/api/room/create', { code: code, name: name }); }  function roomJoin(code, name) { return post('/api/room/join', { code: code, name: name }); }
   function roomPost(code, name, msg) { return post('/api/room/post', { code: code, name: name, msg: msg }); }
   function roomGet(code) { return get('/api/room/get?code=' + encodeURIComponent(code)); }
@@ -108,7 +120,7 @@
     ask: ask,
     syncPush: syncPush,
     syncPull: syncPull,
-    chat: chat, quota: quota,
+    chat: chat, quota: quota, stt: stt, vision: vision, feedback: feedback,
     roomCreate: roomCreate, roomJoin: roomJoin, roomPost: roomPost, roomGet: roomGet,
     myName: myName
   };
