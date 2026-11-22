@@ -118,7 +118,7 @@ npx wrangler secret put OPENROUTER_KEY
 - नया APK: https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.4.apk
 
 ### आज़माओ
-app → **AI चैट** → कुछ लिखो → भेजो। ऊपर "बचे/कुल" दिखता है।
+app → **AI चैट** → कुछ लिखो → भेजो। नीचे-दाईं कोने का **AI** बटन भी काम करता है।
 
 ---
 
