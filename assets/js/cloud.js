@@ -3,8 +3,20 @@
 (function () {
   'use strict';
 
-  // Worker deploy hone ke baad ye URL aa jayega. Jab tak empty ho, sab local rahta hai.
+  // DEFAULT_BASE — ye URL app me hi baked hai (Dilshan ek baar set karta hai).
+  // Users ko kuch set nahi karna — sab apne-aap chalega.
+  var DEFAULT_BASE = '';
+  var OVERRIDE_KEY = 'bp_api_base';
   var BASE = '';
+
+  function initBase() {
+    try {
+      var ov = localStorage.getItem(OVERRIDE_KEY);
+      if (ov !== null) { BASE = ov.replace(/\/+$/, ''); return; }
+    } catch (e) { }
+    BASE = String(window.BP_API_BASE || DEFAULT_BASE || '').replace(/\/+$/, '');
+  }
+  initBase();
 
   function deviceId() {
     try {
@@ -56,8 +68,19 @@
   }
 
   window.Cloud = {
+    DEFAULT_BASE: DEFAULT_BASE,
     BASE: BASE,
-    setBase: function (u) { BASE = u.replace(/\/+$/, ''); },
+    setBase: function (u) {
+      BASE = String(u || '').replace(/\/+$/, '');
+      if (BASE) { try { localStorage.setItem(OVERRIDE_KEY, BASE); } catch (e) { } }
+      else { try { localStorage.removeItem(OVERRIDE_KEY); } catch (e) { } }
+    },
+    clearOverride: function () {
+      try { localStorage.removeItem(OVERRIDE_KEY); } catch (e) { }
+      BASE = String(window.BP_API_BASE || DEFAULT_BASE || '').replace(/\/+$/, '');
+    },
+    // version.json se aaya URL — sirf memory me (override nahi likhta)
+    refreshBase: function (u) { BASE = String(u || '').replace(/\/+$/, ''); },
     getBase: function () { return BASE; },
     ready: function () { return !!BASE; },
     deviceId: deviceId,

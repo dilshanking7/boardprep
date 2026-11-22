@@ -570,6 +570,7 @@
     var s = window.STUDY ? window.STUDY.stats() : null;
     var theme = storeGet2('bp_theme', 'system');
     var fs = storeGet2('bp_fs', 'normal');
+    var csAuto = storeGet2('bp_cs_auto', '1') !== '0';
     var name = storeGet2('bp_name', '');
     var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Profile', 'प्रोफ़ाइल')) + '</h2></div>';
     h += '<div class="card profile-card">' +
@@ -613,7 +614,9 @@
     h += '<div class="board-group" style="margin-top:12px">' + esc(L('Cloud sync', 'क्लाउड सिंक')) + '</div>';
     h += '<div class="note">' + esc(L('Apni pragaṭi cloud par — doosre phone se bhi. Free worker chahiye (guide).', 'अपनी प्रगति क्लाउड पर — दूसरे फ़ोन से भी। मुफ़्त worker चाहिए (गाइड)।')) + '</div>';
     h += '<div class="field"><label>' + esc(L('Cloud API URL (worker)', 'क्लाउड API URL (worker)')) + '</label>' +
-      '<input id="csUrl" value="' + esc(window.Cloud ? window.Cloud.getBase() : '') + '" placeholder="https://boardprep-api.xxx.workers.dev" style="width:100%"></div>';
+      '<input id="csUrl" value="' + esc(window.Cloud ? window.Cloud.getBase() : '') + '" placeholder="' + esc(L('Khud set karne ki zaroorat nahi', 'खुद सेट करने की ज़रूरत नहीं')) + '" style="width:100%"></div>';
+    h += '<label class="setting-row"><span>' + esc(L('Auto cloud sync', 'ऑटो क्लाउड सिंक')) + '</span>' +
+      '<input type="checkbox" id="csAuto"' + (csAuto ? ' checked' : '') + '></label>';
     h += '<div class="chips">' +
       '<button class="fchip" id="csSave">' + esc(L('Cloud par save', 'क्लाउड पर सेव')) + '</button>' +
       '<button class="fchip" id="csLoad">' + esc(L('Cloud se lao', 'क्लाउड से लाओ')) + '</button></div>';
@@ -1671,6 +1674,10 @@
       } else if (o) o.textContent = L('Is device par Notification nahi (in-app reminder)', 'इस डिवाइस पर सूचना नहीं (इन-ऐप अनुस्मारक)');
     });
 
+    var csAutoEl = document.getElementById('csAuto');
+    if (csAutoEl) csAutoEl.addEventListener('change', function () {
+      try { localStorage.setItem('bp_cs_auto', csAutoEl.checked ? '1' : '0'); } catch (e) { }
+    });
     var csUrl = document.getElementById('csUrl');
     if (csUrl) csUrl.addEventListener('change', function () {
       var u = csUrl.value.trim();
