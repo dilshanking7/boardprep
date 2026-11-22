@@ -572,6 +572,139 @@ window.NOTES_SCIENCE = [
     "box",
     "याद रखें",
     "धातु सामान्यतः इलेक्ट्रॉन खोती है और धनायन बनाती है; अधातु इलेक्ट्रॉन ग्रहण करके ऋणायन बना सकती है।"
+   ],
+   [
+    "h3",
+    "धातुओं और अधातुओं के अपवाद"
+   ],
+   [
+    "p",
+    "धातुओं के सामान्य गुणों के कुछ महत्वपूर्ण अपवाद हैं। पारा कमरे के ताप पर द्रव धातु है। सोडियम और पोटैशियम इतने नरम होते हैं कि उन्हें चाकू से काटा जा सकता है। गैलियम और सीज़ियम का गलनांक कम होता है। दूसरी ओर, अधातु आयोडीन चमकदार होता है और ग्रेफाइट विद्युत का अच्छा चालक है। हीरा भी कार्बन का रूप है, लेकिन बहुत कठोर होता है। इसलिए किसी तत्व को केवल एक गुण देखकर धातु या अधातु नहीं कहा जाता; उसके कई गुणों को साथ देखकर वर्गीकरण करते हैं।"
+   ],
+   [
+    "h3",
+    "क्रियाशीलता श्रेणी"
+   ],
+   [
+    "p",
+    "धातुओं को उनकी रासायनिक क्रियाशीलता के घटते क्रम में रखने पर क्रियाशीलता श्रेणी बनती है। सामान्य क्रम है: K, Na, Ca, Mg, Al, Zn, Fe, Pb, H, Cu, Hg, Ag, Au। ऊपर की धातुएँ अधिक क्रियाशील होती हैं और नीचे की धातुओं को उनके लवण के विलयन से विस्थापित कर सकती हैं। हाइड्रोजन धातु नहीं है, फिर भी तुलना के लिए श्रेणी में रखा जाता है। हाइड्रोजन से ऊपर की धातुएँ सामान्यतः तनु अम्लों से हाइड्रोजन गैस निकाल सकती हैं; ताँबा, चाँदी और सोना जैसी कम क्रियाशील धातुएँ ऐसा नहीं करतीं।"
+   ],
+   [
+    "h3",
+    "अयस्क से धातु प्राप्त करने के मुख्य चरण"
+   ],
+   [
+    "p",
+    "धातु निष्कर्षण में पहले अयस्क से मिट्टी, रेत और अन्य अशुद्धियाँ हटाई जाती हैं; इसे अयस्क का सांद्रण कहते हैं। सल्फाइड अयस्क को वायु में गर्म करके ऑक्साइड में बदलना भर्जन कहलाता है, जबकि कार्बोनेट अयस्क को सीमित या बिना वायु के गर्म करके ऑक्साइड बनाना निस्तापन कहलाता है। इसके बाद धातु ऑक्साइड का अपचयन किया जाता है। बहुत अधिक क्रियाशील धातुओं के लिए विद्युत अपघटन उपयोगी है। अंत में अशुद्ध धातु का परिष्करण किया जाता है। सभी धातुओं के लिए एक ही विधि उपयुक्त नहीं होती; विधि धातु की क्रियाशीलता और अयस्क के प्रकार पर निर्भर करती है।"
+   ],
+   [
+    "h3",
+    "हल किए हुए प्रश्न"
+   ],
+   [
+    "qa",
+    "सोडियम को मिट्टी के तेल में क्यों रखा जाता है?",
+    "सोडियम हवा और पानी से बहुत तेजी से अभिक्रिया करता है। मिट्टी का तेल उसे हवा और नमी के सीधे संपर्क से बचाता है।"
+   ],
+   [
+    "qa",
+    "ग्रेफाइट अधातु होते हुए भी विद्युत का चालन क्यों करता है?",
+    "ग्रेफाइट में कुछ इलेक्ट्रॉन परतों के भीतर गति कर सकते हैं, इसलिए वह विद्युत का चालन करता है।"
+   ],
+   [
+    "qa",
+    "जिंक, कॉपर सल्फेट के विलयन से ताँबे को क्यों हटा देता है?",
+    "जिंक ताँबे से अधिक क्रियाशील है, इसलिए वह कॉपर सल्फेट से ताँबे को विस्थापित कर जिंक सल्फेट बनाता है। Zn + CuSO₄ → ZnSO₄ + Cu।"
+   ],
+   [
+    "qa",
+    "आयनिक यौगिकों के गलनांक ऊँचे क्यों होते हैं?",
+    "धनायन और ऋणायन के बीच मजबूत विद्युत आकर्षण होता है। इस आकर्षण को तोड़ने के लिए अधिक ऊर्जा चाहिए।"
+   ],
+   [
+    "h2",
+    "Chapter 3: Metals and Non-metals (English Notes)"
+   ],
+   [
+    "p",
+    "Elements are classified as metals or non-metals on the basis of their physical and chemical properties. Iron, copper, aluminium, gold and silver are metals. Oxygen, sulphur, carbon and nitrogen are non-metals. Metals are generally lustrous, malleable, ductile and good conductors of heat and electricity. Non-metals are generally brittle in the solid state and are usually poor conductors. These are general trends, not rules without exceptions."
+   ],
+   [
+    "h3",
+    "Physical properties and exceptions"
+   ],
+   [
+    "p",
+    "Malleability is the ability of a material to be beaten into thin sheets. Ductility is the ability to be drawn into wires. Metals often produce a ringing sound when struck and are therefore called sonorous. Mercury is a liquid metal at room temperature. Sodium and potassium are soft metals. Bromine is a liquid non-metal. Iodine is a lustrous non-metal, while graphite, a form of carbon, conducts electricity. Diamond, another form of carbon, is extremely hard. These examples show why classification should consider several properties together."
+   ],
+   [
+    "h3",
+    "Chemical properties of metals"
+   ],
+   [
+    "p",
+    "Many metals react with oxygen to form metal oxides. Most metal oxides are basic, but aluminium oxide and zinc oxide are amphoteric: they react with both acids and bases. Some metals react with water to form metal hydroxides or oxides and hydrogen gas. Sodium and potassium react very vigorously with water, so they are stored under kerosene. Calcium reacts less vigorously, while copper does not react with cold water. Metals above hydrogen in the reactivity series can generally displace hydrogen from dilute acids."
+   ],
+   [
+    "p",
+    "A more reactive metal can displace a less reactive metal from its salt solution. For example, zinc displaces copper from copper sulphate: Zn + CuSO₄ → ZnSO₄ + Cu. Copper cannot displace zinc from zinc sulphate because copper is less reactive than zinc. Such displacement reactions are useful for comparing the reactivity of metals."
+   ],
+   [
+    "h3",
+    "Ionic compounds"
+   ],
+   [
+    "p",
+    "A metal atom may lose electrons to form a positively charged ion called a cation. A non-metal atom may gain electrons to form a negatively charged ion called an anion. The electrostatic attraction between oppositely charged ions forms an ionic bond. Sodium chloride is a common example. Ionic compounds are usually hard, brittle solids with high melting and boiling points. In the solid state, their ions are fixed in position, so they do not conduct electricity. When molten or dissolved in water, the ions can move and carry electric charge."
+   ],
+   [
+    "h3",
+    "Occurrence and extraction of metals"
+   ],
+   [
+    "p",
+    "Minerals are naturally occurring substances containing metals or their compounds. A mineral from which a metal can be extracted economically is called an ore. Metals with low reactivity may occur in the free state. The extraction method depends on the metal's position in the reactivity series. Highly reactive metals are commonly extracted by electrolysis of their molten compounds. Moderately reactive metals are often obtained by converting their ores into oxides and then reducing the oxides using carbon or another suitable reducing agent. Less reactive metals may be obtained by heating their ores."
+   ],
+   [
+    "p",
+    "Before extraction, unwanted materials are removed from the ore by concentration. Sulphide ores are often heated in air to convert them into oxides; this process is called roasting. Carbonate ores are heated strongly in limited or no air; this is called calcination. The metal oxide is then reduced. Finally, the crude metal may be purified, for example by electrolytic refining. The exact process depends on the ore and the reactivity of the metal."
+   ],
+   [
+    "h3",
+    "Corrosion and alloys"
+   ],
+   [
+    "p",
+    "Corrosion is the gradual destruction of a metal by reactions with air, moisture or chemicals. Rusting of iron is a familiar example and requires oxygen and water. Painting, oiling, greasing, galvanising and using corrosion-resistant alloys can protect metals. An alloy is a homogeneous mixture of two or more metals, or of a metal with a non-metal. Brass is mainly copper and zinc; bronze is mainly copper and tin. Stainless steel contains iron with chromium and often nickel and carbon, giving it better resistance to corrosion."
+   ],
+   [
+    "h3",
+    "Solved and important examination questions"
+   ],
+   [
+    "qa",
+    "Why is sodium stored under kerosene?",
+    "Sodium reacts very rapidly with oxygen and moisture. Kerosene prevents direct contact with air and water."
+   ],
+   [
+    "qa",
+    "Why can molten ionic compounds conduct electricity?",
+    "Their ions become free to move and carry electric charge in the molten state."
+   ],
+   [
+    "qa",
+    "Why does zinc displace copper from copper sulphate solution?",
+    "Zinc is more reactive than copper, so it replaces copper from the salt solution."
+   ],
+   [
+    "qa",
+    "Why do ionic compounds have high melting points?",
+    "Strong electrostatic attraction between oppositely charged ions requires a large amount of energy to overcome."
+   ],
+   [
+    "box",
+    "Quick revision",
+    "Metals generally lose electrons; non-metals generally gain or share electrons. More reactive metals displace less reactive metals. Ionic compounds conduct electricity when molten or in aqueous solution, but not as solids."
    ]
   ]
  },
