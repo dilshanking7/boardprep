@@ -18,12 +18,12 @@
         var d = JSON.parse(raw);
         if (d && typeof d === 'object') {
           d.days = d.days || {}; d.attempts = d.attempts || []; d.wrong = d.wrong || [];
-          d.book = d.book || []; d.exams = d.exams || []; d.goal = d.goal || 5;
+          d.book = d.book || []; d.exams = d.exams || []; d.goal = d.goal || 5; d.srs = d.srs || {};
           return d;
         }
       }
     } catch (e) {}
-    return { v: 1, days: {}, attempts: [], wrong: [], book: [], exams: [], goal: 5 };
+    return { v: 1, days: {}, attempts: [], wrong: [], book: [], exams: [], goal: 5, srs: {} };
   }
   function save(d) {
     try {
@@ -166,6 +166,40 @@
       };
     }
   };
+
+  /* ---------------- spaced repetition (SM-2 lite, offline) ---------------- */
+  function srsUpdate(q, ok) {
+    if (!D.srs) D.srs = {};
+    var id = (q && q.id) || qid(q);
+    var s = D.srs[id] || { n: 0, lapses: 0, due: 0 };
+    if (ok) {
+      s.n = (s.n || 0) + 1;
+      var iv = s.n === 1 ? 1 : s.n === 2 ? 3 : s.n === 3 ? 7 : s.n === 4 ? 14 : 30;
+      s.due = Date.now() + iv * 86400000;
+    } else {
+      s.n = 0; s.lapses = (s.lapses || 0) + 1; s.due = Date.now();
+    }
+    D.srs[id] = s;
+    save(D);
+    return s;
+  }
+  function srsDue(limit) {
+    var now = Date.now(), out = [], qs = (window.BOARD_DATA && window.BOARD_DATA.questions) || [];
+    for (var i = 0; i < qs.length; i++) {
+      var s = D.srs && D.srs[qs[i].id];
+      if (s && s.due && s.due <= now) out.push(qs[i]);
+      if (out.length >= (limit || 30)) break;
+    }
+    return out;
+  }
+  function srsStats() {
+    var n = 0, due = 0;
+    if (D.srs) { for (var k in D.srs) { n++; if (D.srs[k].due && D.srs[k].due <= Date.now()) due++; } }
+    return { learned: n, due: due };
+  }
+  window.STUDY.srsUpdate = srsUpdate;
+  window.STUDY.srsDue = srsDue;
+  window.STUDY.srsStats = srsStats;
 
   /* ---------------- exam target + countdown (student khud set karta hai) ---------------- */
   var TKEY = 'bp_target_v1';

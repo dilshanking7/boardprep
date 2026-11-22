@@ -805,6 +805,7 @@
       if (q && window.STUDY) {
         window.STUDY.attempt(q.subj, q.chap || q.part || '', !!got, q.q);
         if (!got) window.STUDY.wrong(q, q.subj, q.chap || q.part || '');
+        try { window.STUDY.srsUpdate(q, !!got); } catch (e) {}   // spaced repetition
       }
     } catch (e) {}
     return true;
@@ -843,6 +844,10 @@
       pool = D.questions.filter(function (q) { return weakChaps[q.subj + '|' + (q.chap || q.part)] && answerable(q); });
     } else if (kind === 'revision' && window.STUDY) {
       var seen = {};
+      // pehle spaced-repetition ke due sawal (jinka time aa chuka hai)
+      try {
+        window.STUDY.srsDue(40).forEach(function (q) { if (answerable(q)) seen[(q.id || q.q || '').slice(0, 80)] = q; });
+      } catch (e) {}
       (window.STUDY.data().wrong || []).slice(-200).forEach(function (w) { if (w.q) seen[(w.q.q || '').slice(0, 80)] = w.q; });
       (window.STUDY.data().book || []).slice(-200).forEach(function (b) { if (b.q) seen[(b.q.q || '').slice(0, 80)] = b.q; });
       pool = Object.keys(seen).map(function (k) { return seen[k]; }).filter(function (q) { return answerable(q); });
