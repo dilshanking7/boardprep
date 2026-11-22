@@ -106,7 +106,6 @@ aaye to pehle `hi_strings.json` dobara nikalo, phir `translate.py` chalao — ca
 | `#/remind` | अध्ययन अनुस्मारक — समय/संदेश, रोज़ एक बार (ऑफ़लाइन) |
 | `#/quiz` | 8 modes — तेज़/अध्याय/विषय/मिक्स/कमज़ोर/रिवीज़न/रैंडम/रोज़ |
 | `#/subjects`, `#/subject/:key` | chapter/type filter, pagination |
-| `#/quiz` | setup → checking → result + weak chapters |
 | `#/search` | Hindi + English search |
 | `#/notes`, `#/notes/:group`, `#/note/:group/:ch` | 140 अध्याय नोट्स + 81 भाषा अध्याय (रंगबिरंगा) |
 | `#/tools` | saare tools ka hub |
