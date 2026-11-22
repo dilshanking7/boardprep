@@ -1,7 +1,10 @@
 # BoardPrep Cloud — Setup Guide (step by step, मुफ़्त)
 
-यह तीन चीज़ें चालू करता है: **AI जवाब**, **cloud sync (database)**, **study rooms**।
-सब free है। दो जगह तुम्हें account बनाना होगा (मुफ़्त) — बाकी सब तैयार है।
+**स्थिति: worker LIVE है** → https://boardprep-api.dilshan-boardprep.workers.dev
+health check चल रहा है, sync + study rooms काम कर रहे हैं।
+API URL app में baked है — **users को कुछ set नहीं करना**, सब अपने-आप चलता है।
+
+बस **एक** चीज़ बाकी: AI का token (नीचे भाग 2)।
 
 ---
 
@@ -65,6 +68,9 @@ Worker तुम्हारे Nous Portal token से free model चलात
 ### Step 7. AI आज़माओ
 5. app → **Assistant** → सवाल लिखो → **"AI से जवाब लो (क्लाउड)"** दबाओ
 6. जवाब "स्रोत: नोट्स (RAG) + मुफ़्त मॉडल" के साथ आएगा
+
+> अभी `/api/ask` में `NOUS_TOKEN_EXPIRED` आ रहा है — यानी token लगाना बाकी है (ऊपर Step 6)।
+> sync और rooms पहले से चल रहे हैं।
 
 ---
 
