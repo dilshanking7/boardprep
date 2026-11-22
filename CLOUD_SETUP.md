@@ -101,11 +101,21 @@ npx wrangler secret put GEMINI_KEY
 npx wrangler secret put OPENROUTER_KEY
 ```
 
-### Rate limit (तुम चाहे बदल सकते हो)
-`wrangler.toml` में:
-- `LIMIT_PER = "20"` — घंटे कितने message
-- `WINDOW_HOURS = "1"` — कितने घंटे बाद फिर शुरू
-बदलकर `bash deploy.sh` दोबारा चलाओ।
+### Rate limit
+- अभी **असीमित** (LIMIT_PER 100000 — हर घंटे रीसेट, ज़बरदस्ती नहीं होता)
+- फिर से लागू करना हो तो `wrangler.toml` में `LIMIT_PER = "20"` और `WINDOW_HOURS = "1"`,
+  फिर `bash deploy.sh`
+
+### चैट सेव
+- चैटें अपने-आप **सेव** होती हैं — back से बाहर जाओ, वापस आओ, **चैट वहीं मिलेगी**
+- ऊपर **चैटें** बटन = सेव की गई चैटों की सूची; किसी पर टैप करो → चालू
+- **+ नई चैट** = नया शुरू
+- हर चैट के पास **×** से हटाने का विकल्प
+
+### AI बटन (कोने में)
+- नीचे-दाईं कोने में बैंगनी **AI** बटन — हर पेज पर
+- चैट पेज पर खुद छिप जाता है
+- नया APK: https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.4.apk
 
 ### आज़माओ
 app → **AI चैट** → कुछ लिखो → भेजो। ऊपर "बचे/कुल" दिखता है।
