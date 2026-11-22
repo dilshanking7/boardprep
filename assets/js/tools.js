@@ -551,7 +551,9 @@
       ['#/revision', 'repeat', L('Revision', 'रिवीज़न'), L('wrong + bookmarks', 'गलत + बुकमार्क')],
       ['#/search', 'search', L('Search', 'खोज'), L('questions + notes', 'सवाल + नोट्स')],
       ['#/brain', 'bulb', L('Brain test', 'ब्रेन टेस्ट'), L('20 questions', '20 सवाल')],
-      ['#/songs', 'music', L('Focus songs', 'फ़ोकस गाने'), L('offline audio', 'ऑफ़लाइन')]
+      ['#/songs', 'music', L('Focus songs', 'फ़ोकस गाने'), L('offline audio', 'ऑफ़लाइन')],
+      ['#/mynotes', 'book', L('Meri notes', 'मेरी नोट्स'), L('apni notes banao', 'अपनी नोट्स बनाओ')],
+      ['#/flash/science/all', 'repeat', L('Flashcards', 'फ़्लैशकार्ड'), L('subject / chapter', 'विषय / अध्याय')]
     ]);
     return h + '</section>';
   }
@@ -635,6 +637,7 @@
     h += '<div class="chips" style="margin-top:10px">' +
       '<a class="fchip" href="#/subject/' + esc(subjKey) + '">' + esc(L('Practice', 'अभ्यास')) + '</a>' +
       '<a class="fchip" href="#/quiz">' + esc(L('Chapter quiz', 'अध्याय क्विज़')) + '</a>' +
+      '<a class="fchip" href="#/flash/' + esc(subjKey) + '/' + encodeURIComponent(chap) + '">' + esc(L('Flashcards', 'फ़्लैशकार्ड')) + '</a>' +
       '<a class="fchip" href="#/notes/' + esc(subjKey) + '">' + esc(L('Notes', 'नोट्स')) + '</a></div>';
     h += '</section>';
 
@@ -674,6 +677,69 @@
       return '<a class="list-row" href="#/chapter/' + esc(subjKey) + '/' + encodeURIComponent(c) + '"><div>' +
         '<div class="t">' + esc(c) + '</div><div class="s">' + masteryBadge(m) + '</div></div><span class="n">→</span></a>';
     }).join('');
+    return h + '</section>';
+  }
+
+  /* ---------------- personal notes + flashcards ---------------- */
+
+  function vMyNotes() {
+    var list = window.STUDY ? window.STUDY.notes() : [];
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Meri notes', 'मेरी नोट्स')) + '</h2>' +
+      '<span class="note">' + esc(L('Offline — is device par save', 'ऑफ़लाइन — इसी डिवाइस पर सहेजे')) + '</span></div>';
+    h += '<div class="field"><label>' + esc(L('Nayi note', 'नयी नोट')) + '</label>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">' +
+      '<select id="nnSubj" style="flex:1;min-width:120px"><option value="">— ' + esc(L('Subject', 'विषय')) + ' —</option>' +
+      (window.SUBJECTS || []).filter(function (s) { return ['maths', 'science', 'sst', 'hindi', 'english', 'sanskrit'].indexOf(s.key) >= 0; })
+        .map(function (s) { return '<option value="' + esc(s.key) + '">' + esc((window.BP.state.lang === 'en' ? s.en : s.name)) + '</option>'; }).join('') +
+      '</select>' +
+      '<input type="text" id="nnChap" placeholder="' + esc(L('Chapter (vait)', 'अध्याय (वैकल्पिक))')) + '" style="flex:1;min-width:120px">' +
+      '</div>' +
+      '<textarea id="nnText" placeholder="' + esc(L('Apni note likhein…', 'अपनी नोट लिखें…')) + '"></textarea>' +
+      '<div class="note" id="nnStat"></div>' +
+      '<button class="btn btn-accent btn-block" id="nnAdd" style="margin-top:8px">' + esc(L('Note save karo', 'नोट सहेजो')) + '</button></div>';
+
+    h += '<div class="field" style="margin-top:14px"><input type="search" id="nnSearch" placeholder="' + esc(L('Note khojein…', 'नोट खोजें…')) + '"></div>';
+    h += '<div id="nnList">';
+    if (!list.length) {
+      h += '<div class="empty">' + esc(L('Abhi koi note nahi — upar se pehli note banao.', 'अभी कोई नोट नहीं — ऊपर से पहली नोट बनाओ।')) + '</div>';
+    } else {
+      list.slice().reverse().forEach(function (n) {
+        h += '<div class="card note-card" data-id="' + esc(n.id) + '" style="margin-bottom:10px">' +
+          '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">' +
+          '<div class="t-small">' + esc(n.s ? ((window.SUBJECT_MAP && window.SUBJECT_MAP[n.s]) ? (window.BP.state.lang === 'en' ? window.SUBJECT_MAP[n.s].en : window.SUBJECT_MAP[n.s].name) : n.s) : '') + (n.c ? ' · ' + esc(n.c) : '') + '</div>' +
+          '<button class="link-btn nt-del" style="margin:0" data-id="' + esc(n.id) + '">' + esc(L('Hatao', 'हटाओ')) + '</button></div>' +
+          '<textarea class="nt-edit" data-id="' + esc(n.id) + '" style="margin-top:6px;min-height:70px">' + esc(n.t) + '</textarea>' +
+          '<div class="t-small nt-stat" data-id="' + esc(n.id) + '"></div></div>';
+      });
+    }
+    h += '</div>';
+    h += '<button class="link-btn" id="nnExport">' + esc(L('Saari notes export karo (JSON)', 'सारी नोट्स एक्सपोर्ट करो (JSON)')) + '</button>';
+    h += '<div class="note">' + esc(L('Notes apne aap save hote hain — app band hone par bhi safe.', 'नोट्स अपने-आप सहेजे जाते हैं — ऐप बंद होने पर भी सुरक्षित।')) + '</div>';
+    return h + '</section>';
+  }
+
+  function vFlash(subjKey, chap) {
+    var qs = [];
+    try { qs = window.QS_FOR(subjKey).filter(function (q) { return chap === 'all' || (q.chap || q.part) === chap; }); } catch (e) {}
+    var cards = qs.filter(function (q) { return q.opts && q.ans; }).slice(0, 30);
+    if (!cards.length) return '<section class="section"><div class="empty">' + esc(L('Is chapter me MCQ nahi mila — flashcard ke liye kisi aur chapter ka use karo.', 'इस अध्याय में MCQ नहीं मिला — फ़्लैशकार्ड के लिए किसी और अध्याय का उपयोग करो।')) + '</div></section>';
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Flashcards', 'फ़्लैशकार्ड')) + '</h2>' +
+      '<span class="note" id="fcStat">1/' + cards.length + '</span></div>';
+    h += '<div class="t-secondary" style="margin-bottom:10px">' + esc(chap === 'all' ? L('Poore subject ke MCQ', 'पूरे विषय के MCQ') : chap) + ' · ' + cards.length + ' ' + esc(L('cards', 'कार्ड')) + '</div>';
+    h += '<div class="fc" id="fcCard"><div class="fc-face fc-front" id="fcFace">' +
+      '<div class="fc-q" id="fcQ"></div>' +
+      '<div class="fc-opts" id="fcOpts"></div>' +
+      '<div class="fc-hint">' + esc(L('Answer dekhne ke liye card par tap karo', 'उत्तर देखने के लिए कार्ड पर टैप करो')) + '</div></div>' +
+      '<div class="fc-face fc-back" id="fcBack" hidden><div class="fc-ans" id="fcAns"></div>' +
+      '<div class="fc-hint">' + esc(L('Wapas dekhne ke liye tap karo', 'वापस देखने के लिए टैप करो')) + '</div></div></div>';
+    h += '<div class="chips" style="margin-top:12px">' +
+      '<button class="fchip" id="fcNo">' + esc(L('Nahi aaya', 'नहीं आया')) + '</button>' +
+      '<button class="fchip" id="fcYes">' + esc(L('Aaja', 'आ गया')) + '</button>' +
+      '<button class="fchip" id="fcFlip">' + esc(L('Flip', 'फ़्लिप')) + '</button>' +
+      '<button class="fchip" id="fcReset">' + esc(L('Dobara', 'दोबारा')) + '</button></div>';
+    h += '<div class="note" id="fcMsg">' + esc(L('Tip: pehle khud socho, phir flip karke check karo.', 'टिप: पहले खुद सोचो, फिर फ़्लिप करके जाँचो।')) + '</div>';
+    window.__fcCards = cards;
+    window.__fcIdx = 0; window.__fcFlipped = false; window.__fcKnown = 0; window.__fcUnknown = 0;
     return h + '</section>';
   }
 
@@ -827,6 +893,8 @@
     if (p === 'progress') return window.vProgress ? window.vProgress() : '<section class="section"><div class="empty">…</div></section>';
     if (p === 'learn') return vLearn();
     if (p === 'chapter') return vChapter(parts[1], decodeURIComponent(parts[2] || ''));
+    if (p === 'mynotes') return vMyNotes();
+    if (p === 'flash') return vFlash(parts[1], decodeURIComponent(parts[2] || 'all'));
     if (p === 'practice') return vPractice();
     if (p === 'profile') return vProfile();
     if (p === 'revision') return window.vRevision ? window.vRevision() : '';
@@ -1102,6 +1170,102 @@
       window.BP.render();
       toast(L('Progress clear ho gayi', 'प्रगति साफ़ हो गई'));
     });
+
+    // ---- personal notes ----
+    var nnAdd = document.getElementById('nnAdd');
+    if (nnAdd) nnAdd.addEventListener('click', function () {
+      var subj = (document.getElementById('nnSubj') || {}).value || '';
+      var chap = (document.getElementById('nnChap') || {}).value || '';
+      var text = (document.getElementById('nnText') || {}).value || '';
+      if (!text.trim()) { if (window.toast) window.toast(L('Pehle note likho', 'पहले नोट लिखो')); return; }
+      window.STUDY.noteAdd(subj, chap, text.trim());
+      window.BP && window.BP.render();
+      if (window.toast) window.toast(L('Note save ho gayi', 'नोट सहेज ली गई'));
+    });
+    document.querySelectorAll('.nt-edit').forEach(function (ta) {
+      ta.addEventListener('input', function () {
+        clearTimeout(window.__ntT);
+        window.__ntT = setTimeout(function () {
+          window.STUDY.noteUpdate(ta.dataset.id, ta.value);
+          var st = document.querySelector('.nt-stat[data-id="' + ta.dataset.id + '"]');
+          if (st) st.textContent = L('Apne aap save ho gayi', 'अपने-आप सहेज हो गई') + ' ✓';
+        }, 400);
+      });
+    });
+    document.querySelectorAll('.nt-del').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (!confirm(L('Note hatao?', 'नोट हटाओ?'))) return;
+        window.STUDY.noteDel(b.dataset.id);
+        window.BP && window.BP.render();
+      });
+    });
+    var nnSearch = document.getElementById('nnSearch');
+    if (nnSearch) nnSearch.addEventListener('input', function () {
+      var w = nnSearch.value.trim().toLowerCase();
+      document.querySelectorAll('.note-card').forEach(function (c) {
+        var t = (c.querySelector('.nt-edit') || {}).value || '';
+        c.style.display = (!w || t.toLowerCase().indexOf(w) >= 0) ? '' : 'none';
+      });
+    });
+    var nnExport = document.getElementById('nnExport');
+    if (nnExport) nnExport.addEventListener('click', function () {
+      try {
+        var blob = new Blob([window.STUDY.noteExport()], { type: 'application/json' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = 'boardprep-notes.json';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+        if (window.toast) window.toast(L('Notes export ho gayi', 'नोट्स एक्सपोर्ट हो गए'));
+      } catch (e) { if (window.toast) window.toast(L('Export nahi ho paya', 'एक्सपोर्ट नहीं हो पाया')); }
+    });
+
+    // ---- flashcards ----
+    function fcShow() {
+      var cards = window.__fcCards || [];
+      var i = window.__fcIdx || 0;
+      if (!cards.length) return;
+      var q = cards[i];
+      var qEl = document.getElementById('fcQ');
+      if (!qEl) return;
+      qEl.textContent = q.q;
+      var ai = String(q.ans || '').toUpperCase().charCodeAt(0) - 65;
+      var o = document.getElementById('fcOpts');
+      if (o) o.innerHTML = (q.opts || []).map(function (x, k) {
+        return '<div class="fc-opt' + (window.__fcFlipped ? (k === ai ? ' ok' : ' dim') : '') + '">' + 'ABCD'[k] + '. ' + esc(x) + '</div>';
+      }).join('');
+      var ans = document.getElementById('fcAns');
+      if (ans) ans.innerHTML = '<b>' + esc(L('Sahi uttar', 'सही उत्तर')) + ':</b> ' + esc(q.ans) +
+        (q.exp ? '<div class="t-secondary" style="margin-top:6px">' + esc(q.exp) + '</div>' : '');
+      var st = document.getElementById('fcStat');
+      if (st) st.textContent = (i + 1) + '/' + cards.length;
+      var face = document.getElementById('fcFace'), back = document.getElementById('fcBack');
+      if (face) face.hidden = !!window.__fcFlipped;
+      if (back) back.hidden = !window.__fcFlipped;
+      var msg = document.getElementById('fcMsg');
+      if (msg) msg.textContent = L('Pehle khud socho, phir flip karo — ya seedha "aaya/nahi aaya" dabao.', 'पहले खुद सोचो, फिर फ़्लिप करो — या सीधे "आ गया/नहीं आया" दबाओ।');
+    }
+    var fcCard = document.getElementById('fcCard');
+    if (fcCard) fcCard.addEventListener('click', function () { window.__fcFlipped = !window.__fcFlipped; fcShow(); });
+    var fcFlip = document.getElementById('fcFlip');
+    if (fcFlip) fcFlip.addEventListener('click', function () { window.__fcFlipped = !window.__fcFlipped; fcShow(); });
+    function fcNext() { window.__fcIdx = ((window.__fcIdx || 0) + 1) % ((window.__fcCards || []).length || 1); window.__fcFlipped = false; fcShow(); }
+    function fcAns(know) {
+      var cards = window.__fcCards || [];
+      if (!cards.length) return;
+      if (know) window.__fcKnown++; else window.__fcUnknown++;
+      if (window.__fcIdx >= cards.length - 1) {
+        var msg = document.getElementById('fcMsg');
+        if (msg) msg.textContent = L('Ho gaya! Aaya ' + window.__fcKnown + ' · Nahi aaya ' + window.__fcUnknown + '. Dobara se khelo ya kisi aur chapter ka card banao.', 'हो गया! आ गया ' + window.__fcKnown + ' · नहीं आया ' + window.__fcUnknown + '। दोबारा खेलो या किसी और अध्याय का कार्ड बनाओ।');
+      }
+      fcNext();
+    }
+    var fcYes = document.getElementById('fcYes');
+    if (fcYes) fcYes.addEventListener('click', function () { fcAns(true); });
+    var fcNo = document.getElementById('fcNo');
+    if (fcNo) fcNo.addEventListener('click', function () { fcAns(false); });
+    var fcReset = document.getElementById('fcReset');
+    if (fcReset) fcReset.addEventListener('click', function () { window.__fcIdx = 0; window.__fcFlipped = false; window.__fcKnown = 0; window.__fcUnknown = 0; fcShow(); });
+    if (window.__fcCards && document.getElementById('fcCard')) fcShow();
 
     // exam live timer (1s tick) + auto submit
     if (window.__exTick) { clearInterval(window.__exTick); window.__exTick = null; }

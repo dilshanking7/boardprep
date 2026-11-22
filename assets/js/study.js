@@ -470,4 +470,29 @@
     out.innerHTML = h;
   };
 
+  /* ---------------- personal notes (autosave, offline) ---------------- */
+
+  var NKEY = 'bp_notes_v1';
+  function notesLoad() { try { var v = JSON.parse(localStorage.getItem(NKEY)); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+  function notesSave(n) { try { localStorage.setItem(NKEY, JSON.stringify(n)); return true; } catch (e) { return false; } }
+
+  function noteAdd(subj, chap, text) {
+    var n = notesLoad();
+    n.push({ id: 'n' + Date.now() + Math.floor(Math.random() * 999), s: subj || '', c: chap || '', t: String(text || ''), ts: Date.now() });
+    return notesSave(n);
+  }
+  function noteUpdate(id, text) {
+    var n = notesLoad(); var hit = false;
+    n.forEach(function (x) { if (x.id === id) { x.t = String(text || ''); x.ts = Date.now(); hit = true; } });
+    if (hit) notesSave(n); return hit;
+  }
+  function noteDel(id) { var n = notesLoad().filter(function (x) { return x.id !== id; }); return notesSave(n); }
+  function noteExport() { return JSON.stringify(notesLoad(), null, 1); }
+
+  window.STUDY.notes = function () { return notesLoad(); };
+  window.STUDY.noteAdd = noteAdd;
+  window.STUDY.noteUpdate = noteUpdate;
+  window.STUDY.noteDel = noteDel;
+  window.STUDY.noteExport = noteExport;
+
 })();
