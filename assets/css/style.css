@@ -565,3 +565,11 @@ html[data-theme="dark"] .xchip, html[data-theme="dark"] .badge.freq { color: #fc
 
 /* exam: mark for review */
 .fchip.rev { outline: 2px dashed var(--color-primary); outline-offset: -2px; }
+
+/* in-app update banner */
+.upd-bar { position: sticky; top: 0; z-index: 999; display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: var(--color-primary); color: #fff; font-size: 13px; font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0,0,0,.2); }
+.upd-bar .upd-t { flex: 1; min-width: 0; }
+.upd-btn { background: #fff; color: var(--color-primary); border: 0; border-radius: 10px;
+  padding: 8px 14px; font-weight: 800; font-size: 13px; white-space: nowrap; cursor: pointer; }

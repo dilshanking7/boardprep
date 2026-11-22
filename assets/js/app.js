@@ -15,6 +15,34 @@
   var ORIG_CONTENT = {};
   CONTENT_KEYS.forEach(function (k) { if (window[k]) ORIG_CONTENT[k] = window[k]; });
 
+  // Is APK ki version — version.json se compare hoti hai (in-app update banner)
+  var APP_VERSION = '4.4';
+  var VER_URL = 'https://dilshanking7.github.io/boardprep/version.json';
+
+  function cmpVer(a, b) {
+    var x = String(a || '0').split('.').map(Number), y = String(b || '0').split('.').map(Number);
+    for (var i = 0; i < 3; i++) { var p = x[i] || 0, q = y[i] || 0; if (p > q) return 1; if (p < q) return -1; }
+    return 0;
+  }
+
+  // Naya update check — banner dikhata hai, tap karke APK khud download + install
+  function checkUpdate() {
+    try {
+      fetch(VER_URL + '?t=' + Date.now(), { cache: 'no-store' }).then(function (r) {
+        return r.ok ? r.json() : null;
+      }).then(function (j) {
+        if (!j || !j.version || cmpVer(j.version, APP_VERSION) <= 0) return;
+        var bar = document.getElementById('updBar');
+        if (!bar) return;
+        bar.hidden = false;
+        bar.setAttribute('data-url', j.apk || '');
+        var t = bar.querySelector('.upd-t');
+        if (t) t.textContent = L('Naya update aaya: v', 'नया अपडेट आया: v') + j.version +
+          (j.note ? ' · ' + j.note : '');
+      }).catch(function () { });
+    } catch (e) { }
+  }
+
   function L(en, hi) { return state.lang === 'en' ? en : (hi == null ? en : hi); }
 
   function trStr(s) {
@@ -294,6 +322,21 @@
       h += '<div class="note">' + esc(L('Din ginne ka matlab: mahine ke pehle din maan kar (1 ' + ec.label + ')। Aadhikarike taarikh board jari karega — yah sirf estimate hai.', 'दिन गिनने का मतलब: महीने के पहले दिन मान कर (1 ' + ec.label + ')। आधिकारिक तारीख बोर्ड जारी करेगा — यह सिर्फ़ अनुमान है।')) + '</div>';
     }
 
+    /* C2. Student ka apna target (agar set hai) */
+    var cd = (window.STUDY && window.STUDY.countdown) ? window.STUDY.countdown() : null;
+    if (cd) {
+      h += '<div class="card dash-exam" style="border-color:#c4b5fd;background:#f5f3ff">' +
+        '<div><div class="t-small">' + esc(L('Mera target', 'मेरा टारगेट')) + '</div>' +
+        '<div style="font-size:18px;font-weight:800">' + cd.days + ' ' + esc(L('din bache', 'दिन बचे')) + '</div>' +
+        '<div class="t-secondary">' + esc(L('Exam:', 'एग्ज़ाम:')) + ' ' + esc(cd.exam) + ' · ' +
+        esc(L('Syllabus', 'सिलेबस')) + ' ' + cd.syllabus + '%</div>' +
+        '<div class="t-secondary">' + esc(L('Aaj se roz', 'आज से रोज़')) + ' <b class="t-num">' + cd.perDay + '</b> ' + esc(L('sawal', 'सवाल')) +
+        ' · ' + esc(L('bacha', 'बचा')) + ' ' + cd.left + '/' + cd.goal + '</div></div>' +
+        '<span data-icon="target" class="dash-exam-ic"></span></div>';
+      h += '<div class="note"><a href="#/target" style="color:var(--color-primary);font-weight:700">' + esc(L('Target badlo', 'टारगेट बदलो')) + ' →</a>' +
+        ' · ' + esc(L('Subah ka sandesh', 'सुबह का संदेश')) + ' ' + esc(cd.time) + '</div>';
+    }
+
     /* D. जहाँ से जारी रखें */
     var ls = storeGet('bp_last_subj', '');
     if (ls && window.SUBJECT_MAP && window.SUBJECT_MAP[ls]) {
@@ -394,9 +437,9 @@
       '<button class="btn btn-accent" id="offBtn" style="padding:10px 14px;white-space:nowrap">' + esc(L('Offline download', 'ऑफ़लाइन डाउनलोड')) + '</button></a>';
 
     if (storeGet('bp_apk', '0') !== '1' && location.href.indexOf('appassets.androidplatform.net') < 0) {
-      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v4.3.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
-        '<div class="t">📱 ' + esc(L('एंड्रॉयड ऐप v4.3 — पूरा ऑफ़लाइन', 'Android app v4.3 — full offline')) + '</div>' +
-        '<div class="s">' + esc(L('App me hi sab hai — PDF, 3D models, songs. Internet ke bina bhi.', 'ऐप में ही सब है — PDF, 3D models, songs। इंटरनेट के बिना भी।')) + '</div></div><span class="n">⬇</span></a>';
+      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v4.4.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
+        '<div class="t">📱 ' + esc(L('Android app v4.4 — full offline', 'एंड्रॉयड ऐप v4.4 — पूरा ऑफ़लाइन')) + '</div>' +
+        '<div class="s">' + esc(L('Sab kuch app me hi hai — PDF, 3D models, songs. Internet ke bina bhi.', 'सब कुछ ऐप में ही है — PDF, 3D models, songs। इंटरनेट के बिना भी।')) + '</div></div><span class="n">⬇</span></a>';
     }
 
     html += '<section class="section"><div class="section-head">' +
@@ -940,7 +983,7 @@
     var map = { '': 'home', 'learn': 'learn', 'subjects': 'learn', 'subject': 'learn', 'chapter': 'learn', 'stories': 'learn', 'notes': 'learn', 'note': 'learn', 'help': 'learn',
       'practice': 'practice', 'bank': 'practice', 'quiz': 'practice', 'papers': 'practice', 'important': 'practice', 'exam': 'practice',
     'calc': 'learn',
-      'progress': 'progress', 'revision': 'progress', 'assistant': 'progress', 'planner': 'progress', 'mynotes': 'progress', 'timer': 'progress', 'remind': 'progress',
+      'progress': 'progress', 'revision': 'progress', 'assistant': 'progress', 'planner': 'progress', 'mynotes': 'progress', 'timer': 'progress', 'remind': 'progress', 'target': 'progress',
       'profile': 'profile', 'settings': 'profile' };
     var on = map[cur] || 'home';
     document.querySelectorAll('.bottomnav a').forEach(function (a) {
@@ -1078,7 +1121,35 @@
     window.addEventListener('hashchange', render);
     applyBoardData();
     applyContentLang();
-    // reminder: har 30s check (device par hi, offline)
+    // ---- in-app update banner ----
+    if (!document.getElementById('updBar')) {
+      var bar = document.createElement('div');
+      bar.id = 'updBar';
+      bar.className = 'upd-bar';
+      bar.hidden = true;
+      bar.innerHTML = '<span class="upd-t"></span>' +
+        '<button class="upd-btn" id="updBtn">' + esc(L('Update now', 'अपडेट करो')) + '</button>';
+      document.body.insertBefore(bar, document.body.firstChild);
+      document.getElementById('updBtn').addEventListener('click', function () {
+        var u = bar.getAttribute('data-url') || '';
+        if (!u) return;
+        if (window.BPApp && window.BPApp.update) { window.BPApp.update(u); return; }   // APK: khud download + install
+        window.location.href = u;                                                     // web: link kholo
+      });
+    }
+    checkUpdate();
+
+    // ---- pehli baar kholne par target setup (ek hi baar) ----
+    try {
+      var hasT = window.STUDY && window.STUDY.targetGet && window.STUDY.targetGet();
+      var skipped = storeGet('bp_target_skip', '0') === '1';
+      var hh = location.hash.replace(/^#/, '') || '/';
+      if (!hasT && !skipped && (hh === '/' || hh === '')) {
+        location.hash = '#/target';
+      }
+    } catch (e) { }
+
+    // ---- reminder: har 30s check (device par hi, offline) ----
     if (window.STUDY && window.STUDY.remindCheck) {
       var remindTick = function () {
         var r = window.STUDY.remindCheck();

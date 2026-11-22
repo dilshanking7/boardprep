@@ -3,7 +3,7 @@
    - baaki sab (PDF, audio, 3D models) cache-first; network par aaye to cache ho jaye
    - "offline करो" button se poora content cache ho sakta hai
 */
-const CACHE = 'boardprep-v22';
+const CACHE = 'boardprep-v23';
 
 const SHELL = [
   './',
@@ -135,6 +135,12 @@ self.addEventListener('fetch', function (e) {
     }).catch(function () {
       return caches.match(req).then(function (r) { return r || caches.match('index.html'); });
     }));
+    return;
+  }
+
+  // version.json hamesha network se (taaki naya update turant dikhe)
+  if (u.pathname.endsWith('/version.json')) {
+    e.respondWith(fetch(req, { cache: 'no-store' }).catch(function () { return caches.match(req); }));
     return;
   }
 

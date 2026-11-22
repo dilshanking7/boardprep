@@ -1,0 +1,7 @@
+{
+  "version": "4.4",
+  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v4.4.apk",
+  "release": "https://github.com/dilshanking7/boardprep/releases/tag/v1.0",
+  "note": "Exit fix (back button + fullscreen), exam countdown, spaced revision, in-app update",
+  "minVersion": "4.0"
+}

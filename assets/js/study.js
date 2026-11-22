@@ -167,6 +167,32 @@
     }
   };
 
+  /* ---------------- exam target + countdown (student khud set karta hai) ---------------- */
+  var TKEY = 'bp_target_v1';
+  function targetGet() { try { return JSON.parse(localStorage.getItem(TKEY)) || null; } catch (e) { return null; } }
+  function targetSet(o) { try { localStorage.setItem(TKEY, JSON.stringify(o)); } catch (e) {} }
+
+  function countdown() {
+    var t = targetGet();
+    if (!t || !t.exam) return null;
+    var end = new Date(t.exam + 'T23:59:59');
+    var now = new Date();
+    var days = Math.max(0, Math.ceil((end.getTime() - now.getTime()) / 86400000));
+    var totalQ = (window.BOARD_DATA && window.BOARD_DATA.questions) ? window.BOARD_DATA.questions.length : 8356;
+    var syl = (t.syllabus == null ? 100 : Math.max(1, Math.min(100, Number(t.syllabus) || 100)));
+    var goal = Math.max(1, Math.round(totalQ * syl / 100));
+    var done = (window.STUDY && window.STUDY.stats) ? window.STUDY.stats().total : 0;
+    var left = Math.max(0, goal - done);
+    var perDay = days > 0 ? Math.ceil(left / days) : left;
+    return {
+      days: days, exam: t.exam, goal: goal, done: done, left: left, perDay: perDay,
+      syllabus: syl, daily: Math.max(1, Number(t.daily) || 20), time: t.time || '07:00'
+    };
+  }
+
+  window.STUDY.targetGet = targetGet;
+  window.STUDY.targetSet = targetSet;
+  window.STUDY.countdown = countdown;
   window.STUDY.reminderGet = remLoad;
   window.STUDY.reminderSet = function (o) { var d = remLoad(); for (var k in o) d[k] = o[k]; remSave(d); return d; };
   window.STUDY.remindCheck = function () {
@@ -179,7 +205,16 @@
     if (d.last === today) return null;            // aaj pehle ho chuka
     if (Math.abs(hm - set) > 2) return null;      // time ke ±2 min
     d.last = today; remSave(d);
-    return { title: 'BoardPrep', body: d.msg || 'Abhi padho! Daily goal poora karo.' };
+    var c = countdown();
+    var body;
+    if (c && c.days > 0) {
+      body = 'Aaj ' + c.days + ' din bache hai — ' + c.perDay + ' sawal karo! (बचा: ' + c.left + ')';
+    } else if (c && c.days === 0) {
+      body = 'Aaj exam ka din hai — sahi likho, best of luck!';
+    } else {
+      body = d.msg || 'Abhi padho! Daily goal poora karo.';
+    }
+    return { title: 'BoardPrep', body: body };
   };
 
   /* ---------------- progress dashboard ---------------- */

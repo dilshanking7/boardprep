@@ -896,6 +896,34 @@
     window.BP.state.bankPage = page;
   }
 
+  /* ---------------- exam target / onboarding ---------------- */
+
+  function vTarget() {
+    var T = (window.STUDY && window.STUDY.targetGet) ? window.STUDY.targetGet() : null;
+    var defExam = '2027-02-05';
+    try {
+      var raw = ((window.IMPORTANT && window.IMPORTANT.exam) || '').toString();
+      var m = raw.match(/([A-Za-z]{3,})\s*(\d{4})/);
+      var mon = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 }[m ? m[1].slice(0, 3).toLowerCase() : ''];
+      if (mon) defExam = m[2] + '-' + String(mon).padStart(2, '0') + '-01';
+    } catch (e) {}
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Apna exam target', 'अपना एग्ज़ाम टारगेट')) + '</h2>' +
+      '<span class="note">' + esc(L('Ek baar set karo — countdown + daily message apne aap', 'एक बार सेट करो — काउंटडाउन + रोज़ का संदेश अपने आप')) + '</span></div>';
+    h += '<div class="board-group">' + esc(L('Exam ki tareekh', 'एग्ज़ाम की तारीख')) + '</div>';
+    h += '<div class="field"><input type="date" id="tgExam" value="' + esc((T && T.exam) || defExam) + '"></div>';
+    h += '<div class="board-group" style="margin-top:12px">' + esc(L('Syllabus kitna karna hai (%)', 'सिलेबस कितना करना है (%)')) + '</div>';
+    h += '<div class="field"><input type="range" id="tgSyl" min="10" max="100" step="5" value="' + ((T && T.syllabus) || 100) + '" style="width:100%">' +
+      '<div class="note t-num" id="tgSylV">' + ((T && T.syllabus) || 100) + '%</div></div>';
+    h += '<div class="board-group" style="margin-top:12px">' + esc(L('Roz kitne sawal', 'रोज़ कितने सवाल')) + '</div>';
+    h += '<div class="field"><input type="number" id="tgDaily" min="1" max="500" value="' + ((T && T.daily) || 20) + '"></div>';
+    h += '<div class="board-group" style="margin-top:12px">' + esc(L('Subah ka sandesh', 'सुबह का संदेश')) + '</div>';
+    h += '<div class="field"><input type="time" id="tgTime" value="' + ((T && T.time) || '07:00') + '"></div>';
+    h += '<button class="btn btn-accent btn-block" id="tgSave" style="margin-top:14px">' + esc(L('Sanjayein', 'सहेजें')) + '</button>';
+    h += '<div id="tgOut" class="note" style="margin-top:8px"></div>';
+    h += '<div style="text-align:center;margin-top:10px"><a href="#/" id="tgSkip" style="color:var(--color-primary);font-weight:700">' + esc(L('Abhi nahi — skip', 'अभी नहीं — छोड़ो')) + '</a></div>';
+    return h + '</section>';
+  }
+
   /* ---------------- reminders ---------------- */
 
   function vRemind() {
@@ -1075,6 +1103,7 @@
     if (p === 'profile') return vProfile();
     if (p === 'revision') return window.vRevision ? window.vRevision() : '';
     if (p === 'calc') return window.CalcTool ? window.CalcTool.view() : '';
+    if (p === 'target') return vTarget();
     if (p === 'remind') return vRemind();
     if (p === 'exam') return window.vExam ? window.vExam() : '';
     if (p === 'assistant') return window.vAssistant ? window.vAssistant() : '';
@@ -1456,6 +1485,30 @@
     var fcReset = document.getElementById('fcReset');
     if (fcReset) fcReset.addEventListener('click', function () { window.__fcIdx = 0; window.__fcFlipped = false; window.__fcKnown = 0; window.__fcUnknown = 0; fcShow(); });
     if (window.__fcCards && document.getElementById('fcCard')) fcShow();
+
+    var tgSkip = document.getElementById('tgSkip');
+    if (tgSkip) tgSkip.addEventListener('click', function () {
+      try { localStorage.setItem('bp_target_skip', '1'); } catch (e) { }
+    });
+    var tgSyl = document.getElementById('tgSyl');
+    if (tgSyl) tgSyl.addEventListener('input', function () {
+      var v = document.getElementById('tgSylV'); if (v) v.textContent = tgSyl.value + '%';
+    });
+    var tgSave = document.getElementById('tgSave');
+    if (tgSave) tgSave.addEventListener('click', function () {
+      var exam = document.getElementById('tgExam').value;
+      var syl = Number(document.getElementById('tgSyl').value) || 100;
+      var daily = Number(document.getElementById('tgDaily').value) || 20;
+      var time = document.getElementById('tgTime').value || '07:00';
+      if (!exam) { var o = document.getElementById('tgOut'); if (o) o.textContent = L('Tareekh chuno', 'तारीख चुनो'); return; }
+      var p = time.split(':');
+      window.STUDY.targetSet({ exam: exam, syllabus: syl, daily: daily, time: time });
+      window.STUDY.reminderSet({ on: true, time: time, min: (parseInt(p[0], 10) * 60 + parseInt(p[1], 10)), last: '' });
+      var c = window.STUDY.countdown();
+      var o2 = document.getElementById('tgOut');
+      if (o2) o2.textContent = c ? ('✓ ' + c.days + ' ' + L('din bache', 'दिन बचे') + ' · ' + c.perDay + '/' + L('din', 'दिन')) : '';
+      setTimeout(function () { location.hash = '#/'; }, 600);
+    });
 
     var appExit = document.getElementById('appExit');
     if (appExit) appExit.addEventListener('click', function () {
