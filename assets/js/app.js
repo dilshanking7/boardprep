@@ -51,6 +51,8 @@
     lang: storeGet('bp_lang', 'hi'),
     quiz: null,
     subjKey: null,
+    bankSubj: 'all', bankType: 'all', bankAns: 'all', bankChap: 'all', bankWord: '', bankPage: 0,
+    qzKind: 'quick',
     subjType: 'all',
     subjChap: 'all',
     shown: 40,
@@ -541,6 +543,11 @@
         '<div class="iq">' + esc(L('Questions here come from the shared JAC bank, not your board papers.', 'यहाँ के प्रश्न साझा JAC bank से हैं, तुम्हारे board के अपने पेपर से नहीं।')) + '</div></div></div>';
     }
 
+    html += '<div class="field"><label>' + esc(L('Quiz mode', 'क्विज़ मोड')) + '</label><div class="chips" id="qzKind">' +
+      [['quick', L('Quick 10', 'तेज़ 10')], ['chapter', L('Chapter', 'अध्याय')], ['subject', L('Subject', 'विषय')], ['mixed', L('Mixed', 'मिक्स')], ['weak', L('Weak', 'कमज़ोर')], ['revision', L('Revision', 'रिवीज़न')], ['random', L('Random', 'रैंडम')], ['daily', L('Daily', 'रोज़ की चुनौती')]].map(function (m, i) {
+        return '<button class="fchip' + (i === 0 ? ' on' : '') + '" data-v="' + m[0] + '">' + esc(m[1]) + '</button>';
+      }).join('') + '</div></div>';
+
     html += '<div class="field"><label>' + esc(t('quiz_subj')) + '</label><div class="chips" id="qzSubj">' +
       '<button class="fchip on" data-v="all">' + esc(t('all')) + '</button>' +
       boardSubjects().map(function (s) {
@@ -769,6 +776,42 @@
     return pool.slice(0, Math.min(count, pool.length));
   }
 
+  // seeded shuffle — daily challenge ke liye (us din ke liye wahi set)
+  function seededShuffle(arr, seed) {
+    var a = arr.slice();
+    var s = seed >>> 0;
+    function rnd() { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+
+  function pickQuizAdvanced(kind, subjKey, chap, count, mode) {
+    var all = qsFor(subjKey === 'all' ? null : subjKey);
+    var pool = [];
+    if (kind === 'weak' && window.STUDY) {
+      var st = window.STUDY.stats();
+      var weakChaps = {};
+      st.chap.forEach(function (c) { if (c.n >= 3 && c.pct < 50) weakChaps[c.s + '|' + c.c] = 1; });
+      pool = D.questions.filter(function (q) { return weakChaps[q.subj + '|' + (q.chap || q.part)] && answerable(q); });
+    } else if (kind === 'revision' && window.STUDY) {
+      var seen = {};
+      (window.STUDY.data().wrong || []).slice(-200).forEach(function (w) { if (w.q) seen[(w.q.q || '').slice(0, 80)] = w.q; });
+      (window.STUDY.data().book || []).slice(-200).forEach(function (b) { if (b.q) seen[(b.q.q || '').slice(0, 80)] = b.q; });
+      pool = Object.keys(seen).map(function (k) { return seen[k]; }).filter(function (q) { return answerable(q); });
+    } else {
+      pool = all.filter(function (q) {
+        if (mode !== 'mix' && q.type !== mode) return false;
+        if (kind === 'chapter' && chap !== 'all' && (q.chap || q.part) !== chap) return false;
+        if (kind === 'chapter' && (chap === 'all')) return false;
+        return answerable(q);
+      });
+    }
+    var seed = kind === 'daily' ? Number(new Date().toISOString().slice(0, 10).replace(/-/g, '')) : 0;
+    var sh = kind === 'daily' ? seededShuffle(pool, seed) : seededShuffle(pool, Math.floor(Math.random() * 1e9));
+    var n = (kind === 'quick') ? 10 : count;
+    return sh.slice(0, Math.min(n, sh.length));
+  }
+
   function fillChips(id, onPick) {
     var box = document.getElementById(id);
     if (!box) return;
@@ -829,9 +872,10 @@
       });
       fillChips('qzCount', function (v) { state.qzCount = Number(v); });
       fillChips('qzMode', function (v) { state.qzMode = v; });
-      state.qzSubj = 'all'; state.qzCount = 10; state.qzMode = 'mix';
+      fillChips('qzKind', function (v) { state.qzKind = v; });
+      state.qzSubj = 'all'; state.qzCount = 10; state.qzMode = 'mix'; state.qzKind = 'quick';
       start.addEventListener('click', function () {
-        var items = pickQuiz(state.qzSubj, document.getElementById('qzChap').value,
+        var items = pickQuizAdvanced(state.qzKind, state.qzSubj, document.getElementById('qzChap').value,
           state.qzCount, state.qzMode);
         if (!items.length) return;
         state.quiz = { items: items, i: 0, right: 0, ok: {} };
@@ -889,7 +933,7 @@
     var h = location.hash.replace(/^#/, '') || '/';
     var cur = h.split('/')[0] || '';
     var map = { '': 'home', 'learn': 'learn', 'subjects': 'learn', 'subject': 'learn', 'chapter': 'learn', 'stories': 'learn', 'notes': 'learn', 'note': 'learn', 'help': 'learn',
-      'practice': 'practice', 'quiz': 'practice', 'papers': 'practice', 'important': 'practice', 'exam': 'practice',
+      'practice': 'practice', 'bank': 'practice', 'quiz': 'practice', 'papers': 'practice', 'important': 'practice', 'exam': 'practice',
       'progress': 'progress', 'revision': 'progress', 'assistant': 'progress', 'planner': 'progress', 'mynotes': 'progress', 'timer': 'progress',
       'profile': 'profile', 'settings': 'profile' };
     var on = map[cur] || 'home';

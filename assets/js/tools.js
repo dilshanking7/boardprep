@@ -545,7 +545,8 @@
     var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Abhyas', 'अभ्यास')) + '</h2>' +
       '<span class="note">' + esc(L('Practice + tests', 'अभ्यास + परीक्षण')) + '</span></div>';
     h += hubGrid([
-      ['#/subjects', 'library', L('Question bank', 'प्रश्न बैंक'), L('8356 questions', '8356 सवाल')],
+      ['#/bank', 'library', L('Question bank', 'प्रश्न बैंक'), L('filters + bookmark', 'फ़िल्टर + बुकमार्क')],
+      ['#/subjects', 'grid', L('Subjects', 'विषय'), L('8356 questions', '8356 सवाल')],
       ['#/quiz', 'pencil', L('Quiz', 'क्विज़'), L('chapter / subject / mixed', 'अध्याय / विषय / मिक्स')],
       ['#/exam', 'timer', L('Mock exam', 'मॉक एग्ज़ाम'), L('timer + real pattern', 'टाइमर + असली पैटर्न')],
       ['#/papers', 'papers', L('Papers (PDF)', 'पेपर (PDF)'), L('PYQ + model', 'PYQ + मॉडल')],
@@ -827,6 +828,68 @@
     return h + '</section>';
   }
 
+  /* ---------------- question bank (filters) ---------------- */
+
+  function vBank() {
+    var subs = (window.SUBJECTS || []).filter(function (s) { return ['maths', 'science', 'sst', 'hindi', 'english', 'sanskrit'].indexOf(s.key) >= 0; });
+    var st = window.BP.state;
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Question bank', 'प्रश्न बैंक')) + '</h2>' +
+      '<span class="note" id="bkCount"></span></div>';
+    h += '<div class="chips" id="bkSubj">' + subs.map(function (s) {
+      return '<button class="fchip' + ((st.bankSubj || 'all') === s.key ? ' on' : '') + '" data-bsub="' + esc(s.key) + '">' + esc(window.BP.state.lang === 'en' ? (s.en || s.name) : s.name) + '</button>';
+    }).join('') + '</div>';
+    h += '<div class="chips" id="bkType">' + [['all', L('Sab', 'सभी')], ['mcq', 'MCQ'], ['write', L('Likhit', 'लिखित')]].map(function (x) {
+      return '<button class="fchip' + ((st.bankType || 'all') === x[0] ? ' on' : '') + '" data-btype="' + x[0] + '">' + esc(x[1]) + '</button>';
+    }).join('') + '</div>';
+    h += '<div class="chips" id="bkAns">' + [['all', L('Sab', 'सभी')], ['ans', L('Jawab sahit', 'जवाब सहित')], ['noans', L('Bina jawab', 'बिना जवाब')]].map(function (x) {
+      return '<button class="fchip' + ((st.bankAns || 'all') === x[0] ? ' on' : '') + '" data-bans="' + x[0] + '">' + esc(x[1]) + '</button>';
+    }).join('') + '</div>';
+    h += '<div class="field"><select id="bkChap"><option value="all">' + esc(L('Sab chapters', 'सभी अध्याय')) + '</option></select></div>';
+    h += '<input type="search" id="bkSearch" placeholder="' + esc(L('Sawal khojein…', 'सवाल खोजें…')) + '">';
+    h += '<div id="bkList" style="margin-top:12px"></div>';
+    h += '<div class="chips" style="justify-content:center;margin-top:10px">' +
+      '<button class="fchip" id="bkPrev">← ' + esc(L('Pichla', 'पिछला')) + '</button>' +
+      '<span class="note t-num" id="bkPage" style="align-self:center"></span>' +
+      '<button class="fchip" id="bkNext">' + esc(L('Agla', 'अगला')) + ' →</button></div>';
+    h += '<div class="note">' + esc(L('Bookmark ke liye card par ☆ dabao; 547 bina-jawab MCQ chhote hue bhi list me nahi (quiz unhe skip karta hai).', 'बुकमार्क के लिए कार्ड पर ☆ दबाओ; 547 बिना-जवाब MCQ छोटे हुए भी सूची में नहीं (क्विज़ उन्हें छोड़ देता है)।')) + '</div>';
+    return h + '</section>';
+  }
+
+  function bankList() {
+    var st = window.BP.state;
+    var subj = st.bankSubj || 'all', type = st.bankType || 'all', ans = st.bankAns || 'all';
+    var chap = st.bankChap || 'all', word = (st.bankWord || '').toLowerCase();
+    var list = [];
+    (window.BOARD_DATA.questions || []).forEach(function (q) {
+      if (subj !== 'all' && q.subj !== subj) return;
+      if (type !== 'all' && q.type !== type) return;
+      if (ans === 'ans' && !(q.opts && q.ans)) return;
+      if (ans === 'noans' && (q.opts && q.ans)) return;
+      if (chap !== 'all' && (q.chap || q.part) !== chap) return;
+      if (word && (window.BP.norm(q.q) + ' ' + window.BP.norm((q.opts || []).join(' '))).indexOf(window.BP.norm(word)) < 0) return;
+      list.push(q);
+    });
+    return list;
+  }
+
+  function renderBank() {
+    var list = bankList();
+    var per = 20;
+    var page = window.BP.state.bankPage || 0;
+    var pages = Math.max(1, Math.ceil(list.length / per));
+    if (page >= pages) page = pages - 1;
+    var slice = list.slice(page * per, page * per + per);
+    var el = document.getElementById('bkList');
+    var cnt = document.getElementById('bkCount');
+    if (cnt) cnt.textContent = list.length + ' ' + L('sawal', 'सवाल');
+    if (!el) return;
+    el.innerHTML = slice.length ? slice.map(function (q, i) { return window.BP.questionCard(q, 'bk' + (page * per + i)); }).join('') :
+      '<div class="empty">' + esc(L('Kuch nahi mila', 'कुछ नहीं मिला')) + '</div>';
+    var pg = document.getElementById('bkPage');
+    if (pg) pg.textContent = (page + 1) + '/' + pages;
+    window.BP.state.bankPage = page;
+  }
+
   /* ---------------- help / kaise use karein ---------------- */
 
   function vHelp() {
@@ -978,6 +1041,7 @@
     if (p === 'learn') return vLearn();
     if (p === 'chapter') return vChapter(parts[1], decodeURIComponent(parts[2] || ''));
     if (p === 'mynotes') return vMyNotes();
+    if (p === 'bank') return vBank();
     if (p === 'planner') return vPlanner();
     if (p === 'timer') return vTimer();
     if (p === 'flash') return vFlash(parts[1], decodeURIComponent(parts[2] || 'all'));
@@ -1352,6 +1416,54 @@
     var fcReset = document.getElementById('fcReset');
     if (fcReset) fcReset.addEventListener('click', function () { window.__fcIdx = 0; window.__fcFlipped = false; window.__fcKnown = 0; window.__fcUnknown = 0; fcShow(); });
     if (window.__fcCards && document.getElementById('fcCard')) fcShow();
+
+    // ---- question bank ----
+    function fillBankChaps() {
+      var subj = window.BP.state.bankSubj || 'all';
+      var sel = document.getElementById('bkChap');
+      if (!sel) return;
+      var chaps = [];
+      try { chaps = subj === 'all' ? [] : window.BP.chapters(subj); } catch (e) {}
+      var cur = window.BP.state.bankChap || 'all';
+      sel.innerHTML = '<option value="all">' + esc(L('Sab chapters', 'सभी अध्याय')) + '</option>' +
+        chaps.map(function (c) { return '<option value="' + esc(c) + '"' + (cur === c ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('');
+    }
+    document.querySelectorAll('[data-bsub]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-bsub]').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        window.BP.state.bankSubj = b.dataset.bsub;
+        window.BP.state.bankChap = 'all'; window.BP.state.bankPage = 0;
+        fillBankChaps(); renderBank();
+      });
+    });
+    document.querySelectorAll('[data-btype]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-btype]').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        window.BP.state.bankType = b.dataset.btype; window.BP.state.bankPage = 0; renderBank();
+      });
+    });
+    document.querySelectorAll('[data-bans]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-bans]').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        window.BP.state.bankAns = b.dataset.bans; window.BP.state.bankPage = 0; renderBank();
+      });
+    });
+    var bkChap = document.getElementById('bkChap');
+    if (bkChap) bkChap.addEventListener('change', function () { window.BP.state.bankChap = bkChap.value; window.BP.state.bankPage = 0; renderBank(); });
+    var bkSearch = document.getElementById('bkSearch');
+    if (bkSearch) bkSearch.addEventListener('input', function () {
+      clearTimeout(window.__bkT);
+      var v = bkSearch.value;
+      window.__bkT = setTimeout(function () { window.BP.state.bankWord = v; window.BP.state.bankPage = 0; renderBank(); }, 180);
+    });
+    var bkPrev = document.getElementById('bkPrev');
+    if (bkPrev) bkPrev.addEventListener('click', function () { window.BP.state.bankPage = Math.max(0, (window.BP.state.bankPage || 0) - 1); renderBank(); });
+    var bkNext = document.getElementById('bkNext');
+    if (bkNext) bkNext.addEventListener('click', function () { window.BP.state.bankPage = (window.BP.state.bankPage || 0) + 1; renderBank(); });
+    if (document.getElementById('bkList')) { fillBankChaps(); renderBank(); }
 
     // ---- study timer ----
     function tmTick() {
