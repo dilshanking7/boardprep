@@ -436,12 +436,12 @@
 
   /* ---------------- notes ---------------- */
 
-  var NOTE_SUBS = ['science', 'maths', 'sst_history', 'sst_geo', 'sst_civics', 'sst_econ', 'hindi', 'english', 'sanskrit'];
+  var NOTE_SUBS = ['science', 'maths', 'sst_history', 'sst_geo', 'sst_civics', 'sst_econ', 'sst_jharkhand', 'hindi', 'english', 'sanskrit'];
 
   function noteSubName(k) {
     var m = {
       science: 'विज्ञान', maths: 'गणित', sst_history: 'इतिहास', sst_geo: 'भूगोल',
-      sst_civics: 'नागरिकशास्त्र', sst_econ: 'अर्थशास्त्र', hindi: 'हिंदी', english: 'English', sanskrit: 'संस्कृत'
+      sst_civics: 'नागरिकशास्त्र', sst_econ: 'अर्थशास्त्र', sst_jharkhand: 'झारखंड', hindi: 'हिंदी', english: 'English', sanskrit: 'संस्कृत'
     };
     return m[k] || k;
   }
@@ -457,6 +457,8 @@
       else if (t === 'hl') h += '<div class="nt-hl" style="border-left-color:' + (b[2] || '#7c3aed') + ';background:' + (b[2] || '#7c3aed') + '14">' + esc(b[1]) + '</div>';
       else if (t === 'box') h += '<div class="nt-box"><b>' + esc(b[1]) + '</b><p>' + esc(b[2]) + '</p></div>';
       else if (t === 'link') h += '<a class="nt-link" href="' + esc(b[2]) + '">' + esc(b[1]) + '</a>';
+      else if (t === 'ten') h += '<div class="nt-ten"><b>' + esc(L('10 zaroori points', '10 ज़रूरी बातें')) + '</b><ol>' + b[1].map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol></div>';
+      else if (t === 'qa') h += '<div class="nt-qa"><b>' + esc(L('Board-style prashn', 'बोर्ड-शैली प्रश्न')) + '</b><div class="q">' + esc(b[1]) + '</div><div class="a">' + esc(b[2]) + '</div></div>';
     });
     return h;
   }
@@ -601,6 +603,9 @@
     h += '<div class="setting-row"><span>' + esc(L('Version', 'संस्करण')) + '</span><span class="setting-val">v3.0</span></div>';
     h += '<div class="setting-row"><span>' + esc(L('Content source', 'सामग्री स्रोत')) + '</span><span class="setting-val" style="max-width:60%;text-align:right">' + esc(L('NCERT syllabus based', 'NCERT पाठ्यक्रम आधारित')) + '</span></div>';
     h += '<div class="setting-row"><span>' + esc(L('Privacy', 'गोपनीयता')) + '</span><span class="setting-val" style="max-width:60%;text-align:right">' + esc(L('Sab data is device par', 'सारा डेटा इसी डिवाइस पर')) + '</span></div>';
+    h += '<div class="board-group">' + esc(L('Licences', 'लाइसेंस')) + '</div>';
+    h += '<div class="setting-row" style="align-items:flex-start;flex-direction:column;gap:4px"><span>' + esc(L('3D anatomy models', '3D एनाटॉमी मॉडल')) + '</span><span class="t-small">BodyParts3D © DBCLS (CC BY 4.0); female organs: HuBMAP (CC BY 4.0); female body: MakeHuman (CC0). Adapted by open-anatomy-3d (CC BY 4.0).</span></div>';
+    h += '<div class="setting-row" style="align-items:flex-start;flex-direction:column;gap:4px"><span>' + esc(L('PDFs + audio', 'PDF + ऑडियो')) + '</span><span class="t-small">' + esc(L('NCERT/JAC material + free audio (licence verify)', 'NCERT/JAC सामग्री + मुफ़्त ऑडियो (लाइसेंस जाँचें — verify)')) + '</span></div>';
     h += '<div class="note">' + esc(L('BoardPrep ek educational aid hai — koi bhi board-specific content sirf tab kehlata hai jab source verified ho.', 'BoardPrep एक शैक्षणिक साधन है — कोई भी बोर्ड-विशिष्ट सामग्री सिर्फ़ तब कहलाती है जब स्रोत सत्यापित हो।')) + '</div>';
     return h + '</section>';
   }
@@ -611,18 +616,18 @@
   /* ---------------- chapter page + mastery ---------------- */
 
   var MASTERY = {
-    notstarted: { hi: 'शुरू नहीं हुआ', en: 'Not started', c: '#94A3B8' },
-    learning: { hi: 'सीख रहे', en: 'Learning', c: '#0284C7' },
-    practicing: { hi: 'अभ्यास जारी', en: 'Practicing', c: '#D97706' },
-    testpending: { hi: 'टेस्ट बाकी', en: 'Test pending', c: '#7C3AED' },
-    completed: { hi: 'पूरा हुआ', en: 'Completed', c: '#16A34A' },
-    needsrevision: { hi: 'दोबारा चाहिए', en: 'Needs revision', c: '#DC2626' }
+    notstarted: { hi: 'शुरू नहीं हुआ', en: 'Not started', c: '#475569', bg: 'rgba(71,85,105,.12)' },
+    learning: { hi: 'सीख रहे', en: 'Learning', c: '#0369a1', bg: 'rgba(3,105,161,.10)' },
+    practicing: { hi: 'अभ्यास जारी', en: 'Practicing', c: '#b45309', bg: 'rgba(180,83,9,.12)' },
+    testpending: { hi: 'टेस्ट बाकी', en: 'Test pending', c: '#7c3aed', bg: 'rgba(124,58,237,.12)' },
+    completed: { hi: 'पूरा हुआ', en: 'Completed', c: '#15803d', bg: 'rgba(21,128,61,.12)' },
+    needsrevision: { hi: 'दोबारा चाहिए', en: 'Needs revision', c: '#dc2626', bg: 'rgba(220,38,38,.12)' }
   };
 
   function masteryBadge(m) {
     var k = MASTERY[m.state] || MASTERY.notstarted;
     var label = (window.BP && window.BP.state.lang === 'en') ? k.en : k.hi;
-    return '<span class="mast-badge" style="background:' + k.c + '1a;color:' + k.c + '">' + esc(label) +
+    return '<span class="mast-badge" style="background:' + k.bg + ';color:' + k.c + '">' + esc(label) +
       (m.n ? ' · ' + m.n + ' ' + esc(L('sawal', 'सवाल')) : '') + '</span>';
   }
 

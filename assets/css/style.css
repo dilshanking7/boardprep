@@ -546,3 +546,19 @@ html[data-theme="dark"] .fc-opt.ok { background: rgba(22,163,74,.2); }
 .cal7-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .cal7-bar { width: 100%; max-width: 34px; border-radius: 6px 6px 2px 2px; }
 html[data-theme="dark"] .cal7-bar { opacity: .9; }
+
+/* contrast: text colours ≥ 4.5:1 (WCAG AA) on light + dark surfaces */
+.mast-badge { font-weight: 700; }
+.nt-hl { color: var(--color-text-primary); }
+.xchip, .badge.freq { color: #92400e; }
+html[data-theme="dark"] .xchip, html[data-theme="dark"] .badge.freq { color: #fcd34d; }
+
+/* notes: 10 points + board questions */
+.nt-ten { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px 14px; margin: 12px 0; }
+.nt-ten b { display: block; color: var(--color-primary); font-size: 13.5px; margin-bottom: 6px; }
+.nt-ten ol { margin-left: 18px; }
+.nt-ten li { font-size: 14px; line-height: 1.65; margin-bottom: 3px; }
+.nt-qa { background: var(--color-surface-secondary); border-left: 4px solid var(--color-primary); border-radius: var(--radius-md); padding: 12px 14px; margin: 12px 0; }
+.nt-qa b { display: block; color: var(--color-primary); font-size: 13.5px; margin-bottom: 6px; }
+.nt-qa .q { font-size: 15px; font-weight: 700; line-height: 1.6; }
+.nt-qa .a { font-size: 14px; line-height: 1.65; margin-top: 6px; color: var(--color-text-secondary); }

@@ -16,25 +16,45 @@ window.NOTES_ENGLISH = [
     "After hailstones destroy his crop, Lencho humbly writes to God asking for money. In the end, honesty and faith win out."
    ],
    [
-    "p",
-    "Hindi summary: खेती की फसल नष्ट करने वाली ओलावृष्टि के बाद लेंचो ईमानदारी से भगवान से पैसे माँगता है। अंत में ईमानदारी और आस्था की जीत।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "After hailstones destroy his crop, Lencho humbly writes to God asking for money. In the end, honesty and faith win out."
    ],
    [
@@ -60,25 +80,45 @@ window.NOTES_ENGLISH = [
     "Nelson Mandela's journey from apartheid South Africa through 27 years in jail to becoming President — the long walk to freedom."
    ],
    [
-    "p",
-    "Hindi summary: नेल्सन मंडेला का बंटवारे वाले दक्षिण अफ्रीका से लेकर 27 साल की जेल और अंततः राष्ट्रपति बनने तक का संघर्ष।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Nelson Mandela's journey from apartheid South Africa through 27 years in jail to becoming President — the long walk to freedom."
    ],
    [
@@ -104,25 +144,45 @@ window.NOTES_ENGLISH = [
     "Two tales — 'The Black Aeroplane' style narrative of a flying experience and 'A Question of Trust'-like caution. Courage, fear and confidence."
    ],
    [
-    "p",
-    "Hindi summary: दो कहानियाँ — 'एक पत्र जो डाकघर नहीं गया' और 'काला एम्बा'। साहस, डर और आत्मविश्वास का संदेश।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Two tales — 'The Black Aeroplane' style narrative of a flying experience and 'A Question of Trust'-like caution. Courage, fear and confidence."
    ],
    [
@@ -148,25 +208,45 @@ window.NOTES_ENGLISH = [
     "Anne Frank's diary — the atrocities against Jews and the pain of living in hiding."
    ],
    [
-    "p",
-    "Hindi summary: एनी फ्रैंक की डायरी — यहूदियों के साथ हुए अत्याचार और छिपकर रहने का दर्द।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Anne Frank's diary — the atrocities against Jews and the pain of living in hiding."
    ],
    [
@@ -192,25 +272,45 @@ window.NOTES_ENGLISH = [
     "Wanda Petronski claims to own a hundred dresses. Her poverty and her decision to leave school."
    ],
    [
-    "p",
-    "Hindi summary: वंडा पेतुशेक के पास सौ कपड़े होने का झूठा दावा; उसकी गरीबी और उसका फैसला।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Wanda Petronski claims to own a hundred dresses. Her poverty and her decision to leave school."
    ],
    [
@@ -236,25 +336,45 @@ window.NOTES_ENGLISH = [
     "Realising Wanda's truth and seeking forgiveness. The impact of cruelty and the power of apology."
    ],
    [
-    "p",
-    "Hindi summary: वंडा की गलती का एहसास और माफी। क्रूरता का प्रभाव और क्षमा की शक्ति।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Realising Wanda's truth and seeking forgiveness. The impact of cruelty and the power of apology."
    ],
    [
@@ -280,25 +400,45 @@ window.NOTES_ENGLISH = [
     "The diversity of India — the baker of Goa, Indian culture and the landscapes that shape its stories."
    ],
    [
-    "p",
-    "Hindi summary: भारत की विविधता — ब्रिन्दाबन के बेकर, गोवा की संस्कृति और केरल का पृष्ठभूमि।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The diversity of India — the baker of Goa, Indian culture and the landscapes that shape its stories."
    ],
    [
@@ -324,25 +464,45 @@ window.NOTES_ENGLISH = [
     "The affectionate journey of the author with his otter Mijbil. A bond with nature and a pet."
    ],
    [
-    "p",
-    "Hindi summary: लेखक के साथ उसके ओटर मिज़बिल की प्यारी-सी यात्रा। प्रकृति और पालतू जानवरों का संबंध।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The affectionate journey of the author with his otter Mijbil. A bond with nature and a pet."
    ],
    [
@@ -368,25 +528,45 @@ window.NOTES_ENGLISH = [
     "Little Valli fulfils her wish to ride the bus. She experiences life's shocks and the change they bring."
    ],
    [
-    "p",
-    "Hindi summary: छोटी लड़की चाँदी की बस यात्रा की इच्छा से बस पर चढ़ती है। जीवन के झटकों और परिवर्तन का अनुभव।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Little Valli fulfils her wish to ride the bus. She experiences life's shocks and the change they bring."
    ],
    [
@@ -412,25 +592,45 @@ window.NOTES_ENGLISH = [
     "Buddha's sermon — how to face death and grief, through the story of Kisa Gotami."
    ],
    [
-    "p",
-    "Hindi summary: बुद्ध का उपदेश — मृत्यु और शोक का सामना कैसे करें। काकीमा की कहानी।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Buddha's sermon — how to face death and grief, through the story of Kisa Gotami."
    ],
    [
@@ -456,25 +656,45 @@ window.NOTES_ENGLISH = [
     "A satirical play — the rush for marriage and the importance of money."
    ],
    [
-    "p",
-    "Hindi summary: व्यंग्यात्मक नाटक — विवाह के लिए भागदौड़ और पैसे का महत्व।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "A satirical play — the rush for marriage and the importance of money."
    ],
    [
@@ -500,25 +720,45 @@ window.NOTES_ENGLISH = [
     "A crow shaking down dust of snow changes the poet's mood — a small moment, a big change."
    ],
    [
-    "p",
-    "Hindi summary: बूढ़े कोयले जैसे दिल पर बर्फ की एक बूँद का संतुलन बदल देती है।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "A crow shaking down dust of snow changes the poet's mood — a small moment, a big change."
    ],
    [
@@ -544,25 +784,45 @@ window.NOTES_ENGLISH = [
     "Fire and ice — the end of the world in two forms. A lesson on anger and coldness."
    ],
    [
-    "p",
-    "Hindi summary: अग्नि और बर्फ — दो रूपों में संसार का अंत। क्रोध और ठंडे स्वभाव की सीख।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Fire and ice — the end of the world in two forms. A lesson on anger and coldness."
    ],
    [
@@ -588,25 +848,45 @@ window.NOTES_ENGLISH = [
     "The zoo tiger — a wild hunter's caged life and its longing for the open sky."
    ],
    [
-    "p",
-    "Hindi summary: चिड़ियाघर का बाघ — प्रकृति के शिकारी का बंदी जीवन, आकाश देखने की चाह।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The zoo tiger — a wild hunter's caged life and its longing for the open sky."
    ],
    [
@@ -632,25 +912,45 @@ window.NOTES_ENGLISH = [
     "Identifying wild animals — the elephant, the leopard, the bear — in a humorous poem."
    ],
    [
-    "p",
-    "Hindi summary: हाथी, चीता, भालू आदि जंगली जानवरों की पहचान — हास्यपूर्ण कविता।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Identifying wild animals — the elephant, the leopard, the bear — in a humorous poem."
    ],
    [
@@ -676,25 +976,45 @@ window.NOTES_ENGLISH = [
     "After losing his ball, a boy learns responsibility and the reality of loss."
    ],
    [
-    "p",
-    "Hindi summary: गेंद खोने के बाद बच्चे को जिम्मेदारी और हानि का एहसास।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "After losing his ball, a boy learns responsibility and the reality of loss."
    ],
    [
@@ -720,25 +1040,45 @@ window.NOTES_ENGLISH = [
     "Amanda is told what to do everywhere; she escapes into her own dreams."
    ],
    [
-    "p",
-    "Hindi summary: अमांडा को हर जगह अनुशासन और सुझाव मिलते हैं; वह अपने सपनों में खोई रहती है।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Amanda is told what to do everywhere; she escapes into her own dreams."
    ],
    [
@@ -764,25 +1104,45 @@ window.NOTES_ENGLISH = [
     "The simplicity and love of animals — a life better than humans'."
    ],
    [
-    "p",
-    "Hindi summary: पशुओं की सादगी और प्रेम — मनुष्य से बेहतर जीवन।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The simplicity and love of animals — a life better than humans'."
    ],
    [
@@ -808,25 +1168,45 @@ window.NOTES_ENGLISH = [
     "The trees' longing and freedom — from the house towards the forest."
    ],
    [
-    "p",
-    "Hindi summary: पेड़ों की चाह और स्वतंत्रता — घर से बाहर जंगल की ओर।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The trees' longing and freedom — from the house towards the forest."
    ],
    [
@@ -852,25 +1232,45 @@ window.NOTES_ENGLISH = [
     "Like fog, life comes and goes quietly."
    ],
    [
-    "p",
-    "Hindi summary: कोहरे की तरह जीवन चला आता है और चला जाता है।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Like fog, life comes and goes quietly."
    ],
    [
@@ -896,25 +1296,45 @@ window.NOTES_ENGLISH = [
     "Custard the dragon looks weak but is the bravest of all — a humorous poem."
    ],
    [
-    "p",
-    "Hindi summary: कमज़ोर दिखने वाला ड्रैगन कस्टर्ड असल में सबसे साहसी — हास्यपूर्ण कविता।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Custard the dragon looks weak but is the bravest of all — a humorous poem."
    ],
    [
@@ -940,25 +1360,45 @@ window.NOTES_ENGLISH = [
     "On love — whether we love for beauty or for the person within."
    ],
    [
-    "p",
-    "Hindi summary: प्रेम के बारे में — रूप देखकर प्यार या स्वयं को देखकर।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "On love — whether we love for beauty or for the person within."
    ],
    [
@@ -984,25 +1424,45 @@ window.NOTES_ENGLISH = [
     "The pet dog Tricki falls ill; the vet's advice and a four-day diet bring about a triumph of surgery."
    ],
    [
-    "p",
-    "Hindi summary: पालतू कुत्ता ट्रिकी बीमार होता है; सर्जन की सलाह से उसकी चार दिन की डाइट से ठीकी।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The pet dog Tricki falls ill; the vet's advice and a four-day diet bring about a triumph of surgery."
    ],
    [
@@ -1028,25 +1488,45 @@ window.NOTES_ENGLISH = [
     "The thief Hari Singh's story — his changing relation with an honest man."
    ],
    [
-    "p",
-    "Hindi summary: चोर हरीशंकर की कहानी — एक ईमानदार व्यक्ति के साथ उसकी दुश्मनी और बदलाव।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The thief Hari Singh's story — his changing relation with an honest man."
    ],
    [
@@ -1072,25 +1552,45 @@ window.NOTES_ENGLISH = [
     "The clever and the cunning — a thief caught in a kidnapper's trap."
    ],
    [
-    "p",
-    "Hindi summary: चालाक और बुद्धिमान — अपहर्ता के चक्कर में फंसा चोर।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The clever and the cunning — a thief caught in a kidnapper's trap."
    ],
    [
@@ -1116,25 +1616,45 @@ window.NOTES_ENGLISH = [
     "The story of two thieves who trust no one."
    ],
    [
-    "p",
-    "Hindi summary: दो चोरों की कहानी — एक-दूसरे पर भरोसा नहीं।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The story of two thieves who trust no one."
    ],
    [
@@ -1160,25 +1680,45 @@ window.NOTES_ENGLISH = [
     "The tale of an invisible man — science and its unethical use."
    ],
    [
-    "p",
-    "Hindi summary: अदृश्य व्यक्ति की कहानी — विज्ञान और अनैतिक उपयोग पर रोशनी।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The tale of an invisible man — science and its unethical use."
    ],
    [
@@ -1204,25 +1744,45 @@ window.NOTES_ENGLISH = [
     "The story of Richard E. Wilson's teacher — how curiosity makes a scientist."
    ],
    [
-    "p",
-    "Hindi summary: ई.बी. विल्सन के साथ रिश्तर की कहानी — जिज्ञासा से वैज्ञानिक बनना।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "The story of Richard E. Wilson's teacher — how curiosity makes a scientist."
    ],
    [
@@ -1248,25 +1808,45 @@ window.NOTES_ENGLISH = [
     "Mathilde's lost necklace — the heavy price of greed and lies."
    ],
    [
-    "p",
-    "Hindi summary: मैतली का हार खोने की कहानी — लालच और झूठ का भारी मूल्य।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Mathilde's lost necklace — the heavy price of greed and lies."
    ],
    [
@@ -1292,25 +1872,45 @@ window.NOTES_ENGLISH = [
     "A hack driver's tale with the judge — trust and deception."
    ],
    [
-    "p",
-    "Hindi summary: न्यायाधीश के साथ एक हैक ड्राइवर की कहानी — विश्वास और धोखा।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "A hack driver's tale with the judge — trust and deception."
    ],
    [
@@ -1336,25 +1936,45 @@ window.NOTES_ENGLISH = [
     "Education and self-confidence transform Bholi's life — a challenge to disability."
    ],
    [
-    "p",
-    "Hindi summary: भोली को पढ़ाई और आत्मविश्वास ने जीवन बदल दिया — विकलांगता को चुनौती।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Education and self-confidence transform Bholi's life — a challenge to disability."
    ],
    [
@@ -1380,25 +2000,45 @@ window.NOTES_ENGLISH = [
     "Turning the pages of a book confuses the space visitors — a science-fiction comedy."
    ],
    [
-    "p",
-    "Hindi summary: पुस्तक के पन्ने पलटने से अंतरिक्ष यात्रियों का भ्रम — विज्ञान-कथा हास्य।"
-   ],
-   [
     "h3",
-    "कैसे पढ़ें"
+    "How to read (English)"
    ],
    [
     "ul",
     [
-     "पहली बार: ध्यान से पढ़ो, अनेक शब्दों के अर्थ लिखो।",
-     "दूसरी बार: पात्रों, घटनाओं और संवाद पर ध्यान दो।",
-     "अपने शब्दों में सारांश लिखो — यही तुम्हारा note है।",
-     "मुख्य पंक्तियाँ/उद्धरण अलग से लिख लो — परीक्षा में उपयोगी।"
+     "First read: underline new words and write their meanings.",
+     "Note the author/poet and the background — it is asked in exams.",
+     "Write the summary in three lines in your own words.",
+     "List the main characters and their qualities.",
+     "Answer the questions below in your own words."
     ]
    ],
    [
-    "box",
-    "याद रखो",
+    "h3",
+    "Vocabulary and definitions"
+   ],
+   [
+    "p",
+    "Write the meanings of the key words and definitions from the textbook — (verify)"
+   ],
+   [
+    "ten",
+    [
+     "Author/poet name",
+     "Summary (3 lines)",
+     "Main characters",
+     "Key lines/quotes",
+     "Grammar (tenses, voice, narration)",
+     "Theme/moral",
+     "Title meaning",
+     "Figures of speech",
+     "Word meanings",
+     "Important exam questions"
+    ]
+   ],
+   [
+    "qa",
+    "इस अध्याय का सार अपने शब्दों में लिखो।",
     "Turning the pages of a book confuses the space visitors — a science-fiction comedy."
    ],
    [
