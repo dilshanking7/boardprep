@@ -1,7 +1,7 @@
 {
-  "version": "4.4",
-  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v4.4.apk",
+  "version": "4.5",
+  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v4.5.apk",
   "release": "https://github.com/dilshanking7/boardprep/releases/tag/v1.0",
-  "note": "Exam target + countdown, in-app update, spaced revision, exit fix",
+  "note": "Code-split loading, retrieval assistant, deep analytics, nav fix",
   "minVersion": "4.0"
 }

@@ -3,7 +3,7 @@
    - baaki sab (PDF, audio, 3D models) cache-first; network par aaye to cache ho jaye
    - "offline करो" button se poora content cache ho sakta hai
 */
-const CACHE = 'boardprep-v25';
+const CACHE = 'boardprep-v26';
 
 const SHELL = [
   './',
@@ -144,16 +144,17 @@ self.addEventListener('fetch', function (e) {
     return;
   }
 
-  // Baaki sab: cache first, phir network (aur cache me daal do)
+  // Baaki sab: stale-while-revalidate — pehle cache (turant), phir network se update
+  // (cache-first nahi, warna purana data hamesha dikhta jab tak CACHE na badle)
   e.respondWith(caches.match(req).then(function (hit) {
-    if (hit) return hit;
-    return fetch(req).then(function (r) {
+    var net = fetch(req).then(function (r) {
       if (r && r.ok) {
-        const copy = r.clone();
+        var copy = r.clone();
         caches.open(CACHE).then(function (c) { c.put(req, copy); });
       }
       return r;
     }).catch(function () { return hit || Response.error(); });
+    return hit || net;
   }));
 });
 
