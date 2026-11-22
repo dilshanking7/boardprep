@@ -1122,7 +1122,8 @@
       });
     });
     var offBtn = document.getElementById('offBtn');
-    if (offBtn) offBtn.addEventListener('click', function () {
+    if (offBtn) offBtn.addEventListener('click', function (e) {
+        e.preventDefault();
         var urls = [];
         try {
           (window.BOARD_DATA.papers || []).forEach(function (p) { urls.push(p.url); });

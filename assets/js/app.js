@@ -388,9 +388,14 @@
       '<div class="stat"><b>' + Object.keys(chap).length + '</b><span>' + esc(t('home_stats_chap')) + '</span></div>' +
       '<div class="stat"><b>' + BOARDS.length + '</b><span>' + esc(t('home_stats_boards')) + '</span></div></div>';
 
+    html += '<a class="list-row" href="#/help" id="offRow" style="margin-bottom:12px;border-color:#bbf7d0;background:#f0fdf4"><div>' +
+      '<div class="t">⬇ ' + esc(L('Sab offline karo', 'सब ऑफ़लाइन करो')) + '</div>' +
+      '<div class="s" id="offStat">' + esc(L('PDF + songs phone me save — internet band ho to bhi chalे', 'PDF + songs फ़ोन में सेव — इंटरनेट बंद हो तो भी चले')) + '</div></div>' +
+      '<button class="btn btn-accent" id="offBtn" style="padding:10px 14px;white-space:nowrap">' + esc(L('Offline download', 'ऑफ़लाइन डाउनलोड')) + '</button></a>';
+
     if (storeGet('bp_apk', '0') !== '1' && location.href.indexOf('appassets.androidplatform.net') < 0) {
-      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v4.1.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
-        '<div class="t">📱 ' + esc(L('Android app v4.0 — full offline', 'एंड्रॉयड ऐप v4.0 — पूरा ऑफ़लाइन')) + '</div>' +
+      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v4.2.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
+        '<div class="t">📱 ' + esc(L('एंड्रॉयड ऐप v4.2 — पूरा ऑफ़लाइन', 'Android app v4.2 — full offline')) + '</div>' +
         '<div class="s">' + esc(L('App me hi sab hai — PDF, 3D models, songs. Internet ke bina bhi.', 'ऐप में ही सब है — PDF, 3D models, songs। इंटरनेट के बिना भी।')) + '</div></div><span class="n">⬇</span></a>';
     }
 
