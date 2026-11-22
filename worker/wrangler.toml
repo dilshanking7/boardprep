@@ -1,0 +1,27 @@
+name = "boardprep-api"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+# Free model (Nous Portal) — longcat-2.5:free
+[vars]
+MODEL = "meituan/longcat-2.5:free"
+INFERENCE_BASE_URL = "https://inference-api.nousresearch.com/v1"
+NOUS_PORTAL = "https://portal.nousresearch.com"
+
+# rate limit — kitne message, kitne ghante me (badal sakte ho)
+LIMIT_PER = "20"
+WINDOW_HOURS = "1"
+
+# free keys (optional — jo mile daalo, chain apne-aap use karegi)
+# GROQ_KEY, GEMINI_KEY, OPENROUTER_KEY  -> wrangler secret ya vars me
+
+# Cloudflare Workers AI (free — CF account chahiye)
+[ai]
+binding = "AI"
+
+# D1 database (SQLite, free) — progress sync + study rooms
+# NOTE: pehle `wrangler d1 create boardprep` chalao, phir mila id yahan REPLACE_ME ki jagah likho
+[[d1_databases]]
+binding = "DB"
+database_name = "boardprep"
+database_id = "6ce2b8b9-36c8-4b39-91d2-4d811a5f9ed9"

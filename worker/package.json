@@ -1,0 +1,16 @@
+{
+  "name": "boardprep-api",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "BoardPrep ka free backend — AI (RAG + free model), cloud sync (D1), study rooms",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create boardprep",
+    "token:set": "wrangler d1 execute boardprep --command \"INSERT INTO settings(key,value) VALUES('nous_access_token','PASTE_HERE') ON CONFLICT(key) DO UPDATE SET value=excluded.value\""
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
