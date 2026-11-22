@@ -76,7 +76,11 @@
   // study rooms
   // AI chat (ChatGPT/Gemini jaisa) + quota
   function chat(q, history, web) {
-    return post('/api/chat', { id: deviceId(), q: q, history: history || [], web: web !== false });
+    var lang = (/[\u0900-\u097F]/.test(String(q || ''))) ? 'hi' : 'en';
+    return post('/api/chat', { id: deviceId(), q: q, history: history || [], web: web !== false, lang: lang });
+  }
+  function image(prompt) {
+    return post('/api/image', { prompt: prompt });
   }
   function quota() { return get('/api/quota?id=' + encodeURIComponent(deviceId())); }
   // voice: audio (base64) -> text
@@ -120,7 +124,7 @@
     ask: ask,
     syncPush: syncPush,
     syncPull: syncPull,
-    chat: chat, quota: quota, stt: stt, vision: vision, feedback: feedback,
+    chat: chat, quota: quota, stt: stt, vision: vision, feedback: feedback, image: image,
     roomCreate: roomCreate, roomJoin: roomJoin, roomPost: roomPost, roomGet: roomGet,
     myName: myName
   };

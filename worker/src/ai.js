@@ -57,7 +57,7 @@ var CF_MODELS = [
   '@cf/google/gemma-2b-it-lora',
 ];
 var GROQ_MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
-var GEMINI_MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'];
+var GEMINI_MODELS = ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-3-flash-preview', 'gemini-flash-lite-latest', 'gemini-2.5-flash-lite'];
 var OR_MODELS = ['meta-llama/llama-3.1-8b-instruct:free', 'google/gemma-2b-it:free', 'mistralai/mistral-7b-instruct:free'];
 
 async function callCF(env, messages) {

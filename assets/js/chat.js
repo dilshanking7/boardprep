@@ -76,38 +76,113 @@
     if (/(खोज|search)/.test(s)) { go('#/search'); return true; }
     return false;
   }
-  // awaaz me javab
-  function speak(text) {
+  // awaaz ki tayyari
+  var VP = { voice: '', speed: 1.02, mode: 'chat', mute: false };
+  try {
+    var sv = localStorage.getItem('bp_voice_pref');
+    if (sv) { var o = JSON.parse(sv); VP.voice = o.voice || ''; VP.speed = Number(o.speed) || 1.02; }
+    var sm = localStorage.getItem('bp_chat_mode');
+    if (sm === 'voice' || sm === 'chat') VP.mode = sm;
+  } catch (e) { }
+  function saveVP() { try { localStorage.setItem('bp_voice_pref', JSON.stringify({ voice: VP.voice, speed: VP.speed })); } catch (e) { } }
+  function saveMode() { try { localStorage.setItem('bp_chat_mode', VP.mode); } catch (e) { } }
+  function listVoices() {
+    try { return window.speechSynthesis ? window.speechSynthesis.getVoices() || [] : []; } catch (e) { return []; }
+  }
+  function pickVoiceByName(n) {
+    var vs = listVoices();
+    for (var i = 0; i < vs.length; i++) { if (vs[i].name === n) return vs[i]; }
+    return null;
+  }
+  function bestVoice(lang) {
+    var vs = listVoices(), hit = null;
+    for (var i = 0; i < vs.length; i++) {
+      if (lang === 'hi' && /^hi/i.test(vs[i].lang)) { hit = vs[i]; break; }
+      if (lang === 'en' && /^en/i.test(vs[i].lang)) { hit = vs[i]; break; }
+    }
+    return hit;
+  }
+  function langOf(text) {
+    return /[\u0900-\u097F]/.test(String(text || '')) ? 'hi' : 'en';
+  }
+  function speak(text, lang) {
     try {
       if (!('speechSynthesis' in window)) return;
-      if (document.getElementById('chatVoice') && !document.getElementById('chatVoice').checked) return;
+      if (VP.mute || VP.mode === 'chat') return;
       window.speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance(String(text || '').replace(/[*/#]/g, ' '));
-      u.lang = 'hi-IN'; u.rate = 1.02;
-      var vs = window.speechSynthesis.getVoices();
-      var pick = null;
-      for (var i = 0; i < vs.length; i++) { if (/hi/i.test(vs[i].lang)) { pick = vs[i]; break; } }
-      if (pick) u.voice = pick;
+      var u = new SpeechSynthesisUtterance(String(text || '').replace(/[*\n]/g, ' ').slice(0, 500));
+      var L2 = lang || langOf(text);
+      u.lang = L2 === 'hi' ? 'hi-IN' : 'en-IN';
+      u.rate = VP.speed;
+      var v = pickVoiceByName(VP.voice) || bestVoice(L2);
+      if (v) u.voice = v;
       window.speechSynthesis.speak(u);
+      // voice mode: javab khatam hote hi dobara suno
+      u.onend = function () { if (VP.mode === 'voice' && !VP.mute) setTimeout(startVoice, 220); };
     } catch (e) { }
   }
   // awaaz se sawal
+  var recog = null;
   function startVoice() {
+    if (VP.mode !== 'voice' || VP.mute) return;
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { alert(L('इस ब्राउज़र में voice नहीं चलेगी।', 'Voice is not supported in this browser.')); return; }
+    try { if (recog) recog.abort(); } catch (e) { }
     var r = new SR();
-    r.lang = 'hi-IN'; r.interimResults = false; r.maxAlternatives = 1;
+    recog = r;
+    var lang = (window.BP && window.BP.state && window.BP.state.lang === 'en') ? 'en-IN' : 'hi-IN';
+    r.lang = lang; r.interimResults = false; r.maxAlternatives = 1; r.continuous = false;
     var btn = document.getElementById('chatMic');
     r.onresult = function (e) {
       var t = (e.results[0] && e.results[0][0] && e.results[0][0].transcript) || '';
-      if (!t) return;
+      if (!t) { return; }
       var inp = document.getElementById('chatIn');
       if (inp) inp.value = t;
+      var low = t.toLowerCase();
+      if (/(बंद करो|बंद कर|रुको|stop|चल्स|चलो)/.test(low) && low.indexOf('चल') === -1) {
+        setMode('chat');
+        pushMsg({ role: 'assistant', content: L('ठीक है, वॉइस मोड बंद किया। चैट मोड चालू।', 'Voice mode off. Chat mode on.'), model: 'BoardPrep' });
+        render();
+        return;
+      }
       send();
     };
     r.onerror = function () { if (btn) btn.classList.remove('on'); };
     r.onend = function () { if (btn) btn.classList.remove('on'); };
     try { r.start(); if (btn) btn.classList.add('on'); } catch (e) { }
+  }
+  function setMode(m) {
+    VP.mode = m; saveMode();
+    var b = document.getElementById('chatMode');
+    if (b) b.textContent = (m === 'voice') ? L('Voice mode', 'वॉइस मोड') : L('Chat mode', 'चैट मोड');
+    try { if (m !== 'voice') window.speechSynthesis.cancel(); } catch (e) { }
+    if (m === 'voice') { speak(L('वॉइस मोड चालू। बोलो।', 'Voice mode on.')); setTimeout(startVoice, 700); }
+  }
+  function setMute(on) {
+    VP.mute = !!on;
+    var b = document.getElementById('chatMute');
+    if (b) b.textContent = VP.mute ? '🔇' : '🔊';
+    if (VP.mute) { try { window.speechSynthesis.cancel(); } catch (e) { } try { if (recog) recog.abort(); } catch (e) { } }
+    else if (VP.mode === 'voice') setTimeout(startVoice, 400);
+  }
+  function renderVoiceList() {
+    var box = document.getElementById('voiceList');
+    if (!box) return;
+    var vs = listVoices();
+    var lang = (window.BP && window.BP.state && window.BP.state.lang === 'en') ? 'en' : 'hi';
+    var hits = vs.filter(function (v) { return new RegExp('^' + lang, 'i').test(v.lang); });
+    if (!hits.length) hits = vs.slice(0, 10);
+    box.innerHTML = hits.map(function (v) {
+      var on = v.name === VP.voice ? ' on' : '';
+      return '<button class="vrow-b' + on + '" data-v="' + esc(v.name) + '">' + esc(v.name) + ' <span class="vlang">' + esc(v.lang) + '</span></button>';
+    }).join('') || '<div class="sheet-empty">' + esc(L('इस डिवाइस पर voice नहीं मिली।', 'No voice found on this device.')) + '</div>';
+    Array.prototype.forEach.call(box.querySelectorAll('.vrow-b'), function (b) {
+      b.addEventListener('click', function () {
+        VP.voice = b.getAttribute('data-v'); saveVP(); renderVoiceList();
+        var v = pickVoiceByName(VP.voice);
+        if (v) { var u = new SpeechSynthesisUtterance(L('नमस्ते, मैं तुम्हारी मदद के लिए हाज़िर हूँ।', 'Hello, I am here to help.')); u.lang = v.lang; u.voice = v; u.rate = VP.speed; window.speechSynthesis.speak(u); }
+      });
+    });
   }
   function when(ms) {
     try { var d = new Date(ms); return d.toLocaleString('hi-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
@@ -154,9 +229,27 @@
       '<button class="btn btn-accent btn-sm" id="chatMic" title="' + esc(L('Bolke poocho', 'बोलकर पूछो')) + '">🎤</button>' +
       '<button class="btn btn-accent" id="chatSend">' + esc(L('Bhejo', 'भेजो')) + '</button></div>';
     h += '<div class="chatact">' +
-      '<label class="link-btn"><input type="checkbox" id="chatWeb" checked> ' + esc(L('Web search', 'वेब खोज')) + '</label>' +
-      '<label class="link-btn" style="margin-left:auto"><input type="checkbox" id="chatVoice" checked> ' + esc(L('Awaaz me javab', 'आवाज़ में जवाब')) + '</label></div>';
+      '<button class="btn btn-ghost btn-sm" id="chatMode">' + esc(L('Chat mode', 'चैट मोड')) + '</button>' +
+      '<button class="btn btn-ghost btn-sm" id="chatMute" title="' + esc(L('Mute', 'म्यूट')) + '">🔊</button>' +
+      '<button class="btn btn-ghost btn-sm" id="chatVoiceSet" title="' + esc(L('Voice', 'आवाज़')) + '">⚙️</button>' +
+      '<button class="btn btn-ghost btn-sm" id="chatImgGen" title="' + esc(L('Photo banao', 'फोटो बनाओ')) + '">🎨</button>' +
+      '<label class="link-btn" style="margin-left:auto"><input type="checkbox" id="chatWeb" checked> ' + esc(L('Web search', 'वेब खोज')) + '</label></div>';
     h += '</section>';
+    // voice settings sheet
+    h += '<div id="voiceSheet" class="sheet" hidden><div class="sheet-h">' +
+      '<strong>' + esc(L('Voice chuno', 'आवाज़ चुनो')) + '</strong>' +
+      '<button class="btn btn-ghost btn-sm" id="voiceSheetX">' + esc(L('Band', 'बंद')) + '</button></div>' +
+      '<div class="sheet-b"><div id="voiceList" class="vlist"></div>' +
+      '<div class="vrow"><label>' + esc(L('Speed', 'गति')) + '</label><input type="range" id="voiceSpeed" min="0.7" max="1.6" step="0.05" value="1.02">' +
+      '<span id="voiceSpeedVal">1.0×</span></div>' +
+      '<button class="btn btn-accent btn-sm" id="voiceTest">' + esc(L('सुनकर देखो', 'सुनकर देखो')) + '</button></div></div>';
+    // image banao sheet
+    h += '<div id="imgSheet" class="sheet" hidden><div class="sheet-h">' +
+      '<strong>' + esc(L('Photo banao', 'फोटो बनाओ')) + '</strong>' +
+      '<button class="btn btn-ghost btn-sm" id="imgSheetX">' + esc(L('Band', 'बंद')) + '</button></div>' +
+      '<div class="sheet-b"><input id="imgPrompt" type="text" placeholder="' + esc(L('क्या बनाऊँ? जैसे: चाँद पर बैठा किताब पढ़ता लड़का', 'बनाने का विवरण लिखो…')) + '">' +
+      '<button class="btn btn-accent" id="imgGo">' + esc(L('Banao', 'बनाओ')) + '</button>' +
+      '<div id="imgOut" class="imgout"></div></div></div>';
     h += '<div id="chatSheet" class="sheet" hidden><div class="sheet-h">' +
       '<strong>' + esc(L('Meri chat', 'मेरी चैटें')) + '</strong>' +
       '<button class="btn btn-ghost btn-sm" id="chatSheetX">' + esc(L('Band', 'बंद')) + '</button></div>' +
@@ -226,7 +319,8 @@
         ? '<div class="cfb"><button class="cfb-b" data-fb="1" data-i="' + i + '" title="अच्छा">👍</button>' +
         '<button class="cfb-b" data-fb="0" data-i="' + i + '" title="सुधारो">👎</button></div>'
         : '';
-      return '<div class="cmsg ' + who + '"><div class="cbub">' + esc(m.content).replace(/\n/g, '<br>') + '</div>' + scr + meta + fb + '</div>';
+      var img = (m.img ? '<img class="cimg" src="data:image/jpeg;base64,' + esc(m.img) + '" alt="">' : '');
+      return '<div class="cmsg ' + who + '"><div class="cbub">' + esc(m.content).replace(/\n/g, '<br>') + '</div>' + img + scr + meta + fb + '</div>';
     }).join('');
     Array.prototype.forEach.call(box.querySelectorAll('.cfb-b'), function (b) {
       b.addEventListener('click', function () {
@@ -333,6 +427,22 @@
     };
     rd.readAsDataURL(file);
   }
+  // image banana
+  function makeImage(prompt) {
+    if (!prompt) return;
+    if (!window.Cloud || !window.Cloud.ready()) { alert(L('Cloud API set nahi hai.', 'क्लाउड API सेट नहीं है।')); return; }
+    var out = document.getElementById('imgOut');
+    if (out) out.innerHTML = '<div class="sheet-empty">' + esc(L('बन रहा है…', 'बन रहा है…')) + '</div>';
+    window.Cloud.image(prompt).then(function (r) {
+      if (r && r.ok) {
+        pushMsg({ role: 'assistant', content: prompt, model: 'AI image', img: r.b64 });
+        render();
+        if (out) out.innerHTML = '<img class="cimg" src="data:image/jpeg;base64,' + r.b64 + '" alt="">';
+      } else if (out) {
+        out.innerHTML = '<div class="sheet-empty">' + esc(friendly({ message: (r && r.error) || '' })) + '</div>';
+      }
+    }).catch(function (e) { if (out) out.innerHTML = '<div class="sheet-empty">' + esc(friendly(e)) + '</div>'; });
+  }
   window.ChatUI = {
     view: view,
     mount: function () {
@@ -343,7 +453,10 @@
       var inp = document.getElementById('chatIn');
       if (inp) inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
       var mic = document.getElementById('chatMic');
-      if (mic) mic.addEventListener('click', startVoice);
+      if (mic) mic.addEventListener('click', function () {
+        if (VP.mode === 'voice') { if (VP.mute) setMute(false); else { try { if (recog) recog.abort(); } catch (e) { } } }
+        else startVoice();
+      });
       var ib = document.getElementById('chatImgBtn');
       var iin = document.getElementById('chatImg');
       if (ib && iin) {
@@ -354,8 +467,39 @@
           iin.value = '';
         });
       }
-      var spk = document.getElementById('chatVoice');
-      if (spk) spk.addEventListener('change', function () { if (!spk.checked) { try { window.speechSynthesis.cancel(); } catch (e) { } } });
+      var mb = document.getElementById('chatMode');
+      if (mb) { mb.textContent = (VP.mode === 'voice') ? L('Voice mode', 'वॉइस मोड') : L('Chat mode', 'चैट मोड'); mb.addEventListener('click', function () { setMode(VP.mode === 'voice' ? 'chat' : 'voice'); }); }
+      var mu = document.getElementById('chatMute');
+      if (mu) { mu.textContent = VP.mute ? '🔇' : '🔊'; mu.addEventListener('click', function () { setMute(!VP.mute); }); }
+      var vsBtn = document.getElementById('chatVoiceSet');
+      if (vsBtn) vsBtn.addEventListener('click', function () { renderVoiceList(); var s2 = document.getElementById('voiceSheet'); s2.hidden = false; setTimeout(function () { s2.classList.add('open'); }, 5); });
+      var vx = document.getElementById('voiceSheetX');
+      if (vx) vx.addEventListener('click', function () { var s2 = document.getElementById('voiceSheet'); s2.classList.remove('open'); setTimeout(function () { s2.hidden = true; }, 220); });
+      var vsh = document.getElementById('voiceSheet');
+      if (vsh) vsh.addEventListener('click', function (e) { if (e.target === vsh) { vsh.classList.remove('open'); setTimeout(function () { vsh.hidden = true; }, 220); } });
+      var spd = document.getElementById('voiceSpeed');
+      if (spd) {
+        spd.value = String(VP.speed);
+        var sv2 = document.getElementById('voiceSpeedVal'); if (sv2) sv2.textContent = VP.speed.toFixed(2).replace(/0$/, '') + '×';
+        spd.addEventListener('input', function () { VP.speed = Number(spd.value); saveVP(); if (sv2) sv2.textContent = VP.speed.toFixed(2).replace(/0$/, '') + '×'; });
+      }
+      var ig = document.getElementById('chatImgGen');
+      if (ig) ig.addEventListener('click', function () { var s3 = document.getElementById('imgSheet'); s3.hidden = false; setTimeout(function () { s3.classList.add('open'); }, 5); });
+      var ix = document.getElementById('imgSheetX');
+      if (ix) ix.addEventListener('click', function () { var s3 = document.getElementById('imgSheet'); s3.classList.remove('open'); setTimeout(function () { s3.hidden = true; }, 220); });
+      var ish = document.getElementById('imgSheet');
+      if (ish) ish.addEventListener('click', function (e) { if (e.target === ish) { ish.classList.remove('open'); setTimeout(function () { ish.hidden = true; }, 220); } });
+      var igo = document.getElementById('imgGo');
+      if (igo) igo.addEventListener('click', function () {
+        var v = (document.getElementById('imgPrompt').value || '').trim();
+        if (v) { makeImage(v); document.getElementById('imgPrompt').value = ''; }
+      });
+      var vt = document.getElementById('voiceTest');
+      if (vt) vt.addEventListener('click', function () {
+        if (VP.mode === 'chat') VP.mode = 'voice';
+        speak(L('नमस्ते दिलशान, मैं तुम्हारी मदद के लिए हाज़िर हूँ। कैसी लगी मेरी आवाज़?', 'Hello Dilshan, I am here to help. How do I sound?'));
+      });
+      if (VP.mode === 'voice') { try { window.speechSynthesis.getVoices(); } catch (e) { } renderVoiceList(); }
       var nw = document.getElementById('chatNew');
       if (nw) nw.addEventListener('click', function () { newChat(); render(); renderQuota(); });
       var ls = document.getElementById('chatList');

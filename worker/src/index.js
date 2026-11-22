@@ -70,6 +70,12 @@ export default {
         if (prov === "cfv") return json({ ok: true, list: await probeCFVision(env, [
           "@cf/llava/llava-1.5-7b-hf", "@cf/unum/uform-gen2-qwen-500m",
         ]) });
+        if (prov === "geminiall") {
+          const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models?key=" + encodeURIComponent(env.GEMINI_KEY || ""), {});
+          const j = await r.json().catch(() => ({}));
+          const ids = (j && j.models || []).map(function (m) { return String(m.name || "").replace("models/", ""); });
+          return json({ ok: r.ok, models: ids });
+        }
         if (prov === "groqall") {
           const r = await fetch('https://api.groq.com/openai/v1/models', {
             headers: { Authorization: 'Bearer ' + (env.GROQ_KEY || '') },
@@ -159,6 +165,54 @@ export default {
         return json({ ok: false, error: "vision: " + last }, { status: 502 });
       }
 
+      // ---------- YouTube: padhne ke video (link) ----------
+      if (p === "/api/yt") {
+        const q = String(url.searchParams.get("q") || "").trim().slice(0, 120);
+        if (!q) return json({ ok: false, error: "q required" }, { status: 400 });
+        const out = [];
+        try {
+          const u = "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
+          const r = await fetch(u, { headers: { "User-Agent": "Mozilla/5.0 (Android 14; Mobile)", "Accept-Language": "hi,en" } });
+          const t = await r.text();
+          const re = /"videoId":"([A-Za-z0-9_-]{11})"[\s\S]{0,400}?"title":\{"runs":\[\{"text":"([^"]{4,120})"/g;
+          let m, seen = {};
+          while ((m = re.exec(t)) && out.length < 5) {
+            if (seen[m[1]]) continue; seen[m[1]] = 1;
+            out.push({ id: m[1], title: m[2].replace(/\\u0026/g, "&") });
+          }
+          if (!out.length) {
+            try {
+              const d = await fetch("https://html.duckduckgo.com/html/?q=" + encodeURIComponent(q + " site:youtube.com watch"), { headers: { "User-Agent": "Mozilla/5.0" } });
+              const dt = await d.text();
+              const re3 = /youtube\.com\/watch\?v=([A-Za-z0-9_-]{11})[^"<>]{0,300}?>([^<]{4,120})</g;
+              let m3, n3 = 0;
+              while ((m3 = re3.exec(dt)) && n3 < 5) { if (!seen[m3[1]]) { seen[m3[1]] = 1; out.push({ id: m3[1], title: m3[2].trim() }); n3++; } }
+            } catch (e) { }
+          }
+          if (!out.length) {
+            const re2 = /"videoId":"([A-Za-z0-9_-]{11})"/g;
+            let n = 0;
+            while ((m = re2.exec(t)) && n < 3) { out.push({ id: m[1], title: q }); n++; }
+          }
+        } catch (e) { }
+        return json({ ok: true, q: q, videos: out, fallback: "https://www.youtube.com/results?search_query=" + encodeURIComponent(q) });
+      }
+
+      // ---------- image banana (CF flux, free) ----------
+      if (p === "/api/image" && req.method === "POST") {
+        const b = await req.json().catch(() => ({}));
+        const pr = String(b.prompt || "").slice(0, 400);
+        if (!pr) return json({ ok: false, error: "prompt required" }, { status: 400 });
+        try {
+          const r = await env.AI.run("@cf/black-forest-labs/flux-1-schnell", { prompt: pr });
+          const b64 = (r && (r.image || r.b64 || r.data)) || "";
+          if (!b64) throw new Error("empty image");
+          return json({ ok: true, b64: String(b64).split(",").pop(), prompt: pr });
+        } catch (e) {
+          return json({ ok: false, error: "image: " + String(e.message || e).slice(0, 90) }, { status: 502 });
+        }
+      }
+
       // ---------- feedback: AI khud seekhe (user ka data se) ----------
       if (p === "/api/feedback" && req.method === "POST") {
         const b = await req.json().catch(() => ({}));
@@ -219,6 +273,7 @@ export default {
         const q = String(b.q || "").slice(0, 1200);
         const hist = Array.isArray(b.history) ? b.history.slice(-10) : [];
         const wantWeb = b.web !== false;
+        function langOfQ(s) { return /[\u0900-\u097F]/.test(String(s || '')) ? 'hi' : 'en'; }
         if (!q) return json({ error: "q required" }, { status: 400 });
         await ensureSchema(env.DB);
 
@@ -232,6 +287,21 @@ export default {
         }
 
         // web search (bahar ki info) — sirf jab zaroorat lage
+        // YouTube: padhne ka video chahiye to link do
+        var ytCtx = [];
+        try {
+          if (/(video|youtube|यूट्यूब|दिखाओ|देखूं|देखूँ|dekho|dikhao|सीखने के लिए)/.test(q)) {
+            const yu = new URL(url.origin + "/api/yt?q=" + encodeURIComponent(q));
+            const yj = await fetch(yu.toString()).then(function (r) { return r.json(); }).catch(function () { return { videos: [] }; });
+            if (yj && yj.videos && yj.videos.length) {
+              ytCtx = yj.videos.slice(0, 4).map(function (v) {
+                return { title: v.title, text: "https://www.youtube.com/watch?v=" + v.id };
+              });
+            } else if (yj && yj.fallback) {
+              ytCtx = [{ title: "YouTube: " + q, text: yj.fallback }];
+            }
+          }
+        } catch (e) { }
         var webCtx = [];
         try {
           var low = q.toLowerCase();
@@ -240,8 +310,16 @@ export default {
         } catch (e) { }
 
         const ctx = await userContext(env.DB, id);
+        const lang = (String(b.lang || '') === 'en') ? 'en' : (langOfQ(q) === 'en' ? 'en' : 'hi');
         const sys =
           "तुम BoardPrep के शिक्षक-सहायक हो — कक्षा 10 (JAC/CBSE) के विद्यार्थी की मदद करते हो। " +
+          "तुम्हारे सामने Dilshan बैठा है: कक्षा 10 का विद्यार्थी (Jharkhand), developer, और यही BoardPrep बनाता है; " +
+          "वह websites/apps बनाता है। कोई पूछे 'तुम कौन हो' तो बताओ कि तुम उसी के रूप में बने हो; " +
+          "उसका portfolio https://dilshanking7.github.io/ है — कोई माँगे तो लिंक दो। " +
+          "उसकी निजी जानकारी (जन्म-तिथि, स्कूल का नाम) कभी मत बताओ। " +
+          (lang === 'en'
+            ? "जवाब ENGLISH में दो। "
+            : "जवाब हिंदी या Hinglish में दो। ") +
           (ctx ? ctx + "इन कमज़ोर चीज़ों को समझाते समय ख़ास ध्यान दो और आसान उदाहरण दो। " : "") +
           "नियम: (1) सीधा और छोटा जवाब दो, अगल-बढ़कर न लिखो। (2) संदिग्ध सवाल (जैसे 'hii', 'hello') का जवाब " +
           "सादा अभिवादन दो और काम का सवाल पूछो — अंदाज़ा या सूची मत बनाओ। (3) पढ़ाई/क्विज़/किताब के सवाल " +
@@ -255,10 +333,12 @@ export default {
             messages.push({ role: m.role, content: String(m.content || '').slice(0, 800) });
           }
         });
+        // web + youtube + feedback judo
+        var extraCtx = webCtx.concat(ytCtx);
         messages.push({
           role: 'user',
-          content: (webCtx.length
-            ? 'बाहरी जानकारी:\n' + webCtx.map(function (w, i) {
+          content: (extraCtx.length
+            ? 'बाहरी जानकारी:\n' + extraCtx.map(function (w, i) {
               return '(' + (i + 1) + ') ' + w.title + ' — ' + w.text;
             }).join('\n') + '\n\n' : '') + 'सवाल: ' + q,
         });
