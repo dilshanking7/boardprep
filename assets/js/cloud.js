@@ -42,17 +42,22 @@
     } catch (e) { return 'anon'; }
   }
 
+  // request ke waqt bhi URL check — galat/placeholder ho to sahi URL
+  function url(path) {
+    var b = goodUrl(BASE) ? BASE : FALLBACK_BASE;
+    return b + path;
+  }
   function post(path, body) {
-    if (!BASE) return Promise.reject(new Error('no-base'));
-    return fetch(BASE + path, {
+    if (!goodUrl(BASE) && !goodUrl(FALLBACK_BASE)) return Promise.reject(new Error('no-base'));
+    return fetch(url(path), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body || {})
     }).then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
   }
   function get(path) {
-    if (!BASE) return Promise.reject(new Error('no-base'));
-    return fetch(BASE + path).then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
+    if (!goodUrl(BASE) && !goodUrl(FALLBACK_BASE)) return Promise.reject(new Error('no-base'));
+    return fetch(url(path)).then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
   }
 
   // AI: notes (RAG context) + sawal -> free model ka javab
@@ -97,8 +102,8 @@
     },
     // version.json se aaya URL — sirf memory me (override nahi likhta)
     refreshBase: function (u) { var s = pick(u); if (s) BASE = s; },
-    getBase: function () { return BASE; },
-    ready: function () { return !!BASE; },
+    getBase: function () { return goodUrl(BASE) ? BASE : FALLBACK_BASE; },
+    ready: function () { return goodUrl(BASE) || goodUrl(FALLBACK_BASE); },
     deviceId: deviceId,
     ask: ask,
     syncPush: syncPush,
