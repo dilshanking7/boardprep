@@ -146,13 +146,16 @@
     var lang = (window.BP && window.BP.state && window.BP.state.lang === 'en') ? 'en-IN' : 'hi-IN';
     r.lang = lang; r.interimResults = false; r.maxAlternatives = 1; r.continuous = false;
     var btn = document.getElementById('chatMic');
+    listening = true;
+    if (btn) btn.classList.add('on');
     r.onresult = function (e) {
+      listening = false;
       var t = (e.results[0] && e.results[0][0] && e.results[0][0].transcript) || '';
       if (!t) { return; }
       var inp = document.getElementById('chatIn');
       if (inp) inp.value = t;
       var low = t.toLowerCase();
-      if (/(बंद करो|बंद कर|रुको|stop|चल्स|चलो)/.test(low) && low.indexOf('चल') === -1) {
+      if (/(बंद करो|बंद कर|रुको|रुक जाओ|stop|बस करो)/.test(low)) {
         setMode('chat');
         pushMsg({ role: 'assistant', content: L('ठीक है, वॉइस मोड बंद किया। चैट मोड चालू।', 'Voice mode off. Chat mode on.'), model: 'BoardPrep' });
         render();
@@ -160,9 +163,9 @@
       }
       send();
     };
-    r.onerror = function () { if (btn) btn.classList.remove('on'); };
-    r.onend = function () { if (btn) btn.classList.remove('on'); };
-    try { r.start(); if (btn) btn.classList.add('on'); } catch (e) { }
+    r.onerror = function () { listening = false; if (btn) btn.classList.remove('on'); };
+    r.onend = function () { listening = false; if (btn) btn.classList.remove('on'); };
+    try { r.start(); } catch (e) { listening = false; }
   }
   function setMode(m) {
     VP.mode = m; saveMode();
@@ -458,6 +461,15 @@
       }
     }).catch(function (e) { if (out) out.innerHTML = '<div class="sheet-empty">' + esc(friendly(e)) + '</div>'; });
   }
+  // voice mode: lagataar suno — kabhी mic apne-aap band nahi hoga
+  var listening = false;
+  setInterval(function () {
+    try {
+      if (VP.mode === 'voice' && !VP.mute && !listening && document.getElementById('chatBox')) {
+        if (window.SpeechRecognition || window.webkitSpeechRecognition) startVoice();
+      }
+    } catch (e) { }
+  }, 1800);
   window.ChatUI = {
     view: view,
     mount: function () {

@@ -84,6 +84,17 @@ export default {
           const ids = (j && j.data || []).map(function (m) { return m.id; });
           return json({ ok: r.ok, models: ids });
         }
+        if (prov === "orall") {
+          const r = await fetch("https://openrouter.ai/api/v1/models", {
+            headers: { Authorization: "Bearer " + (env.OPENROUTER_KEY || "") },
+          });
+          const j = await r.json().catch(() => ({}));
+          const all = (j && j.data || []).map(function (m) {
+            var p = (m && m.supported_parameters) || [];
+            return { id: m.id, vis: p.indexOf("supports_vision") >= 0 };
+          });
+          return json({ ok: r.ok, free: all.filter(function (m) { return /:free$/.test(m.id); }).map(function (m) { return m.id + (m.vis ? " [vision]" : ""); }).slice(0, 80) });
+        }
         const out = [];
         const one = async function (name, fn) {
           const t0 = Date.now();
@@ -128,8 +139,40 @@ export default {
         const q = String(b.q || "इस फोटो/नोट को पढ़कर समझाओ।").slice(0, 400);
         if (!img) return json({ ok: false, error: "image required" }, { status: 400 });
         const key = env.OPENROUTER_KEY || "";
-        if (!key) {
-          return json({ ok: false, error: "photo-ke-liye-openrouter-key", noKey: true });
+        if (!key && !env.GEMINI_KEY) {
+          return json({ ok: false, error: "photo-ke-liye-key", noKey: true });
+        }
+        let last = "";
+        // pehle Gemini (free, vision chalta hai), phir OpenRouter
+        const gkey = env.GEMINI_KEY || "";
+        const gmodels = ["gemini-flash-lite-latest", "gemini-flash-latest", "gemini-2.5-flash", "gemini-3-flash-preview"];
+        const dataUrl = img.indexOf("data:") === 0 ? img : "data:image/jpeg;base64," + img;
+        const mime = (dataUrl.split(";")[0].split(":")[1]) || "image/jpeg";
+        const raw = dataUrl.split(",").pop();
+        if (gkey) for (let i = 0; i < gmodels.length; i++) {
+          try {
+            const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + gmodels[i] +
+              ":generateContent?key=" + encodeURIComponent(gkey), {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              signal: AbortSignal.timeout(28000),
+              body: JSON.stringify({
+                contents: [{
+                  role: "user",
+                  parts: [
+                    { text: "तुम कक्षा 10 के विद्यार्थी के होमवर्क/नोट्स की मदद करते हो। फोटो में जो लिखा/दिखा है उसे पढ़ो और हिंदी/Hinglish में सरल, स्पष्ट जवाब दो — पढ़ाओ, समझाओ, उदाहरण दो। 250 शब्दों के अंदर।" },
+                    { inline_data: { mime_type: mime, data: raw } },
+                  ],
+                }],
+                generationConfig: { maxOutputTokens: 800 },
+              }),
+            });
+            if (!r.ok) { last = "gemini HTTP " + r.status; continue; }
+            const j = await r.json();
+            const t = j && j.candidates && j.candidates[0] && j.candidates[0].content &&
+              j.candidates[0].content.parts && j.candidates[0].content.parts[0] && j.candidates[0].content.parts[0].text;
+            if (t) return json({ ok: true, answer: String(t).trim(), model: "Gemini " + gmodels[i] });
+            last = "gemini empty";
+          } catch (e) { last = "gemini " + String(e.message || e).slice(0, 60); }
         }
         const models = [
           "google/gemma-3-27b-it:free",
@@ -137,7 +180,6 @@ export default {
           "meta-llama/llama-3.2-90b-vision-instruct:free",
           "meta-llama/llama-3.2-11b-vision-instruct:free",
         ];
-        let last = "";
         for (let i = 0; i < models.length; i++) {
           try {
             const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -321,11 +363,12 @@ export default {
             ? "जवाब ENGLISH में दो। "
             : "जवाब हिंदी या Hinglish में दो। ") +
           (ctx ? ctx + "इन कमज़ोर चीज़ों को समझाते समय ख़ास ध्यान दो और आसान उदाहरण दो। " : "") +
-          "नियम: (1) सीधा और छोटा जवाब दो, अगल-बढ़कर न लिखो। (2) संदिग्ध सवाल (जैसे 'hii', 'hello') का जवाब " +
-          "सादा अभिवादन दो और काम का सवाल पूछो — अंदाज़ा या सूची मत बनाओ। (3) पढ़ाई/क्विज़/किताब के सवाल " +
-          "स्पष्ट उदाहरण सहित समझाओ। (4) बाहर की ताज़ा जानकारी के लिए नीचे दिए search नतीजो से जवाब दो; " +
-          "सामान्य ज्ञान/इतिहास/विज्ञान के सवाल अपने ज्ञान से भी जवाब दो। " +
-          "जो पक्का नहीं है उसे मत बनाओ — अनिश्चित हो तो 'यह मुझे पक्का नहीं' लिखो। (5) जवाब 250 शब्दों के अंदर रखो।";
+          "नियम: (1) सीधा और छोटा जवाब दो, अगल-बढ़कर न लिखो। (2) किसी भी तरह का सवाल हो — पढ़ाई, क्विज़, जीवन, तकनीक, " +
+          "मनोरंजन, सलाह, कहानी, कविता, चर्चा — सबका जवाब दो, मना मत करो। संदिग्ध सवाल (जैसे 'hii', 'hello') का जवाब " +
+          "सादा अभिवादन दो और काम का सवाल पूछो। (3) पढ़ाई के सवाल स्पष्ट उदाहरण सहित समझाओ। " +
+          "(4) बाहर की ताज़ा जानकारी के लिए नीचे दिए search नतीजो से जवाब दो; सामान्य ज्ञान/इतिहास/विज्ञान के सवाल " +
+          "अपने ज्ञान से भी जवाब दो। जो जानकारी पक्की नहीं है उसे 'यह पक्का नहीं' कहकर भी अपनी बात समझाओ — जवाब देना बंद मत करो। " +
+          "(5) जवाब 250 शब्दों के अंदर रखो।";
 
         const messages = [{ role: 'system', content: sys }];
         hist.forEach(function (m) {

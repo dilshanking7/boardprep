@@ -1,8 +1,8 @@
 {
-  "version": "5.10",
-  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.10.apk",
+  "version": "5.11",
+  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.11.apk",
   "release": "https://github.com/dilshanking7/boardprep/releases/tag/v1.0",
-  "note": "voice picker (device + Google fallback), continuous voice mode, mute, image gen",
+  "note": "photo vision (Gemini), continuous voice loop, open prompt, 10s photo",
   "minVersion": "4.0",
   "api": "https://boardprep-api.dilshan-boardprep.workers.dev"
 }
