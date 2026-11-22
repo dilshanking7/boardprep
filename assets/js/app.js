@@ -26,6 +26,35 @@
   }
 
   // Naya update check — banner dikhata hai, tap karke APK khud download + install
+  // ---- code-splitting: notes + calc sirf tab load hon jab chahiye ----
+  var LAZY = {
+    notes: ['assets/data/notes_science.js', 'assets/data/notes_maths.js', 'assets/data/notes_science2.js',
+      'assets/data/notes_maths2.js', 'assets/data/notes_jharkhand.js', 'assets/data/notes_sst_history.js',
+      'assets/data/notes_sst_geo.js', 'assets/data/notes_sst_civics.js', 'assets/data/notes_sst_econ.js',
+      'assets/data/notes_hindi.js', 'assets/data/notes_english.js', 'assets/data/notes_sanskrit.js',
+      'assets/data/notes.js'],
+    calc: ['assets/js/calc.js']
+  };
+  var LOADED = {};
+  function loadScript(src) {
+    return new Promise(function (res, rej) {
+      if (LOADED[src]) return res();
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = function () { LOADED[src] = 1; res(); };
+      s.onerror = function () { rej(new Error('load: ' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+  function loadLazy(kind) { return Promise.all((LAZY[kind] || []).map(loadScript)); }
+
+  function lazyNeed() {
+    var p = (location.hash.replace(/^#/, '').split('/').filter(Boolean)[0] || '');
+    if (p === 'notes' || p === 'note') return 'notes';
+    if (p === 'calc') return 'calc';
+    return null;
+  }
+
   function checkUpdate() {
     try {
       fetch(VER_URL + '?t=' + Date.now(), { cache: 'no-store' }).then(function (r) {
@@ -984,7 +1013,7 @@
 
   function markNav() {
     var h = location.hash.replace(/^#/, '') || '/';
-    var cur = h.split('/')[0] || '';
+    var cur = h.split('/').filter(Boolean)[0] || '';
     var map = { '': 'home', 'learn': 'learn', 'subjects': 'learn', 'subject': 'learn', 'chapter': 'learn', 'stories': 'learn', 'notes': 'learn', 'note': 'learn', 'help': 'learn',
       'practice': 'practice', 'bank': 'practice', 'quiz': 'practice', 'papers': 'practice', 'important': 'practice', 'exam': 'practice',
     'calc': 'learn',
@@ -997,6 +1026,18 @@
   }
 
   function render() {
+    // lazy (code-split) modules pehle load, phir render
+    var need = lazyNeed();
+    if (need) {
+      var missing = (LAZY[need] || []).some(function (s) { return !LOADED[s]; });
+      if (missing) {
+        view.innerHTML = '<section class="section"><div class="empty">' + esc(L('Load ho raha hai…', 'लोड हो रहा है…')) + '</div></section>';
+        window.BP.loadLazy(need).then(render).catch(function () {
+          view.innerHTML = '<section class="section"><div class="empty">' + esc(L('Load nahi hua — dobara try karo', 'लोड नहीं हुआ — दोबारा कोशिश करो')) + '</div></section>';
+        });
+        return;
+      }
+    }
     view.innerHTML = route();
     applyBoard();
     applyI18n();
@@ -1172,7 +1213,7 @@
   window.BP = {
     state: state, t: t, esc: esc, render: render, board: board,
     subj: subj, qsFor: qsFor, chapters: chapters, norm: norm, D: D,
-    boardSubjects: boardSubjects, questionCard: questionCard
+    boardSubjects: boardSubjects, questionCard: questionCard, loadLazy: loadLazy
   };
 
   boot();

@@ -197,6 +197,28 @@
     if (D.srs) { for (var k in D.srs) { n++; if (D.srs[k].due && D.srs[k].due <= Date.now()) due++; } }
     return { learned: n, due: due };
   }
+  // Question-level + chapter-level deep analytics (browser me hi)
+  function insights() {
+    var byId = {};
+    (D.attempts || []).forEach(function (a) {
+      var id = (a.q || '').slice(0, 120);
+      var v = byId[id] || (byId[id] = { q: a.q, s: a.s, c: a.c, n: 0, ok: 0 });
+      v.n++; if (a.ok) v.ok++;
+    });
+    var rows = Object.keys(byId).map(function (k) { var v = byId[k]; v.pct = v.n ? Math.round((v.ok / v.n) * 100) : 0; return v; });
+    var ch = chapStats();
+    var practised = ch.filter(function (x) { return x.n >= 3; });
+    var weak = practised.slice().sort(function (a, b) { return a.pct - b.pct; }).slice(0, 3);
+    var strong = practised.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3);
+    var worstQ = rows.filter(function (x) { return x.n >= 2; }).sort(function (a, b) { return a.pct - b.pct; }).slice(0, 5);
+    var total = D.attempts.length, right = D.attempts.filter(function (a) { return a.ok; }).length;
+    return {
+      total: total, right: right, acc: total ? Math.round((right / total) * 100) : 0,
+      weak: weak, strong: strong, worstQ: worstQ, chapters: ch.length, rows: rows
+    };
+  }
+  window.STUDY.insights = insights;
+
   window.STUDY.srsUpdate = srsUpdate;
   window.STUDY.srsDue = srsDue;
   window.STUDY.srsStats = srsStats;
@@ -300,6 +322,29 @@
       });
     } else {
       h += '<div class="empty">' + esc(L('Abhi koi sawal nahi kiya — quiz se shuru karo', 'अभी कोई सवाल नहीं किया — क्विज़ से शुरू करो')) + '</div>';
+    }
+
+    // deep insights (question-level + chapter-level)
+    var ins = window.STUDY.insights();
+    if (ins.total >= 5) {
+      h += '<div class="board-group">' + esc(L('Deep analytics', 'गहरा विश्लेषण')) + '</div>';
+      h += '<div class="imp-item"><div class="iq">' + esc(L('Aapki overall accuracy', 'आपकी समग्र शुद्धता')) +
+        ' <b class="t-num">' + ins.acc + '%</b> (' + ins.right + '/' + ins.total + ')</div></div>';
+      if (ins.weak.length) {
+        ins.weak.forEach(function (w) {
+          h += '<div class="imp-item" style="border-color:#fecaca"><div class="iq">' +
+            esc(L('Aapka', 'आपका')) + ' <b>' + esc(w.c) + '</b> ' + esc(L('mein score', 'में स्कोर')) +
+            ' <b class="t-num" style="color:#dc2626">' + w.pct + '%</b> ' + esc(L('hai (', 'है (')) + w.n +
+            ' ' + esc(L('sawal) — zyada practice chahiye.', 'सवाल) — ज़्यादा अभ्यास चाहिए।')) + '</div></div>';
+        });
+      }
+      if (ins.worstQ.length) {
+        h += '<div class="board-group" style="margin-top:10px">' + esc(L('Sabse zyada galat kiye (phir se dekho)', 'सबसे ज़्यादा गलत किए (फिर से देखो)')) + '</div>';
+        ins.worstQ.forEach(function (w) {
+          h += '<div class="imp-item"><div class="iq">' + esc((w.q || '').slice(0, 90)) + '</div>' +
+            '<div class="t-small">' + esc(w.c || '') + ' · ' + w.ok + '/' + w.n + ' · ' + w.pct + '%</div></div>';
+        });
+      }
     }
 
     // weak chapters
@@ -577,36 +622,117 @@
     return h + '</section>';
   };
 
+  /* ---------------- retrieval (browser ke andar, RAG-जैसा) ---------------- */
+  var STOP = { 'के': 1, 'का': 1, 'की': 1, 'को': 1, 'में': 1, 'है': 1, 'हैं': 1, 'और': 1, 'से': 1, 'एक': 1, 'यह': 1, 'वह': 1,
+    'क्या': 1, 'कैसे': 1, 'कि': 1, 'पर': 1, 'भी': 1, 'तो': 1, 'था': 1, 'थी': 1, 'ने': 1, 'कर': 1, 'किया': 1, 'हो': 1,
+    'जो': 1, 'इस': 1, 'उस': 1, 'तक': 1, 'लिए': 1, 'साथ': 1, 'बारे': 1, 'अपने': 1, 'गया': 1, 'दिया': 1, 'कुछ': 1,
+    'the': 1, 'a': 1, 'an': 1, 'of': 1, 'to': 1, 'is': 1, 'are': 1, 'and': 1, 'in': 1, 'on': 1, 'for': 1, 'what': 1,
+    'how': 1, 'why': 1, 'which': 1, 'who': 1, 'was': 1, 'were': 1, 'has': 1, 'have': 1, 'that': 1, 'this': 1, 'it': 1,
+    'as': 1, 'at': 1, 'by': 1, 'from': 1, 'with': 1, 'or': 1, 'be': 1, 'been': 1, 'मैं': 1, 'हम': 1 };
+
+  function toks(s) {
+    return String(s || '').toLowerCase()
+      .replace(/[^ऀ-ॿa-z0-9\s]/g, ' ')
+      .split(/\s+/).filter(function (w) { return w.length > 1 && !STOP[w]; });
+  }
+
+  function btext(b) {
+    if (!b) return '';
+    var t = '';
+    for (var i = 1; i < b.length; i++) {
+      var v = b[i];
+      if (typeof v === 'string') t += ' ' + v;
+      else if (Array.isArray(v)) t += ' ' + v.join(' ');
+    }
+    return t;
+  }
+
+  var __idx = null, __idxKey = '';
+  // Poora index browser me hi banta hai (TF-IDF) — koi server nahi
+  function indexDocs() {
+    var key = (window.BOARD_DATA ? window.BOARD_DATA.questions.length : 0) + '/' + Object.keys(window.NOTES || {}).length;
+    if (__idx && __idxKey === key) return __idx;
+    var docs = [], df = {};
+    function add(d) {
+      var ts = toks(d.text), set = {};
+      ts.forEach(function (t) { set[t] = 1; });
+      Object.keys(set).forEach(function (t) { df[t] = (df[t] || 0) + 1; });
+      docs.push({ d: d, toks: ts });
+    }
+    Object.keys(window.NOTES || {}).forEach(function (k) {
+      (window.NOTES[k] || []).forEach(function (it) {
+        var txt = it.ch + ' ' + (it.blocks || []).map(btext).join(' ');
+        add({ type: 'note', k: k, ch: it.ch, blocks: it.blocks, text: txt });
+      });
+    });
+    (window.BOARD_DATA.questions || []).forEach(function (q) {
+      add({ type: 'q', q: q, text: (q.q || '') + ' ' + (q.opts || []).join(' ') + ' ' + (q.exp || '') });
+    });
+    var N = docs.length || 1;
+    var idf = {};
+    Object.keys(df).forEach(function (t) { idf[t] = Math.log(1 + N / df[t]); });
+    __idx = { docs: docs, idf: idf };
+    __idxKey = key;
+    return __idx;
+  }
+
+  // Query par sabse relevant notes + sawal (ranked)
+  function retrieve(query, limit) {
+    var qt = toks(query);
+    if (!qt.length) return { notes: [], qs: [] };
+    var ix = indexDocs(), N = ix.docs.length || 1;
+    var scores = [];
+    for (var i = 0; i < ix.docs.length; i++) {
+      var doc = ix.docs[i], s = 0, hit = 0;
+      var bag = {}, j;
+      for (j = 0; j < doc.toks.length; j++) bag[doc.toks[j]] = (bag[doc.toks[j]] || 0) + 1;
+      for (j = 0; j < qt.length; j++) {
+        var t = qt[j];
+        if (bag[t]) { s += (bag[t] / doc.toks.length) * (ix.idf[t] || 0); hit++; }
+      }
+      if (hit) scores.push({ d: doc.d, s: s * (hit / qt.length) });
+    }
+    scores.sort(function (a, b) { return b.s - a.s; });
+    var notes = [], qs = [];
+    for (var k = 0; k < scores.length; k++) {
+      var d = scores[k].d;
+      if (d.type === 'note' && notes.length < (limit || 4)) notes.push(d);
+      else if (d.type === 'q' && qs.length < 5) qs.push(d.q);
+    }
+    return { notes: notes, qs: qs, total: scores.length };
+  }
+  window.STUDY.retrieve = retrieve;
+
   window.assistAsk = function (text) {
     var out = document.getElementById('assRes');
     if (!out) return;
     var w = (text || '').trim();
     if (!w) { out.innerHTML = ''; return; }
-    var hits = [];
-    try {
-      (window.BOARD_DATA.questions || []).forEach(function (q) {
-        if ((q.q || '').indexOf(w) >= 0 || (w.length > 3 && (q.q || '').indexOf(w.slice(0, 4)) >= 0)) hits.push(q);
-      });
-    } catch (e) {}
-    var notes = [];
-    try {
-      Object.keys(window.NOTES || {}).forEach(function (k) {
-        (window.NOTES[k] || []).forEach(function (it) {
-          if (it.ch && it.ch.indexOf(w) >= 0) notes.push({ k: k, it: it });
-        });
-      });
-    } catch (e) {}
+    // notes lazy load hote hain — pehle lao, phir retrieve
+    if (window.BP && window.BP.loadLazy && !window.NOTES) {
+      out.innerHTML = '<div class="empty">' + esc(L('Notes load ho rahe hain…', 'नोट्स लोड हो रहे हैं…')) + '</div>';
+      window.BP.loadLazy('notes').then(function () { window.assistAsk(text); }).catch(function () { });
+      return;
+    }
+    var r;
+    try { r = retrieve(w); } catch (e) { r = { notes: [], qs: [] }; }
     var h = '';
-    if (notes.length) {
-      h += '<div class="board-group">' + esc(L('Chapter notes', 'अध्याय नोट्स')) + '</div>';
-      notes.slice(0, 3).forEach(function (n) {
-        h += '<a class="list-row" href="#/note/' + esc(n.k) + '/' + encodeURIComponent(n.it.ch) + '"><div><div class="t">' + esc(n.it.ch) + '</div>' +
-          '<div class="s">' + esc((n.it.blocks.filter(function (b) { return b[0] === 'p'; })[0] || [])[1] || '') + '</div></div><span class="n">→</span></a>';
+    if (r.notes.length) {
+      h += '<div class="board-group">' + esc(L('Sabse mel khaane wale notes', 'सबसे मेल खाने वाले नोट्स')) + ' (' + r.total + ')</div>';
+      r.notes.forEach(function (n) {
+        var best = '';
+        (n.blocks || []).forEach(function (b) {
+          var t = btext(b);
+          if (t.length > best.length && b[0] === 'p') best = t;
+        });
+        if (!best) best = btext((n.blocks || [])[1] || []);
+        h += '<a class="list-row" href="#/note/' + esc(n.k) + '/' + encodeURIComponent(n.ch) + '"><div><div class="t">' + esc(n.ch) + '</div>' +
+          '<div class="s">' + esc(best.slice(0, 120)) + '</div></div><span class="n">→</span></a>';
       });
     }
-    if (hits.length) {
+    if (r.qs.length) {
       h += '<div class="board-group">' + esc(L('Similar questions (practice)', 'मिलते-जुलते सवाल (अभ्यास)')) + '</div>';
-      hits.slice(0, 5).forEach(function (q) {
+      r.qs.forEach(function (q) {
         h += '<div class="imp-item" style="margin-bottom:8px"><div class="num">' + esc(q.subj) + '</div><div><div class="iq">' + esc(q.q) + '</div>';
         if (q.opts) {
           var ai = String(q.ans || '').toUpperCase().charCodeAt(0) - 65;
