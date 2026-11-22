@@ -30,7 +30,19 @@
     chart: S + '<path d="M4 20.5h16"/><path d="M7 20v-6M12 20V8M17 20v-9"/><circle cx="7" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="6" r="1.4" fill="currentColor"/><circle cx="17" cy="9" r="1.4" fill="currentColor"/>' + E,
     timer: S + '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 1.5"/><path d="M9.5 2.5h5M12 2.5v3"/>' + E,
     refresh: S + '<path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4.5v4h-4"/>' + E,
-    sparkle: S + '<path d="M12 3.5l1.7 4.6 4.6 1.7-4.6 1.7L12 16.1l-1.7-4.6-4.6-1.7 4.6-1.7L12 3.5z"/><path d="M18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2z"/>' + E
+    sparkle: S + '<path d="M12 3.5l1.7 4.6 4.6 1.7-4.6 1.7L12 16.1l-1.7-4.6-4.6-1.7 4.6-1.7L12 3.5z"/><path d="M18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2z"/>' + E,
+    user: S + '<circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.8-3.4 3.7-5.2 7.2-5.2s6.4 1.8 7.2 5.2"/>' + E,
+    library: S + '<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v13a1.5 1.5 0 0 0-1.5-1.5H4V5.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v13a1.5 1.5 0 0 1 1.5-1.5H20V5.5z"/>' + E,
+    repeat: S + '<path d="M4 9a5 5 0 0 1 5-5h7"/><path d="M20 15a5 5 0 0 1-5 5H8"/><path d="M17 4.5 20 9h-4.5"/><path d="M7 19.5 4 15h4.5"/>' + E,
+    bot: S + '<rect x="5" y="8" width="14" height="10" rx="3"/><path d="M12 8V4.5M8.5 13h.01M15.5 13h.01"/><path d="M9 16.2c.8.6 1.8.9 3 .9s2.2-.3 3-.9"/>' + E,
+    moon: S + '<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>' + E,
+    sun: S + '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/>' + E,
+    bell: S + '<path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 13 6 9z"/><path d="M10 18a2 2 0 0 0 4 0"/>' + E,
+    settings: S + '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.2 5.2l1.7 1.7M17.1 17.1l1.7 1.7M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7"/>' + E,
+    leaf: S + '<path d="M5 19c0-8 5-13 14-13 0 9-5 13-13 13z"/><path d="M5 19c2-5 6-8 10-9"/>' + E,
+    globe: S + '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.6 5.3 3.6 8.5s-1.2 6.1-3.6 8.5c-2.4-2.4-3.6-5.3-3.6-8.5s1.2-6.1 3.6-8.5z"/>' + E,
+    landmark: S + '<path d="M3 20h18M4 20v-8M20 20v-8M8 20v-8M16 20v-8M12 20v-8M3 12l9-6 9 6z"/>' + E,
+    clipboard: S + '<rect x="5" y="4.5" width="14" height="16" rx="2.5"/><path d="M9 4.5a3 3 0 0 1 6 0"/><path d="M8.5 12h7M8.5 15.5h7M8.5 18.5h4"/>' + E
   };
 
   function icon(name, size) {

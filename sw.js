@@ -3,7 +3,7 @@
    - baaki sab (PDF, audio, 3D models) cache-first; network par aaye to cache ho jaye
    - "offline करो" button se poora content cache ho sakta hai
 */
-const CACHE = 'boardprep-v6';
+const CACHE = 'boardprep-v7';
 
 const SHELL = [
   './',

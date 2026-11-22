@@ -764,10 +764,13 @@
   function markNav() {
     var h = location.hash.replace(/^#/, '') || '/';
     var cur = h.split('/')[0] || '';
+    var map = { '': 'home', 'learn': 'learn', 'subjects': 'learn', 'subject': 'learn', 'stories': 'learn', 'notes': 'learn', 'note': 'learn', 'help': 'learn',
+      'practice': 'practice', 'quiz': 'practice', 'papers': 'practice', 'important': 'practice', 'exam': 'practice',
+      'progress': 'progress', 'revision': 'progress', 'assistant': 'progress',
+      'profile': 'profile', 'settings': 'profile' };
+    var on = map[cur] || 'home';
     document.querySelectorAll('.bottomnav a').forEach(function (a) {
-      var n = a.dataset.nav;
-      var on = (cur === '' && n === 'home') || (cur === n) || (cur === 'subject' && n === 'subjects');
-      a.classList.toggle('on', !!on);
+      a.classList.toggle('on', a.dataset.nav === on);
     });
   }
 

@@ -501,6 +501,109 @@
     return html + '</section>';
   }
 
+  /* ---------------- learn / practice / profile ---------------- */
+
+  function hubGrid(items) {
+    return '<div class="grid grid-3 hub-grid">' + items.map(function (x) {
+      return '<a class="hub-card" href="' + x[0] + '"><span class="hub-ico" data-icon="' + x[1] + '"></span>' +
+        '<span class="hub-tx">' + esc(x[2]) + '</span>' +
+        (x[3] ? '<span class="hub-sub">' + esc(x[3]) + '</span>' : '') + '</a>';
+    }).join('') + '</div>';
+  }
+
+  function vLearn() {
+    var b = BP.board();
+    var subs = BP.boardSubjects ? BP.boardSubjects() : (window.SUBJECTS || []);
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Seekhein', 'सीखें')) + '</h2>' +
+      '<span class="note">' + esc(b.name) + ' · ' + esc(b.medium || '') + '</span></div>';
+    h += '<div class="grid grid-3">' + subs.map(function (s) {
+      return '<a class="subj-card card" href="#/subject/' + esc(s.key) + '" style="--sc:' + esc(s.color) + '">' +
+        '<span class="subj-ic" style="background:' + esc(s.color) + '1a;color:' + esc(s.color) + '">' + esc(s.icon || s.name[0]) + '</span>' +
+        '<h3>' + esc(window.BP.state.lang === 'en' ? (s.en || s.name) : s.name) + '</h3>' +
+        '<p>' + esc(L('Chapters + notes + practice', 'अध्याय + नोट्स + अभ्यास')) + '</p>' +
+        '<div class="count">' + (window.QS_FOR ? window.QS_FOR(s.key).length : 0) + ' ' + esc(L('questions', 'सवाल')) + '</div></a>';
+    }).join('') + '</div>';
+    h += '<div class="board-group">' + esc(L('Learning resources', 'सीखने के साधन')) + '</div>';
+    h += hubGrid([
+      ['#/notes', 'book', L('Chapter notes', 'अध्याय नोट्स'), L('131 chapters', '131 अध्याय')],
+      ['#/stories', 'library', L('Textbook stories', 'पाठ्यपुस्तक कहानी'), L('81 chapters', '81 अध्याय')],
+      ['#/diagrams', 'target', L('Diagrams', 'चित्र'), L('20 interactive', '20 इंटरैक्टिव')],
+      ['#/models', 'cube', L('3D models', '3D मॉडल'), L('Biology + Physics', 'जीव + भौतिक')],
+      ['#/formulas', 'sigma', L('Formulas', 'सूत्र'), L('127 formulas', '127 सूत्र')],
+      ['#/periodic', 'atom', L('Periodic table', 'आवर्त सारणी'), L('118 elements', '118 तत्व')],
+      ['#/timeline', 'timeline', L('Timeline', 'समयरेखा'), L('77 events', '77 घटनाएँ')],
+      ['#/lab', 'flask', L('Chemistry lab', 'रसायन प्रयोगशाला'), L('36 reactions', '36 अभिक्रियाएँ')],
+      ['#/mathlab', 'calc', L('Maths lab', 'गणित लैब'), L('tools', 'टूल')]
+    ]);
+    h += '<div class="note"><a href="#/help" style="color:var(--accent);font-weight:700">' + esc(L('Kaise use karein →', 'कैसे उपयोग करें →')) + '</a></div>';
+    return h + '</section>';
+  }
+
+  function vPractice() {
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Abhyas', 'अभ्यास')) + '</h2>' +
+      '<span class="note">' + esc(L('Practice + tests', 'अभ्यास + परीक्षण')) + '</span></div>';
+    h += hubGrid([
+      ['#/subjects', 'library', L('Question bank', 'प्रश्न बैंक'), L('8356 questions', '8356 सवाल')],
+      ['#/quiz', 'pencil', L('Quiz', 'क्विज़'), L('chapter / subject / mixed', 'अध्याय / विषय / मिक्स')],
+      ['#/exam', 'timer', L('Mock exam', 'मॉक एग्ज़ाम'), L('timer + real pattern', 'टाइमर + असली पैटर्न')],
+      ['#/papers', 'papers', L('Papers (PDF)', 'पेपर (PDF)'), L('PYQ + model', 'PYQ + मॉडल')],
+      ['#/important', 'star', L('Important 2027', 'महत्वपूर्ण 2027'), L('NCERT practice', 'NCERT अभ्यास')],
+      ['#/revision', 'repeat', L('Revision', 'रिवीज़न'), L('wrong + bookmarks', 'गलत + बुकमार्क')],
+      ['#/search', 'search', L('Search', 'खोज'), L('questions + notes', 'सवाल + नोट्स')],
+      ['#/brain', 'bulb', L('Brain test', 'ब्रेन टेस्ट'), L('20 questions', '20 सवाल')],
+      ['#/songs', 'music', L('Focus songs', 'फ़ोकस गाने'), L('offline audio', 'ऑफ़लाइन')]
+    ]);
+    return h + '</section>';
+  }
+
+  function vProfile() {
+    var b = BP.board();
+    var s = window.STUDY ? window.STUDY.stats() : null;
+    var theme = storeGet2('bp_theme', 'system');
+    var fs = storeGet2('bp_fs', 'normal');
+    var name = storeGet2('bp_name', '');
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Profile', 'प्रोफ़ाइल')) + '</h2></div>';
+    h += '<div class="card profile-card">' +
+      '<span class="avatar" data-icon="user"></span>' +
+      '<div><div style="font-size:17px;font-weight:800">' + esc(name || L('Class 10 student', 'कक्षा 10 का विद्यार्थी')) + '</div>' +
+      '<div class="t-secondary">' + esc(b.name) + ' · ' + esc(b.medium || '') + '</div>' +
+      (s ? '<div class="t-secondary">' + s.total + ' ' + esc(L('attempted', 'किए')) + ' · ' + s.right + ' ' + esc(L('correct', 'सही')) + ' · ' + s.streak + ' ' + esc(L('day streak', 'दिन स्ट्रीक')) + '</div>' : '') +
+      '</div></div>';
+
+    h += '<div class="board-group">' + esc(L('Student details', 'विद्यार्थी विवरण')) + '</div>';
+    h += '<div class="field"><label>' + esc(L('Your name', 'आपका नाम')) + '</label>' +
+      '<input type="text" id="setName" value="' + esc(name) + '" placeholder="' + esc(L('Naam likhein', 'नाम लिखें')) + '"></div>';
+    h += '<div class="setting-row"><span>' + esc(L('Board', 'बोर्ड')) + '</span><a class="setting-val" href="#/board" id="setBoard">' + esc(b.name) + ' ▾</a></div>';
+    h += '<div class="setting-row"><span>' + esc(L('Medium / Language', 'माध्यम / भाषा')) + '</span><button class="setting-val" id="setLang">' + esc(window.BP.state.lang === 'en' ? 'English' : 'हिंदी') + '</button></div>';
+
+    h += '<div class="board-group">' + esc(L('Appearance', 'दिखावट')) + '</div>';
+    h += '<div class="setting-row"><span>' + esc(L('Theme', 'थीम')) + '</span>' +
+      '<div class="seg" style="gap:6px">' + [['system', L('System', 'सिस्टम')], ['light', L('Light', 'लाइट')], ['dark', L('Dark', 'डार्क')]].map(function (x) {
+        return '<button class="fchip' + (theme === x[0] ? ' on' : '') + '" data-theme-set="' + x[0] + '">' + esc(x[1]) + '</button>';
+      }).join('') + '</div></div>';
+    h += '<div class="setting-row"><span>' + esc(L('Text size', 'टेक्स्ट साइज़')) + '</span>' +
+      '<div class="seg" style="gap:6px">' + [['small', L('Small', 'छोटा')], ['normal', L('Normal', 'सामान्य')], ['large', L('Large', 'बड़ा')]].map(function (x) {
+        return '<button class="fchip' + (fs === x[0] ? ' on' : '') + '" data-fs-set="' + x[0] + '">' + esc(x[1]) + '</button>';
+      }).join('') + '</div></div>';
+
+    h += '<div class="board-group">' + esc(L('Downloads + data', 'डाउनलोड + डेटा')) + '</div>';
+    h += '<a class="setting-row" href="#/help" style="display:flex"><span>' + esc(L('Offline content', 'ऑफ़लाइन सामग्री')) + '</span><span class="setting-val">' + esc(L('Setup →', 'सेटअप →')) + '</span></a>';
+    h += '<button class="setting-row" id="bkExport" style="width:100%;text-align:left"><span>' + esc(L('Backup my data', 'मेरा डेटा बैकअप')) + '</span><span class="setting-val">↓</span></button>';
+    h += '<button class="setting-row" id="bkRestore" style="width:100%;text-align:left"><span>' + esc(L('Restore backup', 'बैकअप रिस्टोर')) + '</span><span class="setting-val">↑</span></button>';
+    h += '<button class="setting-row danger" id="bkClear" style="width:100%;text-align:left"><span>' + esc(L('Clear all progress', 'सारी प्रगति मिटाएँ')) + '</span><span class="setting-val">✕</span></button>';
+    h += '<div class="note">' + esc(L('Board badalne se progress nahi jayega — sirf syllabus/bhasha badlega.', 'बोर्ड बदलने से प्रगति नहीं जाएगी — सिर्फ़ पाठ्यक्रम/भाषा बदलेगी।')) + '</div>';
+
+    h += '<div class="board-group">' + esc(L('About', 'ऐप के बारे में')) + '</div>';
+    h += '<div class="setting-row"><span>' + esc(L('Version', 'संस्करण')) + '</span><span class="setting-val">v3.0</span></div>';
+    h += '<div class="setting-row"><span>' + esc(L('Content source', 'सामग्री स्रोत')) + '</span><span class="setting-val" style="max-width:60%;text-align:right">' + esc(L('NCERT syllabus based', 'NCERT पाठ्यक्रम आधारित')) + '</span></div>';
+    h += '<div class="setting-row"><span>' + esc(L('Privacy', 'गोपनीयता')) + '</span><span class="setting-val" style="max-width:60%;text-align:right">' + esc(L('Sab data is device par', 'सारा डेटा इसी डिवाइस पर')) + '</span></div>';
+    h += '<div class="note">' + esc(L('BoardPrep ek educational aid hai — koi bhi board-specific content sirf tab kehlata hai jab source verified ho.', 'BoardPrep एक शैक्षणिक साधन है — कोई भी बोर्ड-विशिष्ट सामग्री सिर्फ़ तब कहलाती है जब स्रोत सत्यापित हो।')) + '</div>';
+    return h + '</section>';
+  }
+
+  function storeGet2(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
+  function storeSet2(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }
+
   /* ---------------- help / kaise use karein ---------------- */
 
   function vHelp() {
@@ -649,6 +752,9 @@
     if (p === 'notes') return vNotes(parts[1]);
     if (p === 'note') return vNoteDetail(parts[1], decodeURIComponent(parts[2] || ''));
     if (p === 'progress') return window.vProgress ? window.vProgress() : '<section class="section"><div class="empty">…</div></section>';
+    if (p === 'learn') return vLearn();
+    if (p === 'practice') return vPractice();
+    if (p === 'profile') return vProfile();
     if (p === 'revision') return window.vRevision ? window.vRevision() : '';
     if (p === 'exam') return window.vExam ? window.vExam() : '';
     if (p === 'assistant') return window.vAssistant ? window.vAssistant() : '';
@@ -817,6 +923,110 @@
         try { ch = window.chapters(k)[0]; } catch (e) {}
         if (ch) { location.hash = '#/subject/' + k; }
       });
+    });
+
+    // ---- profile settings ----
+    function applyPrefs() {
+      var theme = 'system', fs = 'normal';
+      try { theme = localStorage.getItem('bp_theme') || 'system'; } catch (e) {}
+      try { fs = localStorage.getItem('bp_fs') || 'normal'; } catch (e) {}
+      var dark = theme === 'dark' || (theme === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      document.documentElement.dataset.fs = fs;
+      var mt = document.querySelector('meta[name="theme-color"]');
+      if (mt) mt.setAttribute('content', dark ? '#0B1120' : (window.BP && window.BP.state ? (BP.board().color || '#4f46e5') : '#4f46e5'));
+    }
+    window.applyPrefs = applyPrefs;
+    applyPrefs();
+    if (window.matchMedia) {
+      try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyPrefs); } catch (e) {}
+    }
+    function toast(msg) {
+      var t = document.getElementById('toast');
+      if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(window.__toastT);
+      window.__toastT = setTimeout(function () { t.classList.remove('show'); }, 1800);
+    }
+    window.toast = toast;
+
+    document.querySelectorAll('[data-theme-set]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-theme-set]').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        try { localStorage.setItem('bp_theme', b.dataset.themeSet); } catch (e) {}
+        applyPrefs();
+        toast(L('Theme badal gayi', 'थीम बदल गई'));
+      });
+    });
+    document.querySelectorAll('[data-fs-set]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('[data-fs-set]').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        try { localStorage.setItem('bp_fs', b.dataset.fsSet); } catch (e) {}
+        applyPrefs();
+        toast(L('Text size badla', 'टेक्स्ट साइज़ बदला'));
+      });
+    });
+    var setName = document.getElementById('setName');
+    if (setName) setName.addEventListener('input', function () {
+      try { localStorage.setItem('bp_name', setName.value); } catch (e) {}
+    });
+    var setLang = document.getElementById('setLang');
+    if (setLang) setLang.addEventListener('click', function () {
+      window.BP.state.lang = window.BP.state.lang === 'en' ? 'hi' : 'en';
+      try { localStorage.setItem('bp_lang', window.BP.state.lang); } catch (e) {}
+      window.BP.render();
+    });
+    var setBoard = document.getElementById('setBoard');
+    if (setBoard) setBoard.addEventListener('click', function (e) {
+      e.preventDefault();
+      var sheet = document.getElementById('boardSheet');
+      if (sheet) sheet.hidden = false;
+    });
+    var bkExport = document.getElementById('bkExport');
+    if (bkExport) bkExport.addEventListener('click', function () {
+      try {
+        var payload = { app: 'BoardPrep', version: 3, exported: new Date().toISOString(), study: window.STUDY ? window.STUDY.data() : null, prefs: {} };
+        ['bp_board', 'bp_lang', 'bp_theme', 'bp_fs', 'bp_name'].forEach(function (k) { try { payload.prefs[k] = localStorage.getItem(k); } catch (e) {} });
+        var blob = new Blob([JSON.stringify(payload, null, 1)], { type: 'application/json' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'boardprep-backup.json';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+        toast(L('Backup download ho gaya', 'बैकअप डाउनलोड हो गया'));
+      } catch (e) { toast(L('Backup nahi ho paya', 'बैकअप नहीं हो पाया')); }
+    });
+    var bkRestore = document.getElementById('bkRestore');
+    if (bkRestore) bkRestore.addEventListener('click', function () {
+      var inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = 'application/json,.json';
+      inp.onchange = function () {
+        var f = inp.files && inp.files[0];
+        if (!f) return;
+        var r = new FileReader();
+        r.onload = function () {
+          try {
+            var d = JSON.parse(String(r.result));
+            if (d && d.study) { try { localStorage.setItem('bp_study_v1', JSON.stringify(d.study)); } catch (e) {} }
+            if (d && d.prefs) { Object.keys(d.prefs).forEach(function (k) { if (d.prefs[k] !== null) { try { localStorage.setItem(k, d.prefs[k]); } catch (e) {} } }); }
+            window.STUDY && window.STUDY.save();
+            window.BP.render();
+            toast(L('Backup restore ho gaya', 'बैकअप रिस्टोर हो गया'));
+          } catch (e) { toast(L('File sahi nahi hai', 'फ़ाइल सही नहीं है')); }
+        };
+        r.readAsText(f);
+      };
+      inp.click();
+    });
+    var bkClear = document.getElementById('bkClear');
+    if (bkClear) bkClear.addEventListener('click', function () {
+      if (!confirm(L('Saari progress mitayen?', 'सारी प्रगति मिटाएँ?'))) return;
+      if (window.STUDY) window.STUDY.clear();
+      window.BP.render();
+      toast(L('Progress clear ho gayi', 'प्रगति साफ़ हो गई'));
     });
 
     // exam live timer (1s tick) + auto submit
