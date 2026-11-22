@@ -547,6 +547,7 @@
       '<span class="note">' + esc(L('Practice + tests', 'अभ्यास + परीक्षण')) + '</span></div>';
     h += hubGrid([
       ['#/bank', 'library', L('Question bank', 'प्रश्न बैंक'), L('filters + bookmark', 'फ़िल्टर + बुकमार्क')],
+      ['#/room', 'users', L('Study room', 'अध्ययन कक्ष'), L('saath padho', 'साथ पढ़ो')],
       ['#/subjects', 'grid', L('Subjects', 'विषय'), L('8356 questions', '8356 सवाल')],
       ['#/quiz', 'pencil', L('Quiz', 'क्विज़'), L('chapter / subject / mixed', 'अध्याय / विषय / मिक्स')],
       ['#/exam', 'timer', L('Mock exam', 'मॉक एग्ज़ाम'), L('timer + real pattern', 'टाइमर + असली पैटर्न')],
@@ -609,6 +610,14 @@
     h += '<div class="setting-row" style="align-items:flex-start;flex-direction:column;gap:4px"><span>' + esc(L('3D anatomy models', '3D एनाटॉमी मॉडल')) + '</span><span class="t-small">BodyParts3D © DBCLS (CC BY 4.0); female organs: HuBMAP (CC BY 4.0); female body: MakeHuman (CC0). Adapted by open-anatomy-3d (CC BY 4.0).</span></div>';
     h += '<div class="setting-row" style="align-items:flex-start;flex-direction:column;gap:4px"><span>' + esc(L('PDFs + audio', 'PDF + ऑडियो')) + '</span><span class="t-small">' + esc(L('NCERT/JAC material + free audio (licence verify)', 'NCERT/JAC सामग्री + मुफ़्त ऑडियो (लाइसेंस जाँचें — verify)')) + '</span></div>';
     h += '<div class="note">' + esc(L('BoardPrep ek educational aid hai — koi bhi board-specific content sirf tab kehlata hai jab source verified ho.', 'BoardPrep एक शैक्षणिक साधन है — कोई भी बोर्ड-विशिष्ट सामग्री सिर्फ़ तब कहलाती है जब स्रोत सत्यापित हो।')) + '</div>';
+    h += '<div class="board-group" style="margin-top:12px">' + esc(L('Cloud sync', 'क्लाउड सिंक')) + '</div>';
+    h += '<div class="note">' + esc(L('Apni pragaṭi cloud par — doosre phone se bhi. Free worker chahiye (guide).', 'अपनी प्रगति क्लाउड पर — दूसरे फ़ोन से भी। मुफ़्त worker चाहिए (गाइड)।')) + '</div>';
+    h += '<div class="field"><label>' + esc(L('Cloud API URL (worker)', 'क्लाउड API URL (worker)')) + '</label>' +
+      '<input id="csUrl" value="' + esc(window.Cloud ? window.Cloud.getBase() : '') + '" placeholder="https://boardprep-api.xxx.workers.dev" style="width:100%"></div>';
+    h += '<div class="chips">' +
+      '<button class="fchip" id="csSave">' + esc(L('Cloud par save', 'क्लाउड पर सेव')) + '</button>' +
+      '<button class="fchip" id="csLoad">' + esc(L('Cloud se lao', 'क्लाउड से लाओ')) + '</button></div>';
+    h += '<div id="csOut" class="note" style="margin-top:6px"></div>';
     if (window.BPApp && window.BPApp.exit) {
       h += '<div class="board-group" style="margin-top:12px">' + esc(L('App', 'ऐप')) + '</div>';
       h += '<button class="btn btn-block" id="appExit" style="border-color:var(--line)">' + esc(L('ऐप बंद करें', 'ऐप बंद करें')) + '</button>';
@@ -896,6 +905,28 @@
     window.BP.state.bankPage = page;
   }
 
+  /* ---------------- study room (multi-user) ---------------- */
+
+  function vRoom() {
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Study room', 'अध्ययन कक्ष')) + '</h2>' +
+      '<span class="note">' + esc(L('free — cloud worker chahiye', 'मुफ़्त — क्लाउड worker चाहिए')) + '</span></div>';
+    h += '<div class="card"><div class="board-group">' + esc(L('Apna naam', 'अपना नाम')) + '</div>' +
+      '<div class="field"><input id="rmName" placeholder="' + esc(L('Naam', 'नाम')) + '" value="' + esc(window.Cloud && window.Cloud.myName() || '') + '"></div>';
+    h += '<div class="board-group" style="margin-top:10px">' + esc(L('Room code', 'रूम कोड')) + '</div>' +
+      '<div class="field"><input id="rmCode" placeholder="maths10" maxlength="12"></div>';
+    h += '<div class="chips" style="margin-top:10px">' +
+      '<button class="fchip" id="rmCreate">' + esc(L('Room banao', 'रूम बनाओ')) + '</button>' +
+      '<button class="fchip" id="rmJoin">' + esc(L('Join karo', 'जुड़ो')) + '</button></div>';
+    h += '<div id="rmStat" class="note" style="margin-top:8px"></div></div>';
+    h += '<div id="rmChat" style="margin-top:12px"></div>';
+    h += '<div class="field" style="display:flex;gap:8px;margin-top:10px">' +
+      '<input id="rmMsg" placeholder="' + esc(L('Message likho…', 'संदेश लिखो…')) + '" style="flex:1">' +
+      '<button class="btn btn-accent" id="rmSend">' + esc(L('Bhejo', 'भेजो')) + '</button></div>';
+    h += '<div class="note" style="margin-top:8px">' + esc(L('Ek hi code sabke liye same room kholta hai (jaise "maths10")। Internet chalega tabhi.', 'एक ही कोड सबके लिए समान रूम खोलता है (जैसे "maths10")। इंटरनेट चलेगा तभी।')) + '</div>';
+    h += '<div id="rmPoll" data-code="" style="display:none"></div>';
+    return h + '</section>';
+  }
+
   /* ---------------- exam target / onboarding ---------------- */
 
   function vTarget() {
@@ -1104,6 +1135,7 @@
     if (p === 'revision') return window.vRevision ? window.vRevision() : '';
     if (p === 'calc') return window.CalcTool ? window.CalcTool.view() : '';
     if (p === 'target') return vTarget();
+    if (p === 'room') return vRoom();
     if (p === 'remind') return vRemind();
     if (p === 'exam') return window.vExam ? window.vExam() : '';
     if (p === 'assistant') return window.vAssistant ? window.vAssistant() : '';
@@ -1486,6 +1518,60 @@
     if (fcReset) fcReset.addEventListener('click', function () { window.__fcIdx = 0; window.__fcFlipped = false; window.__fcKnown = 0; window.__fcUnknown = 0; fcShow(); });
     if (window.__fcCards && document.getElementById('fcCard')) fcShow();
 
+    // ---- study room ----
+    var rmCode = document.getElementById('rmCode');
+    var rmName = document.getElementById('rmName');
+    var rmStat = document.getElementById('rmStat');
+    var rmChat = document.getElementById('rmChat');
+    var rmPoll = document.getElementById('rmPoll');
+    function rmRender(room) {
+      if (!rmChat) return;
+      var h = '<div class="board-group">' + esc(L('Room', 'रूम')) + ' ' + esc(room.code) + ' · ' +
+        room.members.length + ' ' + esc(L('log', 'लोग')) + '</div>';
+      (room.msgs || []).slice(-30).forEach(function (m) {
+        h += '<div class="imp-item" style="margin-bottom:6px"><div class="num" style="background:#e0e7ff;color:#3730a3">' + esc(m.n) + '</div><div>' +
+          '<div class="iq">' + esc(m.t) + '</div><div class="t-small">' + new Date(m.ts).toLocaleTimeString() + '</div></div></div>';
+      });
+      rmChat.innerHTML = h;
+    }
+    function rmRefresh() {
+      var code = rmPoll && rmPoll.getAttribute('data-code');
+      if (!code || !window.Cloud || !window.Cloud.ready()) return;
+      window.Cloud.roomGet(code).then(function (r) { if (r && r.ok) rmRender(r.room); }).catch(function () { });
+    }
+    if (document.getElementById('rmCreate') || document.getElementById('rmJoin')) {
+      var rmGo = function (create) {
+        var code = (rmCode.value || '').trim().toLowerCase();
+        var name = (rmName.value || '').trim() || 'student';
+        if (!code) { rmStat.textContent = L('Code likho', 'कोड लिखो'); return; }
+        if (!window.Cloud || !window.Cloud.ready()) { rmStat.textContent = L('Cloud API set nahi — worker deploy karo (guide dekho)', 'क्लाउड API सेट नहीं — worker deploy करो (गाइड देखो)'); return; }
+        try { localStorage.setItem('bp_name', name); } catch (e) { }
+        var p = create ? window.Cloud.roomCreate(code, name) : window.Cloud.roomJoin(code, name);
+        p.then(function (r) {
+          if (!r || !r.ok) { rmStat.textContent = (r && r.error) || 'fail'; return; }
+          rmPoll.setAttribute('data-code', code);
+          rmStat.textContent = '✓ ' + code;
+          rmRender(r.room);
+          clearInterval(window.__rmT);
+          window.__rmT = setInterval(rmRefresh, 3000);
+        }).catch(function (e) { rmStat.textContent = String(e.message || e); });
+      };
+      var rc = document.getElementById('rmCreate');
+      if (rc) rc.addEventListener('click', function () { rmGo(true); });
+      var rj = document.getElementById('rmJoin');
+      if (rj) rj.addEventListener('click', function () { rmGo(false); });
+      var rs = document.getElementById('rmSend');
+      if (rs) rs.addEventListener('click', function () {
+        var code = rmPoll.getAttribute('data-code');
+        var msg = (document.getElementById('rmMsg').value || '').trim();
+        var name = (rmName.value || '').trim() || 'student';
+        if (!code || !msg) return;
+        window.Cloud.roomPost(code, name, msg).then(function (r) {
+          if (r && r.ok) { rmRender(r.room); document.getElementById('rmMsg').value = ''; }
+        }).catch(function () { });
+      });
+    }
+
     var tgSkip = document.getElementById('tgSkip');
     if (tgSkip) tgSkip.addEventListener('click', function () {
       try { localStorage.setItem('bp_target_skip', '1'); } catch (e) { }
@@ -1585,7 +1671,68 @@
       } else if (o) o.textContent = L('Is device par Notification nahi (in-app reminder)', 'इस डिवाइस पर सूचना नहीं (इन-ऐप अनुस्मारक)');
     });
 
-    // ---- subject tools ----
+    var csUrl = document.getElementById('csUrl');
+    if (csUrl) csUrl.addEventListener('change', function () {
+      var u = csUrl.value.trim();
+      try { localStorage.setItem('bp_api_base', u); } catch (e) { }
+      if (window.Cloud) window.Cloud.setBase(u);
+      var o = document.getElementById('csOut');
+      if (o) o.textContent = u ? ('✓ ' + u) : '—';
+    });
+    var csSave = document.getElementById('csSave');
+    if (csSave) csSave.addEventListener('click', function () {
+      var out = document.getElementById('csOut');
+      if (!window.Cloud || !window.Cloud.ready()) { if (out) out.textContent = L('Cloud API set nahi — worker deploy karo (guide dekho)', 'क्लाउड API सेट नहीं — worker deploy करो (गाइड देखो)'); return; }
+      var data = {};
+      try {
+        data = {
+          study: (window.STUDY && window.STUDY.data) ? window.STUDY.data() : {},
+          target: (window.STUDY && window.STUDY.targetGet) ? window.STUDY.targetGet() : null
+        };
+      } catch (e) { }
+      window.Cloud.syncPush(data).then(function (r) {
+        if (out) out.textContent = (r && r.ok) ? ('✓ ' + new Date().toLocaleTimeString()) : ((r && r.error) || 'fail');
+      }).catch(function (e) { if (out) out.textContent = String(e.message || e); });
+    });
+    var csLoad = document.getElementById('csLoad');
+    if (csLoad) csLoad.addEventListener('click', function () {
+      var out = document.getElementById('csOut');
+      if (!window.Cloud || !window.Cloud.ready()) { if (out) out.textContent = L('Cloud API set nahi — worker deploy karo (guide dekho)', 'क्लाउड API सेट नहीं — worker deploy करो (गाइड देखो)'); return; }
+      window.Cloud.syncPull().then(function (r) {
+        if (!r || !r.ok || !r.data) { if (out) out.textContent = L('Cloud par kuch nahi mila', 'क्लाउड पर कुछ नहीं मिला'); return; }
+        var ok = window.STUDY && window.STUDY.restore ? window.STUDY.restore(r.data) : false;
+        if (out) out.textContent = ok ? ('✓ laa liya — ' + new Date(r.t).toLocaleString()) : 'load fail';
+        if (ok) setTimeout(function () { window.BP && window.BP.render(); }, 500);
+      }).catch(function (e) { if (out) out.textContent = String(e.message || e); });
+    });
+
+    var assAI = document.getElementById('assAI');
+    if (assAI) assAI.addEventListener('click', function () {
+      var q = (document.getElementById('assBox').value || '').trim();
+      var out = document.getElementById('assAIOut');
+      if (!q) { if (out) out.innerHTML = '<div class="empty">' + esc(L('Pehle sawal likho', 'पहले सवाल लिखो')) + '</div>'; return; }
+      if (!window.Cloud || !window.Cloud.ready()) {
+        if (out) out.innerHTML = '<div class="empty">' + esc(L('Cloud API set nahi — pehle worker deploy karo (guide dekho)।', 'क्लाउड API सेट नहीं — पहले worker deploy करो (गाइड देखो)।')) + '</div>';
+        return;
+      }
+      if (out) out.innerHTML = '<div class="empty">' + esc(L('AI soch raha hai…', 'AI सोच रहा है…')) + '</div>';
+      var notes = [];
+      try {
+        notes = window.STUDY.retrieve(q, 4).notes.map(function (n) {
+          return n.ch + ' — ' + (n.blocks || []).map(btext).join(' ');
+        });
+      } catch (e) { }
+      window.Cloud.ask(q, notes).then(function (r) {
+        if (!out) return;
+        out.innerHTML = (r && r.ok)
+          ? '<div class="imp-item" style="border-color:#c4b5fd"><div class="iq">' + esc(r.answer) + '</div>' +
+            '<div class="t-small">' + esc(L('Source: notes (RAG) + free model', 'स्रोत: नोट्स (RAG) + मुफ़्त मॉडल')) + '</div></div>'
+          : '<div class="empty">' + esc((r && r.error) || 'AI nahi chala') + '</div>';
+      }).catch(function (e) {
+        if (out) out.innerHTML = '<div class="empty">' + esc(String(e.message || e)) + '</div>';
+      });
+    });
+
     document.querySelectorAll('[data-ct]').forEach(function (b) {
       b.addEventListener('click', function () {
         document.querySelectorAll('[data-ct]').forEach(function (x) { x.classList.remove('on'); });

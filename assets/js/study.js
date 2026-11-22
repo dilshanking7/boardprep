@@ -219,6 +219,19 @@
   }
   window.STUDY.insights = insights;
 
+  window.STUDY.restore = function (d) {
+    if (!d) return false;
+    try {
+      var cur = load();
+      if (d.study && typeof d.study === 'object') {
+        Object.keys(d.study).forEach(function (k) { cur[k] = d.study[k]; });
+      }
+      D = cur;
+      save(D);
+      if (d.target) { try { localStorage.setItem('bp_target_v1', JSON.stringify(d.target)); } catch (e) { } }
+      return true;
+    } catch (e) { return false; }
+  };
   window.STUDY.srsUpdate = srsUpdate;
   window.STUDY.srsDue = srsDue;
   window.STUDY.srsStats = srsStats;
@@ -618,7 +631,10 @@
     h += '<div id="assOut" style="margin-top:12px"><div class="empty">' + esc(L('Neeche apna sawal likho — main chapter ke notes/मुख्य बातें dunga', 'नीचे अपना सवाल लिखो — मैं अध्याय के नोट्स/मुख्य बातें दूँगा')) + '</div></div>';
     h += '<input id="assBox" type="search" placeholder="' + esc(L('Apna sawal likho…', 'अपना सवाल लिखो…')) + '" style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);font-size:15px;margin-top:12px">';
     h += '<div id="assRes" style="margin-top:12px"></div>';
-    h += '<div class="note" style="margin-top:10px">' + esc(L('Ye ek simple rule-based assistant hai — model nahi. Sawal Notes ya Quiz se match karta hai.', 'यह एक साधारण नियम-आधारित सहायक है — मॉडल नहीं। सवाल नोट्स या क्विज़ से मेल खाता है।')) + '</div>';
+    h += '<button class="btn btn-accent btn-block" id="assAI" style="margin-top:8px">' + esc(L('AI se javab lo (cloud)', 'AI से जवाब लो (क्लाउड)')) + '</button>';
+    h += '<div id="assAIOut" style="margin-top:10px"></div>';
+    h += '<div class="note" style="margin-top:10px">' + esc(L('Ye ek simple rule-based assistant hai — model nahi. Sawal Notes ya Quiz se match karta hai.', 'यह एक साधारण नियम-आधारित सहायक है — मॉडल नहीं। सवाल नोट्स या क्विज़ से मेल खाता है।')) +
+      ' ' + esc(L('AI जवाब के लिए cloud worker चाहिए (free) — guide dekho.', 'AI जवाब के लिए क्लाउड worker चाहिए (मुफ़्त) — गाइड देखो।')) + '</div>';
     return h + '</section>';
   };
 
