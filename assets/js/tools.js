@@ -604,6 +604,79 @@
   function storeGet2(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
   function storeSet2(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }
 
+  /* ---------------- chapter page + mastery ---------------- */
+
+  var MASTERY = {
+    notstarted: { hi: 'शुरू नहीं हुआ', en: 'Not started', c: '#94A3B8' },
+    learning: { hi: 'सीख रहे', en: 'Learning', c: '#0284C7' },
+    practicing: { hi: 'अभ्यास जारी', en: 'Practicing', c: '#D97706' },
+    testpending: { hi: 'टेस्ट बाकी', en: 'Test pending', c: '#7C3AED' },
+    completed: { hi: 'पूरा हुआ', en: 'Completed', c: '#16A34A' },
+    needsrevision: { hi: 'दोबारा चाहिए', en: 'Needs revision', c: '#DC2626' }
+  };
+
+  function masteryBadge(m) {
+    var k = MASTERY[m.state] || MASTERY.notstarted;
+    var label = (window.BP && window.BP.state.lang === 'en') ? k.en : k.hi;
+    return '<span class="mast-badge" style="background:' + k.c + '1a;color:' + k.c + '">' + esc(label) +
+      (m.n ? ' · ' + m.n + ' ' + esc(L('sawal', 'सवाल')) : '') + '</span>';
+  }
+
+  function vChapter(subjKey, chap) {
+    var m = window.STUDY ? window.STUDY.mastery(subjKey, chap) : { state: 'notstarted', n: 0, pct: 0 };
+    var h = '<a class="backlink" href="#/subject/' + esc(subjKey) + '">← ' + esc(L('Back', 'वापस')) + '</a>';
+    h += '<section class="section"><div class="section-head"><h2>' + esc(chap) + '</h2>' + masteryBadge(m) + '</div>';
+    if (m.n) {
+      h += '<div class="prog-row card" style="padding:12px"><div class="prog-top"><span>' + esc(L('Aapka prayas', 'आपका प्रयास')) + '</span><b class="t-num">' + m.pct + '% (' + (m.n - Math.round(m.n * m.pct / 100)) + '/' + m.n + ' ' + esc(L('galat', 'गलत')) + ')</b></div>' +
+        '<div class="prog"><i style="width:' + m.pct + '%;background:' + (m.pct >= 80 ? 'var(--color-success)' : m.pct >= 50 ? 'var(--color-warning)' : 'var(--color-error)') + '"></i></div></div>';
+    } else {
+      h += '<div class="note">' + esc(L('Is chapter me abhi aapne koi sawal nahi kiya — neeche practice se shuru karo.', 'इस अध्याय में अभी आपने कोई सवाल नहीं किया — नीचे अभ्यास से शुरू करो।')) + '</div>';
+    }
+    h += '<div class="chips" style="margin-top:10px">' +
+      '<a class="fchip" href="#/subject/' + esc(subjKey) + '">' + esc(L('Practice', 'अभ्यास')) + '</a>' +
+      '<a class="fchip" href="#/quiz">' + esc(L('Chapter quiz', 'अध्याय क्विज़')) + '</a>' +
+      '<a class="fchip" href="#/notes/' + esc(subjKey) + '">' + esc(L('Notes', 'नोट्स')) + '</a></div>';
+    h += '</section>';
+
+    // notes se overview / key points
+    var notes = null;
+    try {
+      ((window.NOTES || {})[subjKey] || []).forEach(function (it) { if (!notes && it.ch === chap) notes = it; });
+    } catch (e) {}
+    if (notes) {
+      h += '<section class="section"><div class="section-head"><h2>' + esc(L('Chapter notes', 'अध्याय नोट्स')) + '</h2></div>';
+      h += renderBlocks(notes.blocks.filter(function (b) { return b[0] !== 'link'; }));
+      h += '</section>';
+    }
+
+    // practice questions
+    var qs = [];
+    try { qs = window.QS_FOR(subjKey).filter(function (q) { return (q.chap || q.part) === chap; }); } catch (e) {}
+    var mcqs = qs.filter(function (q) { return q.opts && q.ans; }).slice(0, 20);
+    var wr = qs.filter(function (q) { return !q.opts || !q.ans; }).slice(0, 20);
+    if (mcqs.length || wr.length) {
+      h += '<section class="section"><div class="section-head"><h2>' + esc(L('Practice questions', 'अभ्यास प्रश्न')) + '</h2>' +
+        '<span class="note">' + qs.length + ' ' + esc(L('kul', 'कुल')) + '</span></div>';
+      h += '<div id="chQ">' + mcqs.concat(wr).map(function (q, i) { return window.BP.questionCard(q, i); }).join('') + '</div>';
+      if (qs.length > 20) h += '<button class="link-btn" id="chMore">' + esc(L('Aur dikhao', 'और दिखाओ')) + '</button>';
+      h += '</section>';
+    }
+    return h;
+  }
+
+  function vChapterList(subjKey) {
+    var chaps = [];
+    try { chaps = window.BP.chapters(subjKey); } catch (e) {}
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Chapters', 'अध्याय')) + '</h2>' +
+      '<span class="note">' + chaps.length + '</span></div>';
+    h += chaps.map(function (c) {
+      var m = window.STUDY ? window.STUDY.mastery(subjKey, c) : { state: 'notstarted', n: 0 };
+      return '<a class="list-row" href="#/chapter/' + esc(subjKey) + '/' + encodeURIComponent(c) + '"><div>' +
+        '<div class="t">' + esc(c) + '</div><div class="s">' + masteryBadge(m) + '</div></div><span class="n">→</span></a>';
+    }).join('');
+    return h + '</section>';
+  }
+
   /* ---------------- help / kaise use karein ---------------- */
 
   function vHelp() {
@@ -753,6 +826,7 @@
     if (p === 'note') return vNoteDetail(parts[1], decodeURIComponent(parts[2] || ''));
     if (p === 'progress') return window.vProgress ? window.vProgress() : '<section class="section"><div class="empty">…</div></section>';
     if (p === 'learn') return vLearn();
+    if (p === 'chapter') return vChapter(parts[1], decodeURIComponent(parts[2] || ''));
     if (p === 'practice') return vPractice();
     if (p === 'profile') return vProfile();
     if (p === 'revision') return window.vRevision ? window.vRevision() : '';
@@ -1142,7 +1216,7 @@
     state.dgId = parts[0] === 'diagram' ? parts[1] : null;
   }
 
-  window.Tools = { route: route, bind: bind };
+  window.Tools = { route: route, bind: bind, chapterList: vChapterList };
   // app.js boot tools.js से पहले हो जाता है — इसलिए एक बार फिर render
   if (window.BP) BP.render();
 })();

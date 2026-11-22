@@ -483,6 +483,8 @@
         return '<option value="' + esc(c) + '"' + (state.subjChap === c ? ' selected' : '') + '>' + esc(c) + '</option>';
       }).join('') + '</select></div>';
 
+    html += (window.Tools && window.Tools.chapterList) ? window.Tools.chapterList(key) : '';
+
     html += '<div id="qlist">' + (show.length ? show.map(questionCard).join('') :
       '<div class="empty">' + esc(t('search_none')) + '</div>') + '</div>';
 
@@ -886,7 +888,7 @@
   function markNav() {
     var h = location.hash.replace(/^#/, '') || '/';
     var cur = h.split('/')[0] || '';
-    var map = { '': 'home', 'learn': 'learn', 'subjects': 'learn', 'subject': 'learn', 'stories': 'learn', 'notes': 'learn', 'note': 'learn', 'help': 'learn',
+    var map = { '': 'home', 'learn': 'learn', 'subjects': 'learn', 'subject': 'learn', 'chapter': 'learn', 'stories': 'learn', 'notes': 'learn', 'note': 'learn', 'help': 'learn',
       'practice': 'practice', 'quiz': 'practice', 'papers': 'practice', 'important': 'practice', 'exam': 'practice',
       'progress': 'progress', 'revision': 'progress', 'assistant': 'progress',
       'profile': 'profile', 'settings': 'profile' };

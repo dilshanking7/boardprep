@@ -130,9 +130,25 @@
 
   /* ---------------- views ---------------- */
 
+  /* ---------------- chapter mastery (asli activity se, fake nahi) ---------------- */
+
+  function mastery(subjKey, chap) {
+    if (!chap) return { state: 'notstarted', n: 0, pct: 0 };
+    var n = 0, ok = 0;
+    D.attempts.forEach(function (a) { if (a.s === subjKey && a.c === chap) { n++; if (a.ok) ok++; } });
+    var pct = n ? Math.round((ok / n) * 100) : 0;
+    var st;
+    if (n === 0) st = 'notstarted';
+    else if (n < 5) st = 'learning';
+    else if (n < 10) st = (pct < 50 ? 'needsrevision' : 'practicing');
+    else st = (pct >= 80 ? 'completed' : (pct < 50 ? 'needsrevision' : 'testpending'));
+    return { state: st, n: n, pct: pct };
+  }
+
   window.STUDY = {
     attempt: attempt, wrong: wrongQ, book: toggleBook, addExam: addExam,
     setGoal: setGoal, markSec: markSec, clear: clearAll, save: function () { return save(D); },
+    mastery: mastery,
     data: function () { return D; },
     stats: function () {
       return {
