@@ -75,9 +75,76 @@
 <script src="assets/js/app.js"></script>
 <script src="assets/js/tools.js"></script>
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
-}
+/* APK me Service Worker band — assets pehle se bundled hain, aur purana SW cache
+   galat/purani files de sakta hai (crash/blank wali dikkat). Web par SW chalta hai. */
+(function () {
+  var inApk = location.href.indexOf('appassets.androidplatform.net') >= 0;
+  if (!('serviceWorker' in navigator)) return;
+  if (inApk) {
+    navigator.serviceWorker.getRegistrations().then(function (rs) {
+      rs.forEach(function (r) { r.unregister(); });
+    }).catch(function () {});
+    if (window.caches && caches.keys) {
+      caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); }).catch(function () {});
+    }
+  } else {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+})();
+
+/* Error trap — agar JS me kuch toote to seedha screen par dikhe (diagnosis aasaan) */
+(function () {
+  var show = function (msg) {
+    try {
+      var d = document.getElementById('jserr');
+      if (!d) {
+        d = document.createElement('div');
+        d.id = 'jserr';
+        d.style.cssText = 'position:fixed;left:0;right:0;bottom:0;background:#b91c1c;color:#fff;' +
+          'font-size:11px;line-height:1.35;padding:6px 8px;z-index:99999;white-space:pre-wrap;' +
+          'font-family:monospace;max-height:30vh;overflow:auto;';
+        (document.body || document.documentElement).appendChild(d);
+      }
+      d.textContent = 'ERR: ' + msg;
+    } catch (e) { }
+  };
+  window.addEventListener('error', function (e) {
+    show((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || ''));
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    show('promise: ' + ((e.reason && e.reason.message) || e.reason || '?'));
+  });
+  /* startup watchdog — 10s me app na lage to hint + "data saaf karo" button */
+  setTimeout(function () {
+    if (!window.BP || !document.querySelector('#view .hero, #view .section')) {
+      try {
+        var d = document.getElementById('jserr');
+        if (!d) {
+          d = document.createElement('div');
+          d.id = 'jserr';
+          d.style.cssText = 'position:fixed;left:0;right:0;bottom:0;background:#b91c1c;color:#fff;' +
+            'font-size:11px;line-height:1.35;padding:6px 8px;z-index:99999;white-space:pre-wrap;' +
+            'font-family:monospace;max-height:30vh;overflow:auto;';
+          (document.body || document.documentElement).appendChild(d);
+        }
+        d.textContent = 'App start nahi hua. Data saaf karke dobara kholen: ';
+        if (!d.querySelector('button')) {
+          var b = document.createElement('button');
+          b.textContent = 'डेटा साफ़ करो';
+          b.style.cssText = 'margin-left:8px;padding:4px 10px;border:0;border-radius:6px;' +
+            'background:#fff;color:#b91c1c;font-weight:800;cursor:pointer;';
+          b.onclick = function () {
+            try { localStorage.clear(); } catch (e) { }
+            try { if (window.caches && caches.keys) caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); }); } catch (e) { }
+            if (window.BPApp && window.BPApp.clearAll) { window.BPApp.clearAll(); return; }
+            location.reload();
+          };
+          d.appendChild(b);
+        }
+      } catch (e) { }
+    }
+  }, 10000);
+})();
 </script>
 <script type="module" src="assets/js/models3d-ui.js"></script>
 </body>

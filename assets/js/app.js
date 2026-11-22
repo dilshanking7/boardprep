@@ -16,7 +16,7 @@
   CONTENT_KEYS.forEach(function (k) { if (window[k]) ORIG_CONTENT[k] = window[k]; });
 
   // Is APK ki version — version.json se compare hoti hai (in-app update banner)
-  var APP_VERSION = '4.5';
+  var APP_VERSION = '4.6';
   var VER_URL = 'https://dilshanking7.github.io/boardprep/version.json';
 
   function cmpVer(a, b) {
@@ -466,8 +466,8 @@
       '<button class="btn btn-accent" id="offBtn" style="padding:10px 14px;white-space:nowrap">' + esc(L('Offline download', 'ऑफ़लाइन डाउनलोड')) + '</button></a>';
 
     if (storeGet('bp_apk', '0') !== '1' && location.href.indexOf('appassets.androidplatform.net') < 0) {
-      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v4.5.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
-        '<div class="t">📱 ' + esc(L('Android app v4.5 — full offline', 'एंड्रॉयड ऐप v4.5 — पूरा ऑफ़लाइन')) + '</div>' +
+      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v4.6.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
+        '<div class="t">📱 ' + esc(L('Android app v4.6 — full offline', 'एंड्रॉयड ऐप v4.6 — पूरा ऑफ़लाइन')) + '</div>' +
         '<div class="s">' + esc(L('Sab kuch app me hi hai — PDF, 3D models, songs. Internet ke bina bhi.', 'सब कुछ ऐप में ही है — PDF, 3D models, songs। इंटरनेट के बिना भी।')) + '</div></div><span class="n">⬇</span></a>';
     }
 
