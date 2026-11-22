@@ -387,8 +387,8 @@
       '<div class="stat"><b>' + BOARDS.length + '</b><span>' + esc(t('home_stats_boards')) + '</span></div></div>';
 
     if (storeGet('bp_apk', '0') !== '1' && location.href.indexOf('appassets.androidplatform.net') < 0) {
-      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v3.0.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
-        '<div class="t">📱 ' + esc(L('Android app v3.0 — full offline', 'एंड्रॉयड ऐप v3.0 — पूरा ऑफ़लाइन')) + '</div>' +
+      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v4.0.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
+        '<div class="t">📱 ' + esc(L('Android app v4.0 — full offline', 'एंड्रॉयड ऐप v4.0 — पूरा ऑफ़लाइन')) + '</div>' +
         '<div class="s">' + esc(L('App me hi sab hai — PDF, 3D models, songs. Internet ke bina bhi.', 'ऐप में ही सब है — PDF, 3D models, songs। इंटरनेट के बिना भी।')) + '</div></div><span class="n">⬇</span></a>';
     }
 
