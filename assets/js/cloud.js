@@ -6,15 +6,27 @@
   // DEFAULT_BASE — ye URL app me hi baked hai (Dilshan ek baar set karta hai).
   // Users ko kuch set nahi karna — sab apne-aap chalega.
   var DEFAULT_BASE = 'https://boardprep-api.dilshan-boardprep.workers.dev';
+  var FALLBACK_BASE = 'https://boardprep-api.dilshan-boardprep.workers.dev';
   var OVERRIDE_KEY = 'bp_api_base';
   var BASE = '';
+
+  // URL sahi hai ya nahi (purana placeholder <subdomain> ya khaali)
+  function goodUrl(u) {
+    var s = String(u || '').trim();
+    return /^https?:\/\/[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}/i.test(s) && s.indexOf('<') === -1;
+  }
+
+  function pick(u) {
+    var s = String(u || '').replace(/\/+$/, '');
+    return goodUrl(s) ? s : '';
+  }
 
   function initBase() {
     try {
       var ov = localStorage.getItem(OVERRIDE_KEY);
-      if (ov !== null) { BASE = ov.replace(/\/+$/, ''); return; }
+      if (ov !== null) { BASE = pick(ov); }
     } catch (e) { }
-    BASE = String(window.BP_API_BASE || DEFAULT_BASE || '').replace(/\/+$/, '');
+    if (!BASE) BASE = pick(window.BP_API_BASE) || pick(DEFAULT_BASE) || pick(FALLBACK_BASE);
   }
   initBase();
 
@@ -36,11 +48,11 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body || {})
-    }).then(function (r) { return r.json(); }).catch(function (e) { throw e; });
+    }).then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
   }
   function get(path) {
     if (!BASE) return Promise.reject(new Error('no-base'));
-    return fetch(BASE + path).then(function (r) { return r.json(); }).catch(function (e) { throw e; });
+    return fetch(BASE + path).then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
   }
 
   // AI: notes (RAG context) + sawal -> free model ka javab
@@ -75,16 +87,16 @@
     DEFAULT_BASE: DEFAULT_BASE,
     BASE: BASE,
     setBase: function (u) {
-      BASE = String(u || '').replace(/\/+$/, '');
+      BASE = pick(u);
       if (BASE) { try { localStorage.setItem(OVERRIDE_KEY, BASE); } catch (e) { } }
       else { try { localStorage.removeItem(OVERRIDE_KEY); } catch (e) { } }
     },
     clearOverride: function () {
       try { localStorage.removeItem(OVERRIDE_KEY); } catch (e) { }
-      BASE = String(window.BP_API_BASE || DEFAULT_BASE || '').replace(/\/+$/, '');
+      BASE = pick(window.BP_API_BASE) || pick(DEFAULT_BASE) || pick(FALLBACK_BASE);
     },
     // version.json se aaya URL — sirf memory me (override nahi likhta)
-    refreshBase: function (u) { BASE = String(u || '').replace(/\/+$/, ''); },
+    refreshBase: function (u) { var s = pick(u); if (s) BASE = s; },
     getBase: function () { return BASE; },
     ready: function () { return !!BASE; },
     deviceId: deviceId,

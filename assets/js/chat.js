@@ -16,6 +16,18 @@
   function active() { try { return localStorage.getItem(IDX) || ''; } catch (e) { return ''; } }
   function setActive(id) { try { localStorage.setItem(IDX, id); } catch (e) { } }
   function mkid() { return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  // error ko aam bhasha me — user ko tech nahi dikhta
+  function friendly(e) {
+    var m = String((e && e.message) || e || '');
+    if (m.indexOf('no-base') >= 0) {
+      return L('AI सर्वर से जुड़ नहीं पाया। इंटरनेट चालू है या नहीं देखो, फिर कोशिश करो।',
+        'Could not reach the AI server. Check the internet and try again.');
+    }
+    if (m.indexOf('net') >= 0 || m.indexOf('fetch') >= 0 || m.indexOf('Failed') >= 0 || m.indexOf('parse') >= 0) {
+      return L('इंटरनेट कमज़ोर है — बाद में फिर कोशिश करो।', 'Internet is weak — try again later.');
+    }
+    return m;
+  }
   function when(ms) {
     try { var d = new Date(ms); return d.toLocaleString('hi-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
     catch (e) { return ''; }
@@ -158,7 +170,7 @@
       } else {
         var m2 = document.createElement('div');
         m2.className = 'cmsg ai';
-        m2.innerHTML = '<div class="cbub">' + esc((r && r.error) || L(' jawab nahi aaya.', 'जवाब नहीं आया।')) + '</div>';
+        m2.innerHTML = '<div class="cbub">' + esc(friendly({ message: (r && r.error) || '' })) + '</div>';
         box.appendChild(m2);
         box.scrollTop = box.scrollHeight;
       }
@@ -166,7 +178,7 @@
       thinking.remove();
       var m3 = document.createElement('div');
       m3.className = 'cmsg ai';
-      m3.innerHTML = '<div class="cbub">' + esc(String(e.message || e)) + '</div>';
+      m3.innerHTML = '<div class="cbub">' + esc(friendly(e)) + '</div>';
       box.appendChild(m3);
     });
   }

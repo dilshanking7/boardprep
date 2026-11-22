@@ -1,8 +1,8 @@
 {
-  "version": "5.4",
-  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.4.apk",
+  "version": "5.5",
+  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.5.apk",
   "release": "https://github.com/dilshanking7/boardprep/releases/tag/v1.0",
-  "note": "chats save + toggle (back se chat bahi rehti hai), unlimited AI, better model",
+  "note": "AI chat: purana URL fix + friendly errors (tech nahi dikhta)",
   "minVersion": "4.0",
   "api": "https://boardprep-api.dilshan-boardprep.workers.dev"
 }
