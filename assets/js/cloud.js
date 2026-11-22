@@ -57,8 +57,12 @@
   }
 
   // study rooms
-  function roomCreate(code, name) { return post('/api/room/create', { code: code, name: name }); }
-  function roomJoin(code, name) { return post('/api/room/join', { code: code, name: name }); }
+  // AI chat (ChatGPT/Gemini jaisa) + quota
+  function chat(q, history, web) {
+    return post('/api/chat', { id: deviceId(), q: q, history: history || [], web: web !== false });
+  }
+  function quota() { return get('/api/quota?id=' + encodeURIComponent(deviceId())); }
+  function roomCreate(code, name) { return post('/api/room/create', { code: code, name: name }); }  function roomJoin(code, name) { return post('/api/room/join', { code: code, name: name }); }
   function roomPost(code, name, msg) { return post('/api/room/post', { code: code, name: name, msg: msg }); }
   function roomGet(code) { return get('/api/room/get?code=' + encodeURIComponent(code)); }
 
@@ -87,6 +91,7 @@
     ask: ask,
     syncPush: syncPush,
     syncPull: syncPull,
+    chat: chat, quota: quota,
     roomCreate: roomCreate, roomJoin: roomJoin, roomPost: roomPost, roomGet: roomGet,
     myName: myName
   };

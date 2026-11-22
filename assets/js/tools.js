@@ -68,7 +68,8 @@
       ['#/progress', 'chart', t('hub_progress'), t('hub_progress_sub')],
       ['#/exam', 'timer', t('hub_exam'), t('hub_exam_sub')],
       ['#/revision', 'refresh', t('hub_revision'), t('hub_revision_sub')],
-      ['#/assistant', 'sparkle', t('hub_assistant'), t('hub_assistant_sub')]
+      ['#/assistant', 'sparkle', t('hub_assistant'), t('hub_assistant_sub')],
+      ['#/chat', 'bot', L('AI chat', 'AI चैट'), L('poochho kuch bhi', 'पूछो कुछ भी')]
     ];
     items.forEach(function (x) {
       var ic = (window.BP_ICONS && window.BP_ICONS[x[1]]) ? BP_ICON(x[1]) : x[1];
@@ -1130,6 +1131,7 @@
     if (p === 'revision') return window.vRevision ? window.vRevision() : '';
     if (p === 'calc') return window.CalcTool ? window.CalcTool.view() : '';
     if (p === 'target') return vTarget();
+    if (p === 'chat') return window.ChatUI ? window.ChatUI.view() : '';
     if (p === 'room') return vRoom();
     if (p === 'remind') return vRemind();
     if (p === 'exam') return window.vExam ? window.vExam() : '';
@@ -1595,6 +1597,9 @@
     if (appExit) appExit.addEventListener('click', function () {
       if (window.BPApp && window.BPApp.exit) window.BPApp.exit();
     });
+
+    // ---- AI chat ----
+    if (document.getElementById('chatBox') && window.ChatUI) window.ChatUI.mount();
 
     // ---- question bank ----
     function fillBankChaps() {

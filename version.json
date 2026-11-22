@@ -1,8 +1,8 @@
 {
-  "version": "5.1",
-  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.1.apk",
+  "version": "5.2",
+  "apk": "https://dilshanking7.github.io/boardprep/downloads/BoardPrep-v5.2.apk",
   "release": "https://github.com/dilshanking7/boardprep/releases/tag/v1.0",
-  "note": "Clean UI, quiz timer + sound, unopened-chapter suggestions",
+  "note": "AI chat (ChatGPT jaisa) + web search + rate limit + free model chain",
   "minVersion": "4.0",
   "api": "https://boardprep-api.dilshan-boardprep.workers.dev"
 }
