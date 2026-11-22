@@ -334,6 +334,177 @@ window.NOTES_SCIENCE = [
     "box",
     "परीक्षा के लिए याद रखें",
     "अम्ल: नीला लिटमस लाल। क्षारक: लाल लिटमस नीला। pH < 7 अम्लीय, pH = 7 उदासीन, pH > 7 क्षारीय।"
+   ],
+   [
+    "h3",
+    "अम्ल और क्षारक के जलीय विलयन"
+   ],
+   [
+    "p",
+    "सूखे हाइड्रोजन क्लोराइड गैस में नीला लिटमस लाल नहीं होता, लेकिन पानी में घुलने पर हाइड्रोजन आयन बनने से अम्लीय गुण दिखाई देते हैं। इससे स्पष्ट होता है कि अम्ल अपना प्रभाव जलीय विलयन में दिखाते हैं। इसी प्रकार क्षारक पानी में घुलकर हाइड्रॉक्साइड आयन देते हैं। सभी क्षारक पानी में समान मात्रा में नहीं घुलते; पानी में घुलनशील क्षारक को क्षार (alkali) कहते हैं। अम्लीय या क्षारीय विलयन में विद्युत धारा का प्रवाह आयनों के कारण संभव होता है।"
+   ],
+   [
+    "h3",
+    "दैनिक जीवन में pH का महत्व"
+   ],
+   [
+    "ul",
+    [
+     "मानव शरीर की अनेक क्रियाएँ एक सीमित pH सीमा में ठीक से होती हैं। रक्त का pH लगभग 7.4 के आसपास रहता है।",
+     "पेट में हाइड्रोक्लोरिक अम्ल भोजन के पाचन में मदद करता है। अधिक अम्ल बनने पर डॉक्टर की सलाह से एंटासिड जैसे पदार्थ राहत दे सकते हैं।",
+     "दाँतों का इनेमल pH लगभग 5.5 से नीचे जाने पर प्रभावित हो सकता है। मुँह के जीवाणु शर्करा से अम्ल बनाते हैं; इसलिए सफाई और संतुलित खानपान जरूरी है।",
+     "चींटी के डंक और कुछ कीटों के डंक में अम्लीय पदार्थ हो सकते हैं। इनके उपचार के बारे में अनुमान लगाने के बजाय सुरक्षित प्राथमिक उपचार और जरूरत पड़ने पर चिकित्सकीय सलाह लेनी चाहिए।",
+     "मिट्टी का pH पौधों की वृद्धि को प्रभावित करता है। किसान मिट्टी की जाँच के आधार पर आवश्यक सुधार करते हैं; अम्लीय मिट्टी में उपयुक्त मात्रा में चूने जैसे पदार्थ उपयोग किए जा सकते हैं।"
+    ]
+   ],
+   [
+    "h3",
+    "लवणों की तैयारी और रासायनिक समीकरण"
+   ],
+   [
+    "p",
+    "साधारण नमक सोडियम क्लोराइड (NaCl) अनेक उपयोगी रसायनों का कच्चा पदार्थ है। नमक के जलीय विलयन के विद्युत अपघटन में एनोड पर क्लोरीन, कैथोड पर हाइड्रोजन और विलयन में सोडियम हाइड्रॉक्साइड प्राप्त होता है। इस प्रक्रिया को क्लोर-क्षार प्रक्रिया कहते हैं। समीकरण: 2NaCl(aq) + 2H₂O(l) → 2NaOH(aq) + Cl₂(g) + H₂(g)। बेकिंग सोडा को गर्म करने पर सोडियम कार्बोनेट, पानी और कार्बन डाइऑक्साइड बनते हैं: 2NaHCO₃ → Na₂CO₃ + H₂O + CO₂।"
+   ],
+   [
+    "h3",
+    "प्लास्टर ऑफ पेरिस और वॉशिंग सोडा"
+   ],
+   [
+    "p",
+    "प्लास्टर ऑफ पेरिस जिप्सम को नियंत्रित ताप पर गर्म करके बनाया जाता है। इसका सूत्र CaSO₄·½H₂O है। पानी मिलाने पर यह फिर जिप्सम में बदलता है और कुछ समय में कठोर हो जाता है। इसलिए इसका उपयोग साँचे, सजावटी वस्तुएँ और चिकित्सा में स्थिर सहारा बनाने के लिए किया जाता है। वॉशिंग सोडा का सूत्र Na₂CO₃·10H₂O है। यह सफाई में उपयोगी है और पानी की स्थायी कठोरता दूर करने में मदद करता है।"
+   ],
+   [
+    "h3",
+    "हल किए हुए प्रश्न"
+   ],
+   [
+    "qa",
+    "एक विलयन का pH 3 है। वह अम्लीय है या क्षारीय?",
+    "pH 7 से कम है, इसलिए विलयन अम्लीय है।"
+   ],
+   [
+    "qa",
+    "धातु कार्बोनेट में अम्ल मिलाने पर कौन-सी गैस निकलती है?",
+    "कार्बन डाइऑक्साइड गैस। इसे चूने के पानी में प्रवाहित करने पर चूने का पानी दूधिया हो जाता है।"
+   ],
+   [
+    "qa",
+    "बेकिंग सोडा का रासायनिक सूत्र और एक उपयोग लिखिए।",
+    "NaHCO₃। इसका उपयोग बेकिंग पाउडर में होता है; गर्म होने पर CO₂ निकलती है जिससे आटा/घोल फूलता है।"
+   ],
+   [
+    "qa",
+    "क्रिस्टलीकरण का जल क्या है?",
+    "लवण के क्रिस्टल में निश्चित अनुपात में उपस्थित जल के अणु क्रिस्टलीकरण का जल कहलाते हैं।"
+   ],
+   [
+    "h2",
+    "Chapter 2: Acids, Bases and Salts (English Notes)"
+   ],
+   [
+    "p",
+    "Acids, bases and salts are important substances used in homes, laboratories and industries. Lemon juice and vinegar contain acids, while many cleaning materials contain bases. Acids generally turn blue litmus red. Bases generally turn red litmus blue and may feel slippery, but chemicals must never be tasted or touched to identify them. Indicators are used to test their nature safely. In aqueous solution, acids produce hydrogen ions (H⁺), while bases produce hydroxide ions (OH⁻)."
+   ],
+   [
+    "h3",
+    "Indicators and the pH scale"
+   ],
+   [
+    "p",
+    "An indicator is a substance that changes colour in acidic or basic solutions. Litmus, turmeric, phenolphthalein and methyl orange are common indicators. A universal indicator shows different colours over a range of pH values. The pH scale is commonly represented from 0 to 14. A solution with pH 7 is neutral, below 7 is acidic and above 7 is basic. A lower pH indicates a more acidic solution, while a higher pH indicates a more basic solution. The pH scale helps compare the strength of acidity or basicity of dilute aqueous solutions."
+   ],
+   [
+    "h3",
+    "Reactions of acids and bases"
+   ],
+   [
+    "p",
+    "Acids react with many metals to form a salt and hydrogen gas. Example: Zn + 2HCl → ZnCl₂ + H₂↑. Acids react with metal carbonates and metal hydrogen carbonates to form a salt, water and carbon dioxide. Example: Na₂CO₃ + 2HCl → 2NaCl + H₂O + CO₂. When carbon dioxide is passed through lime water, it turns milky because insoluble calcium carbonate is formed. Acids react with bases in a neutralisation reaction to form salt and water: HCl + NaOH → NaCl + H₂O."
+   ],
+   [
+    "p",
+    "When an acid or a base is mixed with water, ions are formed and heat may be released. Dilution can therefore be strongly exothermic. For laboratory safety, concentrated acid must be added slowly to water with stirring, never water to concentrated acid. The container may become hot, so suitable protective equipment and teacher supervision are important."
+   ],
+   [
+    "h3",
+    "Acids and bases in water"
+   ],
+   [
+    "p",
+    "Hydrogen chloride gas does not show acidic behaviour in the absence of water, but its aqueous solution forms ions and shows acidic properties. This demonstrates that acids show their acidic character in aqueous solution. Bases produce hydroxide ions in water. A base that dissolves in water is called an alkali. Not all bases are soluble. The movement of ions allows aqueous acidic and basic solutions to conduct electricity."
+   ],
+   [
+    "h3",
+    "Importance of pH in everyday life"
+   ],
+   [
+    "ul",
+    [
+     "The human body functions within a narrow pH range. Blood is maintained at a pH close to 7.4 by natural regulating systems.",
+     "Hydrochloric acid in the stomach helps digestion. Excess acidity may be treated with suitable antacids under medical guidance.",
+     "Tooth enamel can be damaged when the pH in the mouth falls below about 5.5. Bacteria act on sugars and produce acids, so oral hygiene matters.",
+     "Soil pH affects plant growth and nutrient availability. Soil testing helps determine whether any correction is needed.",
+     "Some insect stings contain acidic substances. Treatment should follow safe first-aid guidance rather than unverified home experiments."
+    ]
+   ],
+   [
+    "h3",
+    "Important salts and their uses"
+   ],
+   [
+    "p",
+    "Common salt, sodium chloride (NaCl), is an important raw material for several useful chemicals. Electrolysis of brine (aqueous sodium chloride) produces sodium hydroxide, chlorine and hydrogen. This is called the chlor-alkali process: 2NaCl(aq) + 2H₂O(l) → 2NaOH(aq) + Cl₂(g) + H₂(g). Sodium hydroxide is used in making soaps, detergents and paper. Chlorine is used in water treatment and chemical manufacture, while hydrogen has industrial uses."
+   ],
+   [
+    "ul",
+    [
+     "Bleaching powder (CaOCl₂) is used for bleaching materials and disinfecting drinking water supplies when applied appropriately.",
+     "Baking soda (NaHCO₃) is used in baking. On heating, it releases carbon dioxide and helps cakes and breads rise. It is also used in some antacid preparations.",
+     "Washing soda (Na₂CO₃·10H₂O) is used for cleaning, in glass and paper industries, and to remove permanent hardness of water.",
+     "Plaster of Paris (CaSO₄·½H₂O) is prepared by heating gypsum under controlled conditions. On adding water, it sets into a hard mass and is used for casts, moulds and decorative objects."
+    ]
+   ],
+   [
+    "h3",
+    "Water of crystallisation"
+   ],
+   [
+    "p",
+    "Some salts contain a fixed number of water molecules as part of their crystal structure. This is called water of crystallisation. Blue copper sulphate crystals lose water on heating and become white anhydrous copper sulphate. Adding water restores the blue colour. The observation shows that water is an important part of the hydrated crystal structure."
+   ],
+   [
+    "h3",
+    "Solved and examination questions"
+   ],
+   [
+    "qa",
+    "A solution has pH 3. Is it acidic or basic?",
+    "It is acidic because its pH is below 7."
+   ],
+   [
+    "qa",
+    "What is formed when an acid reacts with a metal carbonate?",
+    "A salt, water and carbon dioxide gas are formed."
+   ],
+   [
+    "qa",
+    "Write the formula of baking soda and one use.",
+    "NaHCO₃; it is used in baking powder to help dough or batter rise."
+   ],
+   [
+    "qa",
+    "What is the chlor-alkali process?",
+    "The electrolysis of aqueous sodium chloride (brine) to produce sodium hydroxide, chlorine and hydrogen."
+   ],
+   [
+    "qa",
+    "Define water of crystallisation.",
+    "The fixed number of water molecules present in one formula unit of a crystalline salt is called its water of crystallisation."
+   ],
+   [
+    "box",
+    "Quick revision",
+    "Acids: blue litmus to red. Bases: red litmus to blue. pH below 7 is acidic, 7 is neutral and above 7 is basic. Neutralisation forms salt and water. Carbonates with acids release carbon dioxide."
    ]
   ]
  },
