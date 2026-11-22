@@ -891,6 +891,26 @@
     window.BP.state.bankPage = page;
   }
 
+  /* ---------------- reminders ---------------- */
+
+  function vRemind() {
+    var d = (window.STUDY && window.STUDY.reminderGet) ? window.STUDY.reminderGet() : {};
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Study reminder', 'अध्ययन अनुस्मारक')) + '</h2>' +
+      '<span class="note">' + esc(L('offline — device par hi', 'ऑफ़लाइन — डिवाइस पर ही')) + '</span></div>';
+    h += '<div class="card"><label class="setting-row"><span>' + esc(L('Reminder chalu', 'अनुस्मारक चालू')) + '</span>' +
+      '<input type="checkbox" id="rmOn"' + (d.on ? ' checked' : '') + '></label>';
+    h += '<label class="setting-row"><span>' + esc(L('Samay', 'समय')) + '</span>' +
+      '<input type="time" id="rmTime" value="' + esc(d.time || '18:00') + '" style="background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px"></label>';
+    h += '<label class="setting-row" style="flex-direction:column;align-items:flex-start;gap:6px"><span>' + esc(L('Sandesh', 'संदेश')) + '</span>' +
+      '<input id="rmMsg" value="' + esc(d.msg || 'Abhi padho! Daily goal poora karo.') + '" style="width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px"></label>';
+    h += '<button class="btn btn-accent btn-block" id="rmSave">' + esc(L('Sanjayein', 'सहेजें')) + '</button>';
+    h += '<button class="btn btn-block" id="rmTest" style="margin-top:8px">' + esc(L('Test notification', 'टेस्ट सूचना')) + '</button>';
+    h += '<div id="rmOut" class="note" style="margin-top:8px"></div>';
+    h += '<div class="board-group" style="margin-top:12px">' + esc(L('Dhyan dein', 'ध्यान दें')) + '</div>';
+    h += '<div class="note">' + esc(L('Browser/APK notification ke liye permission chahiye. Android WebView me native notification ke bina sirf in-app reminder chalega (verify).', 'ब्राउज़र/APK सूचना के लिए अनुमति चाहिए। Android WebView में नेटिव सूचना के बिना सिर्फ़ इन-ऐप अनुस्मारक चलेगा (verify)।')) + '</div></div>';
+    return h + '</section>';
+  }
+
   /* ---------------- help / kaise use karein ---------------- */
 
   function vHelp() {
@@ -1050,6 +1070,7 @@
     if (p === 'profile') return vProfile();
     if (p === 'revision') return window.vRevision ? window.vRevision() : '';
     if (p === 'calc') return window.CalcTool ? window.CalcTool.view() : '';
+    if (p === 'remind') return vRemind();
     if (p === 'exam') return window.vExam ? window.vExam() : '';
     if (p === 'assistant') return window.vAssistant ? window.vAssistant() : '';
     if (p === 'story') {
@@ -1477,6 +1498,28 @@
     var bkNext = document.getElementById('bkNext');
     if (bkNext) bkNext.addEventListener('click', function () { window.BP.state.bankPage = (window.BP.state.bankPage || 0) + 1; renderBank(); });
     if (document.getElementById('bkList')) { fillBankChaps(); renderBank(); }
+
+    var rmSave = document.getElementById('rmSave');
+    if (rmSave) rmSave.addEventListener('click', function () {
+      var on = document.getElementById('rmOn').checked;
+      var t = document.getElementById('rmTime').value || '18:00';
+      var msg = document.getElementById('rmMsg').value || 'Abhi padho! Daily goal poora karo.';
+      var parts = t.split(':');
+      window.STUDY.reminderSet({ on: on, time: t, min: (parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10)), msg: msg });
+      var o = document.getElementById('rmOut');
+      if (o) o.textContent = on ? L('Sanjaya gaya — roz ' + t, 'सहेजा गया — रोज़ ' + t) : L('Band kiya gaya', 'बंद किया गया');
+    });
+    var rmTest = document.getElementById('rmTest');
+    if (rmTest) rmTest.addEventListener('click', function () {
+      var o = document.getElementById('rmOut');
+      var msg = document.getElementById('rmMsg').value || 'Abhi padho!';
+      if ('Notification' in window) {
+        Notification.requestPermission().then(function (p) {
+          if (p === 'granted') { new Notification('BoardPrep', { body: msg }); if (o) o.textContent = '✓ ' + msg; }
+          else if (o) o.textContent = L('Permission nahi mili — in-app reminder kaam karega', 'अनुमति नहीं मिली — इन-ऐप अनुस्मारक काम करेगा');
+        });
+      } else if (o) o.textContent = L('Is device par Notification nahi (in-app reminder)', 'इस डिवाइस पर सूचना नहीं (इन-ऐप अनुस्मारक)');
+    });
 
     // ---- subject tools ----
     document.querySelectorAll('[data-ct]').forEach(function (b) {

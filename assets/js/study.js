@@ -146,6 +146,11 @@
     return { state: st, n: n, pct: pct };
   }
 
+  /* ---------------- study reminder (offline, local notification) ---------------- */
+  var RKEY = 'bp_remind_v1';
+  function remLoad() { try { return JSON.parse(localStorage.getItem(RKEY)) || {}; } catch (e) { return {}; } }
+  function remSave(d) { try { localStorage.setItem(RKEY, JSON.stringify(d)); } catch (e) {} }
+
   window.STUDY = {
     attempt: attempt, wrong: wrongQ, book: toggleBook, addExam: addExam,
     setGoal: setGoal, markSec: markSec, clear: clearAll, save: function () { return save(D); },
@@ -162,12 +167,33 @@
     }
   };
 
+  window.STUDY.reminderGet = remLoad;
+  window.STUDY.reminderSet = function (o) { var d = remLoad(); for (var k in o) d[k] = o[k]; remSave(d); return d; };
+  window.STUDY.remindCheck = function () {
+    var d = remLoad();
+    if (!d.on) return null;
+    var now = new Date();
+    var hm = now.getHours() * 60 + now.getMinutes();
+    var set = parseInt(d.min || 0, 10);
+    var today = now.toISOString().slice(0, 10);
+    if (d.last === today) return null;            // aaj pehle ho chuka
+    if (Math.abs(hm - set) > 2) return null;      // time ke ±2 min
+    d.last = today; remSave(d);
+    return { title: 'BoardPrep', body: d.msg || 'Abhi padho! Daily goal poora karo.' };
+  };
+
   /* ---------------- progress dashboard ---------------- */
 
   window.vProgress = function () {
     var s = window.STUDY.stats();
     var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Progress dashboard', 'प्रगति डैशबोर्ड')) + '</h2>' +
       '<span class="note">' + esc(L('Offline — sirf is device par', 'ऑफ़लाइन — सिर्फ़ इस डिवाइस पर')) + '</span></div>';
+    h += '<div class="chips" style="margin-bottom:10px">' +
+      '<a class="fchip" href="#/revision">' + esc(L('Revision', 'रिवीज़न')) + '</a>' +
+      '<a class="fchip" href="#/planner">' + esc(L('Planner', 'योजना')) + '</a>' +
+      '<a class="fchip" href="#/timer">' + esc(L('Timer', 'टाइमर')) + '</a>' +
+      '<a class="fchip" href="#/remind">' + esc(L('Reminder', 'अनुस्मारक')) + '</a>' +
+      '<a class="fchip" href="#/mynotes">' + esc(L('My notes', 'मेरी नोट्स')) + '</a></div>';
 
     h += '<div class="stats-grid">' +
       '<div class="stat"><b>' + s.total + '</b><span>' + esc(L('questions attempted', 'सवाल किए')) + '</span></div>' +

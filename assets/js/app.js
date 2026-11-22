@@ -935,7 +935,7 @@
     var map = { '': 'home', 'learn': 'learn', 'subjects': 'learn', 'subject': 'learn', 'chapter': 'learn', 'stories': 'learn', 'notes': 'learn', 'note': 'learn', 'help': 'learn',
       'practice': 'practice', 'bank': 'practice', 'quiz': 'practice', 'papers': 'practice', 'important': 'practice', 'exam': 'practice',
     'calc': 'learn',
-      'progress': 'progress', 'revision': 'progress', 'assistant': 'progress', 'planner': 'progress', 'mynotes': 'progress', 'timer': 'progress',
+      'progress': 'progress', 'revision': 'progress', 'assistant': 'progress', 'planner': 'progress', 'mynotes': 'progress', 'timer': 'progress', 'remind': 'progress',
       'profile': 'profile', 'settings': 'profile' };
     var on = map[cur] || 'home';
     document.querySelectorAll('.bottomnav a').forEach(function (a) {
@@ -1073,6 +1073,18 @@
     window.addEventListener('hashchange', render);
     applyBoardData();
     applyContentLang();
+    // reminder: har 30s check (device par hi, offline)
+    if (window.STUDY && window.STUDY.remindCheck) {
+      var remindTick = function () {
+        var r = window.STUDY.remindCheck();
+        if (r && window.toast) window.toast(r.body || 'Abhi padho!');
+        if (r && 'Notification' in window && Notification.permission === 'granted') {
+          try { new Notification(r.title || 'BoardPrep', { body: r.body }); } catch (e) {}
+        }
+      };
+      remindTick();
+      setInterval(remindTick, 30000);
+    }
     render();
   }
 
