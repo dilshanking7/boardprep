@@ -49,13 +49,15 @@ async function webSearch(q) {
 // har provider ke kuch candidates — jo chala wahi
 var CF_MODELS = [
   '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
+  '@cf/qwen/qwen2.5-7b-instruct',
+  '@cf/meta/llama-3.2-3b-instruct',
   '@cf/meta/llama-3.2-1b-instruct',
   '@cf/mistral/mistral-7b-instruct-v0.2',
   '@cf/qwen/qwen1.5-14b-chat-awq',
   '@cf/google/gemma-2b-it-lora',
 ];
-var GROQ_MODELS = ['llama-3.1-8b-instant', 'llama3-8b-8192', 'mixtral-8x7b-32768', 'llama-3.3-70b-versatile'];
-var GEMINI_MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-flash', 'gemini-1.5-pro'];
+var GROQ_MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
+var GEMINI_MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'];
 var OR_MODELS = ['meta-llama/llama-3.1-8b-instruct:free', 'google/gemma-2b-it:free', 'mistralai/mistral-7b-instruct:free'];
 
 async function callCF(env, messages) {
@@ -82,7 +84,7 @@ async function callGroq(env, messages) {
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + key },
         body: JSON.stringify({ model: GROQ_MODELS[i], messages: messages, max_tokens: 900 }),
       });
-      if (!r.ok) { last = 'HTTP ' + r.status; continue; }
+      if (!r.ok) { last = 'HTTP ' + r.status + ' ' + (await r.text()).slice(0, 120); continue; }
       var j = await r.json();
       var t = (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '';
       if (t) return String(t).trim();
@@ -108,7 +110,7 @@ async function callGemini(env, messages) {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ systemInstruction: { parts: [{ text: sys }] }, contents: conv }),
       });
-      if (!r.ok) { last = 'HTTP ' + r.status; continue; }
+      if (!r.ok) { last = 'HTTP ' + r.status + ' ' + (await r.text()).slice(0, 120); continue; }
       var j = await r.json();
       var t = j && j.candidates && j.candidates[0] && j.candidates[0].content &&
         j.candidates[0].content.parts && j.candidates[0].content.parts[0] && j.candidates[0].content.parts[0].text;
@@ -143,10 +145,10 @@ async function callOpenRouter(env, messages) {
 // jo kaam kare, wahi chuno
 async function askAI(db, env, messages) {
   const tries = [
+    ['Groq GPT-OSS', function () { return callGroq(env, messages); }],
     ['Cloudflare AI', function () { return callCF(env, messages); }],
-    ['Nous longcat', function () { return nousChat(db, env, messages); }],
-    ['Groq', function () { return callGroq(env, messages); }],
     ['Gemini', function () { return callGemini(env, messages); }],
+    ['Nous longcat', function () { return nousChat(db, env, messages); }],
     ['OpenRouter free', function () { return callOpenRouter(env, messages); }],
   ];
   const errs = [];
@@ -178,4 +180,38 @@ async function rateLimit(db, id, env) {
   return { ok: true, left: per - rec.n, per: per, windowH: winH, reset: rec.reset };
 }
 
-export { webSearch, askAI, rateLimit };
+// kaun sa model chalta hai — har ek aajmao (diagnostic)
+async function probe(env, provider, models) {
+  const out = [];
+  for (let i = 0; i < models.length; i++) {
+    const m = models[i];
+    try {
+      let r;
+      if (provider === 'groq') {
+        r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (env.GROQ_KEY || '') },
+          body: JSON.stringify({ model: m, messages: [{ role: 'user', content: 'अम्ल नीला लिटमस कैसे बदलता है? एक लाइन में।' }], max_tokens: 80 }),
+        });
+      } else {
+        r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + m + ':generateContent?key=' + enc(env.GEMINI_KEY || ''), {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'अम्ल नीला लिटमस कैसे बदलता है? एक लाइन में।' }] }] }),
+        });
+      }
+      const txt = await r.text();
+      if (r.ok) {
+        const j = JSON.parse(txt);
+        const t = provider === 'groq'
+          ? (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content)
+          : (j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0] && j.candidates[0].content.parts[0].text);
+        out.push({ model: m, ok: true, a: String(t || '').slice(0, 70) });
+      } else {
+        out.push({ model: m, ok: false, s: r.status, e: txt.slice(0, 80) });
+      }
+    } catch (e) { out.push({ model: m, ok: false, e: String(e.message || e).slice(0, 80) }); }
+  }
+  return out;
+}
+
+export { webSearch, askAI, rateLimit, callCF, callGroq, callGemini, callOpenRouter, probe };

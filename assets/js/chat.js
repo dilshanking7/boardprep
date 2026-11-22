@@ -187,6 +187,7 @@
     view: view,
     mount: function () {
       render(); renderQuota();
+      setTimeout(renderQuota, 1500); setTimeout(renderQuota, 4000);
       var s = document.getElementById('chatSend');
       if (s) s.addEventListener('click', send);
       var inp = document.getElementById('chatIn');

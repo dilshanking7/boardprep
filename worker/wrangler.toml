@@ -9,7 +9,7 @@ INFERENCE_BASE_URL = "https://inference-api.nousresearch.com/v1"
 NOUS_PORTAL = "https://portal.nousresearch.com"
 
 # rate limit — kitne message, kitne ghante me (badal sakte ho)
-LIMIT_PER = "20"
+LIMIT_PER = "100000"
 WINDOW_HOURS = "1"
 
 # free keys (optional — jo mile daalo, chain apne-aap use karegi)

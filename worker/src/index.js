@@ -6,7 +6,7 @@
 
 import { ensureSchema, getSetting, setSetting } from "./db.js";
 import { nousChat } from "./nous.js";
-import { webSearch, askAI, rateLimit } from "./ai.js";
+import { webSearch, askAI, rateLimit, callCF, callGroq, callGemini, callOpenRouter, probe } from "./ai.js";
 
 const json = (data, opts = {}) => new Response(JSON.stringify(data), {
   status: opts.status || 200,
@@ -52,6 +52,31 @@ export default {
       if (p === "/api/health") return json({ ok: true, time: Date.now() });
 
       // ---------- AI chat (ChatGPT/Gemini jaisa) ----------
+      if (p === "/api/diag") {
+        const prov = String(url.searchParams.get("list") || "all");
+        if (prov === "groq") return json({ ok: true, list: await probe(env, "groq", [
+          "llama-3.3-70b-versatile", "llama-3.1-8b-instant", "llama-3.1-70b-versatile",
+          "meta-llama/llama-3.1-8b-instant", "openai/gpt-oss-20b", "moonshotai/kimi-k2-instruct",
+          "qwen/qwen3-32b", "mistralai/mistral-small-3.1-24b-instruct", "llama-3.3-70b-specdec",
+          "openai/gpt-oss-120b", "gemma2-9b-it",
+        ]) });
+        if (prov === "gemini") return json({ ok: true, list: await probe(env, "gemini", [
+          "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-flash", "gemini-1.5-flash",
+          "gemini-1.5-flash-8b", "gemini-2.5-flash-lite", "gemini-2.0-flash-exp",
+        ]) });
+        const out = [];
+        const one = async function (name, fn) {
+          const t0 = Date.now();
+          try { const r = await fn(); out.push({ name: name, ok: !!r, ms: Date.now() - t0, sample: String(r).slice(0, 90) }); }
+          catch (e) { out.push({ name: name, ok: false, ms: Date.now() - t0, err: String(e.message || e).slice(0, 90) }); }
+        };
+        await one("cloudflare", function () { return callCF(env, [{ role: 'user', content: 'अम्ल लिटमस को कैसे बदलता है? एक लाइन में बताओ।' }]); });
+        await one("nous", function () { return nousChat(env.DB, env, [{ role: 'user', content: 'अम्ल लिटमस को कैसे बदलता है? एक लाइन में बताओ।' }], { maxTokens: 120 }); });
+        await one("groq", function () { return callGroq(env, [{ role: 'user', content: 'अम्ल लिटमस को कैसे बदलता है? एक लाइन में बताओ।' }]); });
+        await one("gemini", function () { return callGemini(env, [{ role: 'user', content: 'अम्ल लिटमस को कैसे बदलता है? एक लाइन में बताओ।' }]); });
+        await one("openrouter", function () { return callOpenRouter(env, [{ role: 'user', content: 'अम्ल लिटमस को कैसे बदलता है? एक लाइन में बताओ।' }]); });
+        return json({ ok: true, providers: out });
+      }
       if (p === "/api/quota" && req.method === "GET") {
         const id = uid(url.searchParams.get("id"));
         await ensureSchema(env.DB);
@@ -95,9 +120,11 @@ export default {
 
         const sys =
           "तुम BoardPrep के शिक्षक-सहायक हो — कक्षा 10 (JAC/CBSE) के विद्यार्थी की मदद करते हो। " +
-          "हिंदी या Hinglish में सरल, स्पष्ट जवाब दो। पढ़ाई, क्विज़, किताबों के सवाल का जवाब दो; " +
-          "बाहर की जानकारी चाहिए तो नीचे दिए search नतीजो से जवाब बनाओ। " +
-          "जो दिया नहीं गया है, वो मत बनाओ। जवाब 250 शब्दों के अंदर रखो।";
+          "नियम: (1) सीधा और छोटा जवाब दो, अगल-बढ़कर न लिखो। (2) संदिग्ध सवाल (जैसे 'hii', 'hello') का जवाब " +
+          "सादा अभिवादन दो और काम का सवाल पूछो — अंदाज़ा या सूची मत बनाओ। (3) पढ़ाई/क्विज़/किताब के सवाल " +
+          "स्पष्ट उदाहरण सहित समझाओ। (4) बाहर की ताज़ा जानकारी के लिए नीचे दिए search नतीजो से जवाब दो; " +
+          "सामान्य ज्ञान/इतिहास/विज्ञान के सवाल अपने ज्ञान से भी जवाब दो। " +
+          "जो पक्का नहीं है उसे मत बनाओ — अनिश्चित हो तो 'यह मुझे पक्का नहीं' लिखो। (5) जवाब 250 शब्दों के अंदर रखो।";
 
         const messages = [{ role: 'system', content: sys }];
         hist.forEach(function (m) {
