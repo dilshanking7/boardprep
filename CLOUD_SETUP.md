@@ -74,6 +74,44 @@ Worker तुम्हारे Nous Portal token से free model चलात
 
 ---
 
+## भाग 2 — AI chat (ChatGPT/Gemini जैसा)  🤖
+
+**नया:** app में अब **AI चैट** है (सीखें tab → AI चैट) — पढ़ाई, क्विज़, किताबों के सवाल **और** बाहर की
+जानकारी (web search) — सबका जवाब देता है।
+
+### Worker को नया code दो (एक बार, 2 मिनट)
+```
+cd ~/boardprep-api
+bash deploy.sh
+```
+(पहली बार `npm install` होगा, फिर `wrangler deploy`)
+
+### किसका key चाहिए (सब free — जो मिले)
+Chain अपने-आप उस्से आगे बढ़ती है जिसका key मिला:
+1. **Cloudflare AI** — तुम्हारे CF खाते से चलता है (कुछ key नहीं) ← सबसे पहले
+2. **Nous** — पुराना token (Step 6)
+3. **Groq** — https://console.groq.com से free key
+4. **Gemini** — https://aistudio.google.com से free key
+5. **OpenRouter** — `:free` मॉडल
+
+Key डालने के लिए (एक-एक):
+```
+npx wrangler secret put GROQ_KEY
+npx wrangler secret put GEMINI_KEY
+npx wrangler secret put OPENROUTER_KEY
+```
+
+### Rate limit (तुम चाहे बदल सकते हो)
+`wrangler.toml` में:
+- `LIMIT_PER = "20"` — घंटे कितने message
+- `WINDOW_HOURS = "1"` — कितने घंटे बाद फिर शुरू
+बदलकर `bash deploy.sh` दोबारा चलाओ।
+
+### आज़माओ
+app → **AI चैट** → कुछ लिखो → भेजो। ऊपर "बचे/कुल" दिखता है।
+
+---
+
 ## भाग 3 — Sync + Rooms
 
 ### Sync
