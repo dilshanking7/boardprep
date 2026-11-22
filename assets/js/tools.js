@@ -609,6 +609,11 @@
     h += '<div class="setting-row" style="align-items:flex-start;flex-direction:column;gap:4px"><span>' + esc(L('3D anatomy models', '3D एनाटॉमी मॉडल')) + '</span><span class="t-small">BodyParts3D © DBCLS (CC BY 4.0); female organs: HuBMAP (CC BY 4.0); female body: MakeHuman (CC0). Adapted by open-anatomy-3d (CC BY 4.0).</span></div>';
     h += '<div class="setting-row" style="align-items:flex-start;flex-direction:column;gap:4px"><span>' + esc(L('PDFs + audio', 'PDF + ऑडियो')) + '</span><span class="t-small">' + esc(L('NCERT/JAC material + free audio (licence verify)', 'NCERT/JAC सामग्री + मुफ़्त ऑडियो (लाइसेंस जाँचें — verify)')) + '</span></div>';
     h += '<div class="note">' + esc(L('BoardPrep ek educational aid hai — koi bhi board-specific content sirf tab kehlata hai jab source verified ho.', 'BoardPrep एक शैक्षणिक साधन है — कोई भी बोर्ड-विशिष्ट सामग्री सिर्फ़ तब कहलाती है जब स्रोत सत्यापित हो।')) + '</div>';
+    if (window.BPApp && window.BPApp.exit) {
+      h += '<div class="board-group" style="margin-top:12px">' + esc(L('App', 'ऐप')) + '</div>';
+      h += '<button class="btn btn-block" id="appExit" style="border-color:var(--line)">' + esc(L('ऐप बंद करें', 'ऐप बंद करें')) + '</button>';
+      h += '<div class="note" style="margin-top:6px">' + esc(L('Back button bhi kaam karta hai — home par dabao to app band ho jayega.', 'बैक बटन भी काम करता है — होम पर दबाओ तो ऐप बंद हो जाएगा।')) + '</div>';
+    }
     return h + '</section>';
   }
 
@@ -1451,6 +1456,11 @@
     var fcReset = document.getElementById('fcReset');
     if (fcReset) fcReset.addEventListener('click', function () { window.__fcIdx = 0; window.__fcFlipped = false; window.__fcKnown = 0; window.__fcUnknown = 0; fcShow(); });
     if (window.__fcCards && document.getElementById('fcCard')) fcShow();
+
+    var appExit = document.getElementById('appExit');
+    if (appExit) appExit.addEventListener('click', function () {
+      if (window.BPApp && window.BPApp.exit) window.BPApp.exit();
+    });
 
     // ---- question bank ----
     function fillBankChaps() {

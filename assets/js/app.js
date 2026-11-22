@@ -394,8 +394,8 @@
       '<button class="btn btn-accent" id="offBtn" style="padding:10px 14px;white-space:nowrap">' + esc(L('Offline download', 'ऑफ़लाइन डाउनलोड')) + '</button></a>';
 
     if (storeGet('bp_apk', '0') !== '1' && location.href.indexOf('appassets.androidplatform.net') < 0) {
-      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v4.2.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
-        '<div class="t">📱 ' + esc(L('एंड्रॉयड ऐप v4.2 — पूरा ऑफ़लाइन', 'Android app v4.2 — full offline')) + '</div>' +
+      html += '<a class="list-row apk-card" href="downloads/BoardPrep-v4.3.apk" download style="margin-bottom:12px;border-color:#c4b5fd;background:#f5f3ff"><div>' +
+        '<div class="t">📱 ' + esc(L('एंड्रॉयड ऐप v4.3 — पूरा ऑफ़लाइन', 'Android app v4.3 — full offline')) + '</div>' +
         '<div class="s">' + esc(L('App me hi sab hai — PDF, 3D models, songs. Internet ke bina bhi.', 'ऐप में ही सब है — PDF, 3D models, songs। इंटरनेट के बिना भी।')) + '</div></div><span class="n">⬇</span></a>';
     }
 
