@@ -239,6 +239,123 @@
 
   /* ---------------- views ---------------- */
 
+  /* ---------------- home dashboard (v3) ---------------- */
+
+  function dashSec(title, body, moreHref, moreLabel) {
+    return '<section class="section"><div class="section-head"><h2>' + esc(title) + '</h2>' +
+      (moreHref ? '<a class="more" href="' + moreHref + '">' + esc(moreLabel || L('All', 'सभी') + ' →') + '</a>' : '') +
+      '</div>' + body + '</section>';
+  }
+
+  function examCountdown() {
+    var raw = ((IMP && IMP.exam) || (board() && board().exam) || '').toString();
+    var m = raw.match(/([A-Za-z]{3,})\s*(\d{4})/);
+    if (!m) return null;
+    var mon = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 }[m[1].slice(0, 3).toLowerCase()];
+    var yr = Number(m[2]);
+    if (!mon) return null;
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var target = new Date(yr, mon - 1, 1);
+    return { label: raw, days: Math.ceil((target - today) / 86400000) };
+  }
+
+  function vDash() {
+    var st = window.STUDY ? window.STUDY.stats() : null;
+    var goal = (st && st.goal) || 5;
+    var todayN = (st && st.last7 && st.last7[0] ? st.last7[0].n : 0);
+    var pct = Math.min(100, Math.round((todayN / goal) * 100));
+    var h = '';
+
+    /* B. आज का अवलोकन */
+    var ring = '<div class="ring" style="--p:' + pct + '"><div class="ring-in"><b>' + pct + '%</b><span>' + esc(L('Aaj ka lakshya', 'आज का लक्ष्य')) + '</span></div></div>';
+    h += '<div class="card dash-today">' + ring +
+      '<div class="dash-today-nums">' +
+      '<div><b>' + todayN + '</b><span>' + esc(L('aaj ke sawal', 'आज के सवाल')) + '</span></div>' +
+      '<div><b>' + (st ? st.total : 0) + '</b><span>' + esc(L('kul prayatn', 'कुल प्रयास')) + '</span></div>' +
+      '<div><b>' + (st ? st.streak : 0) + '</b><span>' + esc(L('din streak', 'दिन स्ट्रीक')) + '</span></div>' +
+      '</div></div>';
+    if (st && st.total === 0) {
+      h += '<div class="note">' + esc(L('Abhi koi sawal nahi kiya — quiz se shuru karo.', 'अभी कोई सवाल नहीं किया — क्विज़ से शुरू करो।')) + '</div>';
+    }
+
+    /* C. परीक्षा काउंटडाउन */
+    var ec = examCountdown();
+    if (ec) {
+      var eco = ec.days > 0
+        ? '<b class="t-num">' + ec.days + '</b> ' + esc(L('din baaki', 'दिन बाकी'))
+        : (ec.days === 0 ? esc(L('Aaj!', 'आज!')) : '<b>0</b> ' + esc(L('din baaki', 'दिन बाकी')));
+      h += '<div class="card dash-exam">' +
+        '<div><div class="t-small">' + esc(L('Agla board exam', 'अगली बोर्ड परीक्षा')) + '</div>' +
+        '<div style="font-size:18px;font-weight:800">' + esc(ec.label) + '</div>' +
+        '<div class="t-secondary">' + eco + '</div></div>' +
+        '<span data-icon="timer" class="dash-exam-ic"></span></div>';
+      h += '<div class="note">' + esc(L('Din ginne ka matlab: mahine ke pehle din maan kar (1 ' + ec.label + ')। Aadhikarike taarikh board jari karega — yah sirf estimate hai.', 'दिन गिनने का मतलब: महीने के पहले दिन मान कर (1 ' + ec.label + ')। आधिकारिक तारीख बोर्ड जारी करेगा — यह सिर्फ़ अनुमान है।')) + '</div>';
+    }
+
+    /* D. जहाँ से जारी रखें */
+    var ls = storeGet('bp_last_subj', '');
+    if (ls && window.SUBJECT_MAP && window.SUBJECT_MAP[ls]) {
+      var sm = window.SUBJECT_MAP[ls];
+      var lch = storeGet('bp_last_chap', '');
+      h += dashSec(L('Continue learning', 'जहाँ से जारी रखें'),
+        '<a class="list-row" href="#/subject/' + esc(ls) + '"><div>' +
+        '<div class="t">' + esc(state.lang === 'en' ? (sm.en || sm.name) : sm.name) + '</div>' +
+        (lch ? '<div class="s">' + esc(lch) + '</div>' : '<div class="s">' + esc(L('Chapter kholo', 'अध्याय खोलो')) + '</div>') +
+        '</div><span class="n">' + esc(L('Chalu karo', 'जारी रखो')) + '</span></a>', '#/learn');
+    }
+
+    /* E. विषय प्रगति */
+    if (st && st.subj && Object.keys(st.subj).length) {
+      var keys = Object.keys(st.subj).sort(function (a, b) { return (st.subj[b].pct || 0) - (st.subj[a].pct || 0); });
+      h += dashSec(L('Subject progress', 'विषय प्रगति'),
+        keys.map(function (k) {
+          var x = st.subj[k];
+          var nm = (window.SUBJECT_MAP && window.SUBJECT_MAP[k] ? (state.lang === 'en' ? window.SUBJECT_MAP[k].en : window.SUBJECT_MAP[k].name) : k);
+          return '<div class="prog-row"><div class="prog-top"><span>' + esc(nm) + '</span><b class="t-num">' + x.pct + '%</b></div>' +
+            '<div class="prog"><i style="width:' + x.pct + '%;background:' + (x.pct >= 70 ? 'var(--color-success)' : x.pct >= 40 ? 'var(--color-warning)' : 'var(--color-error)') + '"></i></div>' +
+            '<div class="t-small">' + x.ok + '/' + x.n + ' ' + esc(L('sahi', 'सही')) + '</div></div>';
+        }).join(''), '#/learn');
+    }
+
+    /* F. क्विक एक्शन */
+    h += dashSec(L('Quick actions', 'क्विक एक्शन'), '<div class="qa-grid">' +
+      [['#/quiz', 'pencil', L('Quiz', 'क्विज़')], ['#/exam', 'timer', L('Mock exam', 'मॉक एग्ज़ाम')],
+       ['#/assistant', 'bot', L('Ask AI', 'AI से पूछो')], ['#/search', 'search', L('Search', 'खोज')],
+       ['#/notes', 'book', L('Notes', 'नोट्स')], ['#/revision', 'repeat', L('Revise', 'रिवीज़न')]].map(function (x) {
+        return '<a class="qa" href="' + x[0] + '"><span data-icon="' + x[1] + '"></span>' + esc(x[2]) + '</a>';
+      }).join('') + '</div>');
+
+    /* G. कमज़ोर अध्याय */
+    if (st && st.chap && st.chap.filter(function (x) { return x.n >= 3 && x.pct < 50; }).length) {
+      var weak = st.chap.filter(function (x) { return x.n >= 3 && x.pct < 50; }).slice(0, 5);
+      h += dashSec(L('Weak chapters', 'कमज़ोर अध्याय'),
+        weak.map(function (x) {
+          return '<a class="list-row" href="#/subject/' + esc(x.s) + '"><div><div class="t">' + esc(x.c) + '</div>' +
+            '<div class="s">' + x.ok + '/' + x.n + ' · ' + x.pct + '%</div></div><span class="n">→</span></a>';
+        }).join(''), '#/progress', L('Poora', 'पूरा'));
+    }
+
+    /* H. आज के कार्य */
+    var tasks = [];
+    if (todayN < goal) tasks.push([L('Aaj ke ' + (goal - todayN) + ' sawal baaki', 'आज के ' + (goal - todayN) + ' सवाल बाकी'), '#/quiz']);
+    if (st && st.wrong > 0) tasks.push([L('Galti kiye sawal dobara', 'गलत किए सवाल दोबारा'), '#/revision']);
+    if (st && st.book > 0) tasks.push([L('Bookmarked sawal', 'बुकमार्क सवाल'), '#/revision']);
+    tasks.push([L('Ek chapter padho (notes)', 'एक अध्याय पढ़ो (नोट्स)'), '#/notes']);
+    if (tasks.length) {
+      h += dashSec(L("Aaj ke kaam", 'आज के काम'),
+        tasks.map(function (x, i) { return '<a class="task" href="' + x[1] + '"><span class="task-n">' + (i + 1) + '</span>' + esc(x[0]) + '<span class="task-ar">→</span></a>'; }).join(''));
+    }
+
+    /* I. हाल की गतिविधि */
+    if (st && st.exams && st.exams.length) {
+      h += dashSec(L('Recent activity', 'हाल की गतिविधि'),
+        st.exams.slice(-4).reverse().map(function (e) {
+          return '<div class="result-row"><span>' + esc(e.subj) + ' · ' + new Date(e.t).toLocaleDateString() + '</span><b class="t-num">' + e.right + '/' + e.total + '</b></div>';
+        }).join(''), '#/progress');
+    }
+    return h;
+  }
+
   function vHome() {
     var total = D.questions.length;
     var mcq = D.questions.filter(function (q) { return q.type === 'mcq'; }).length;
@@ -260,6 +377,8 @@
       '<a class="btn btn-primary" href="#/quiz">' + esc(t('home_start')) + '</a>' +
       '<a class="btn btn-ghost" href="#/search">' + esc(t('home_search_btn')) + '</a>' +
       '</div></section>';
+
+    html += vDash();
 
     html += '<div class="stats">' +
       '<div class="stat"><b>' + total + '</b><span>' + esc(t('home_stats_q')) + '</span></div>' +
@@ -338,6 +457,7 @@
     var s = subj(key);
     if (!s) return '<div class="empty">404</div>';
     state.subjKey = key;
+    storeSet('bp_last_subj', key);
     var chaps = chapters(key);
     var list = qsFor(key).filter(function (q) {
       if (state.subjType !== 'all' && q.type !== state.subjType) return false;
@@ -667,7 +787,9 @@
 
     var chapSel = document.getElementById('chapSel');
     if (chapSel) chapSel.addEventListener('change', function () {
-      state.subjChap = chapSel.value; state.shown = 40; render();
+      state.subjChap = chapSel.value; state.shown = 40;
+      if (chapSel.value && chapSel.value !== 'all') storeSet('bp_last_chap', chapSel.value);
+      render();
     });
 
     var searchBox = document.getElementById('searchBox');
