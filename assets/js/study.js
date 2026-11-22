@@ -304,7 +304,11 @@
   }
 
   window.vExam = function () {
-    if (EXAM) return examRun();
+    var e = window.EXAM ? window.EXAM() : null;
+    if (e) {
+      if (e.stage === 'instr') return examInstr();
+      return examRun();
+    }
     var pat = boardPattern();
     var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Board exam simulator', 'बोर्ड एग्ज़ाम सिमुलेटर')) + '</h2>' +
       '<span class="note">' + esc(L('Verified board pattern', 'सत्यापित बोर्ड पैटर्न')) + '</span></div>';
@@ -330,6 +334,33 @@
     return h + '</section>';
   };
 
+  function examInstr() {
+    var e = window.EXAM();
+    var pat = boardPattern();
+    var tot = 0; e.items.forEach(function (q) { tot += q.marks; });
+    var h = '<section class="section"><div class="section-head"><h2>' + esc(L('Exam instructions', 'परीक्षा निर्देश')) + '</h2>' +
+      '<span class="note">' + esc(e.subjName) + '</span></div>';
+    h += '<div class="card"><div class="prog-top"><span>' + esc(L('Kul sawal', 'कुल सवाल')) + '</span><b class="t-num">' + e.items.length + '</b></div>' +
+      '<div class="prog-top"><span>' + esc(L('Kul marks', 'कुल अंक')) + '</span><b class="t-num">' + tot + '</b></div>' +
+      '<div class="prog-top"><span>' + esc(L('Samay', 'समय')) + '</span><b class="t-num">' + Math.round((e.end - Date.now()) / 60000) + ' ' + esc(L('min', 'मिनट')) + '</b></div></div>';
+    h += '<div class="board-group">' + esc(L('Niyam', 'नियम')) + '</div>';
+    h += '<div class="imp-item"><div class="iq">' + esc(L('1. पूरे पैटर्न/अंक किताब/बोर्ड के दिए अनुसार — (verify) tag ke bina koi board-specific claim nahi.', '1. पूरा पैटर्न/अंक किताब/बोर्ड के दिए अनुसार — (verify) टैग के बिना कोई बोर्ड-विशिष्ट दावा नहीं।')) + '</div></div>';
+    h += '<div class="imp-item"><div class="iq">' + esc(L('2. हर सवाल के नीचे palette से जा/आ — jo chuno uska mark save ho jayega.', '2. हर सवाल के नीचे पैलेट से जा/आ — जो चुनो उसका मार्क सहेजा जाएगा।')) + '</div></div>';
+    h += '<div class="imp-item"><div class="iq">' + esc(L('3. "Mark for review" se sawal palette me alag nishan se dikhega.', '3. "मार्क फ़ॉर रिव्यू" से सवाल पैलेट में अलग निशान से दिखेगा।')) + '</div></div>';
+    h += '<div class="imp-item"><div class="iq">' + esc(L('4. समय खत्म होते ही exam apne-aap submit ho jayega.', '4. समय खत्म होते ही एग्ज़ाम अपने-आप सबमिट हो जाएगा।')) + '</div></div>';
+    if (pat.length) {
+      h += '<div class="board-group">' + esc(L('Pattern (verified)', 'पैटर्न (सत्यापित)')) + '</div>';
+      h += pat.map(function (p) {
+        return '<div class="result-row"><span>' + esc(p.subj) + '</span><b>' + p.total + ' · ' + esc(p.time) + '</b></div>';
+      }).join('');
+    } else {
+      h += '<div class="note">' + esc(L('Is board ka verified pattern nahi mila — general pattern use hoga (verify).', 'इस बोर्ड का सत्यापित पैटर्न नहीं मिला — सामान्य पैटर्न उपयोग होगा (verify)।')) + '</div>';
+    }
+    h += '<button class="btn btn-accent btn-block" id="exBegin">' + esc(L('Exam shuru karo', 'एग्ज़ाम शुरू करो')) + '</button>';
+    h += '<div class="note">' + esc(L('Ye ek practice simulator hai — asli board paper ke barabar nahi.', 'यह एक अभ्यास सिमुलेटर है — असली बोर्ड पेपर के बराबर नहीं।')) + '</div>';
+    return h + '</section>';
+  }
+
   function examRun() {
     var e = EXAM;
     if (e.done) return examResult();
@@ -343,9 +374,12 @@
     h += '<div class="chips" style="flex-wrap:wrap">';
     e.items.forEach(function (it, k) {
       var cls = k === e.i ? 'fchip on' : (e.ans[k] !== undefined ? 'fchip' : 'fchip dim');
+      if (e.review[k]) cls += ' rev';
       h += '<button class="' + cls + '" data-pal="' + k + '" style="min-width:38px;padding:6px 0">' + (k + 1) + '</button>';
     });
     h += '</div>';
+    h += '<div class="chips" style="margin-top:8px">' +
+      '<button class="fchip' + (e.review[e.i] ? ' on' : '') + '" id="exReview">' + esc(L('Mark for review', 'मार्क फ़ॉर रिव्यू')) + '</button></div>';
     h += '<div class="board-group">' + esc(L('Q', 'प्र')) + ' ' + (e.i + 1) + ' · ' + esc(L('Marks', 'अंक')) + ': ' + q.marks + '</div>';
     h += '<div class="imp-item" style="background:var(--card)"><div class="iq" style="font-size:16px;line-height:1.7">' + esc(q.q) + '</div>';
     if (q.opts) {
@@ -405,7 +439,7 @@
     });
     if (!items.length) return false;
     var s = window.SUBJECT_MAP && window.SUBJECT_MAP[subjKey];
-    EXAM = { subj: subjKey, subjName: s ? (lang() === 'en' ? s.en : s.name) : subjKey, items: items, i: 0, ans: {}, end: Date.now() + minutes * 60000, done: false, start: Date.now() };
+    EXAM = { subj: subjKey, subjName: s ? (lang() === 'en' ? s.en : s.name) : subjKey, items: items, i: 0, ans: {}, review: {}, stage: 'instr', end: Date.now() + minutes * 60000, done: false, start: Date.now() };
     window.STUDY.addExam({ subj: s ? s.name : subjKey, total: items.length, right: 0, t: Date.now(), dur: minutes });
     return true;
   };
@@ -424,6 +458,8 @@
   };
   window.examGo = function (i) { if (EXAM) { EXAM.i = Math.max(0, Math.min(EXAM.items.length - 1, i)); } };
   window.examReset = function () { EXAM = null; };
+  window.examBegin = function () { if (EXAM) { EXAM.stage = 'run'; } };
+  window.examMarkReview = function () { if (EXAM) { EXAM.review[EXAM.i] = !EXAM.review[EXAM.i]; } };
 
   /* ---------------- study assistant (offline, rule-based) ---------------- */
 

@@ -562,3 +562,6 @@ html[data-theme="dark"] .xchip, html[data-theme="dark"] .badge.freq { color: #fc
 .nt-qa b { display: block; color: var(--color-primary); font-size: 13.5px; margin-bottom: 6px; }
 .nt-qa .q { font-size: 15px; font-weight: 700; line-height: 1.6; }
 .nt-qa .a { font-size: 14px; line-height: 1.65; margin-top: 6px; color: var(--color-text-secondary); }
+
+/* exam: mark for review */
+.fchip.rev { outline: 2px dashed var(--color-primary); outline-offset: -2px; }

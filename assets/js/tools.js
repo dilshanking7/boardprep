@@ -1194,6 +1194,17 @@
     if (exSubmit) exSubmit.addEventListener('click', function () { if (window.EXAM()) { window.examSubmit(); window.BP && window.BP.render(); } });
     var exAgain = document.getElementById('exAgain');
     if (exAgain) exAgain.addEventListener('click', function () { window.examReset(); window.BP && window.BP.render(); });
+    var exBegin = document.getElementById('exBegin');
+    if (exBegin) exBegin.addEventListener('click', function () { window.examBegin(); window.BP && window.BP.render(); });
+    var exReview = document.getElementById('exReview');
+    if (exReview) exReview.addEventListener('click', function () {
+      window.examMarkReview();
+      var e = window.EXAM();
+      if (!e) return;
+      exReview.classList.toggle('on', !!e.review[e.i]);
+      var chip = document.querySelector('#view .fchip[data-pal="' + e.i + '"]');
+      if (chip) chip.classList.toggle('rev', !!e.review[e.i]);
+    });
     document.querySelectorAll('[data-rev]').forEach(function (b) {
       b.addEventListener('click', function () {
         window.__revTab = b.dataset.rev;
