@@ -5,7 +5,7 @@
 
   // DEFAULT_BASE — ye URL app me hi baked hai (Dilshan ek baar set karta hai).
   // Users ko kuch set nahi karna — sab apne-aap chalega.
-  var DEFAULT_BASE = '';
+  var DEFAULT_BASE = 'https://boardprep-api.dilshan-boardprep.workers.dev';
   var OVERRIDE_KEY = 'bp_api_base';
   var BASE = '';
 
