@@ -2,9 +2,10 @@
 window.I18N = {
   brand: { hi: "Class 10 Prep", en: "Class 10 Prep" },
   nav_home: { hi: "होम", en: "Home" },
-  nav_subjects: { hi: "विषय", en: "Subjects" },
-  nav_quiz: { hi: "क्विज़", en: "Quiz" },
-  nav_search: { hi: "खोज", en: "Search" },
+  nav_learn: { hi: "सीखें", en: "Learn" },
+  nav_practice: { hi: "अभ्यास", en: "Practice" },
+  nav_progress: { hi: "प्रगति", en: "Progress" },
+  nav_profile: { hi: "प्रोफ़ाइल", en: "Profile" },
   nav_papers: { hi: "पेपर", en: "Papers" },
 
   home_boards: { hi: "बोर्ड बदलें", en: "Switch board" },

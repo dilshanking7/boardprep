@@ -737,7 +737,7 @@
     document.getElementById('langBtn').textContent = state.lang === 'hi' ? 'हि' : 'EN';
     document.getElementById('boardChipText').textContent = board().name;
     document.querySelectorAll('.bottomnav a span:last-child').forEach(function (s, i) {
-      var keys = ['nav_home', 'nav_subjects', 'nav_quiz', 'nav_tools', 'nav_search'];
+      var keys = ['nav_home', 'nav_learn', 'nav_practice', 'nav_progress', 'nav_profile'];
       if (keys[i]) s.textContent = t(keys[i]);
     });
   }
