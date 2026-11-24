@@ -1048,6 +1048,9 @@
     document.querySelectorAll('[data-i18n]').forEach(function (el) {
       el.textContent = t(el.dataset.i18n);
     });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function (el) {
+      el.setAttribute('placeholder', t(el.dataset.i18nPh));
+    });
     document.getElementById('langBtn').textContent = state.lang === 'hi' ? 'हि' : 'EN';
     document.getElementById('boardChipText').textContent = board().name;
     document.querySelectorAll('.bottomnav a span:last-child').forEach(function (s, i) {
@@ -1125,20 +1128,28 @@
     window.scrollTo(0, 0);
   }
 
-  function renderBoards() {
-    var groups = {};
-    BOARDS.forEach(function (b) { (groups[b.group] = groups[b.group] || []).push(b); });
+  function renderBoards(q) {
+    var s = String(q || '').trim().toLowerCase();
+    var groups = {}, any = false;
+    BOARDS.forEach(function (b) {
+      var hay = (b.name + ' ' + b.state + ' ' + (b.state_en || '') + ' ' + (b.exam || '')).toLowerCase();
+      if (s && hay.indexOf(s) < 0) return;
+      (groups[b.group] = groups[b.group] || []).push(b);
+    });
     var html = '';
     ['national', 'state'].forEach(function (g) {
       if (!groups[g]) return;
+      any = true;
       html += '<div class="board-group">' + esc(t('board_group_' + g)) + '</div>';
       groups[g].forEach(function (b) {
-        html += '<button class="board-item' + (b.id === state.board ? ' on' : '') + '" data-id="' + b.id + '">' +
+        var sel = b.id === state.board;
+        html += '<button class="board-item' + (sel ? ' on' : '') + '" data-id="' + b.id + '">' +
           '<span><span class="bn">' + esc(b.name) + '</span><br>' +
           '<span class="bf">' + esc(state.lang === 'en' ? (b.state_en || b.state) : b.state) + ' · ' + esc(b.exam) + '</span></span>' +
-          '<span class="bf">' + esc(b.pattern) + '</span></button>';
+          (sel ? '<span class="bchk">✓</span>' : '<span class="bf">' + esc(b.pattern) + '</span>') + '</button>';
       });
     });
+    if (!any) html = '<div class="empty">' + esc(t('board_none')) + '</div>';
     document.getElementById('boardList').innerHTML = html;
     document.querySelectorAll('.board-item').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -1147,12 +1158,26 @@
         state.lang = b.lang || 'hi';
         storeSet('bp_board', state.board);
         storeSet('bp_lang', state.lang);
-        document.getElementById('boardSheet').hidden = true;
+        closeBoardDrop();
         applyBoardData();
         applyContentLang();
         render();
       });
     });
+  }
+
+  function openBoardDrop() {
+    document.getElementById('boardBackdrop').hidden = false;
+    document.getElementById('boardDrop').hidden = false;
+    renderBoards();
+    var s = document.getElementById('boardSearch');
+    if (s) { s.value = ''; try { s.focus(); } catch (e) { } }
+  }
+  function closeBoardDrop() {
+    var d = document.getElementById('boardDrop');
+    if (!d || d.hidden) return;
+    d.hidden = true;
+    document.getElementById('boardBackdrop').hidden = true;
   }
 
   function boot() {
@@ -1225,15 +1250,17 @@
     });
 
     renderBoards();
-    document.getElementById('boardChip').addEventListener('click', function () {
-      document.getElementById('boardSheet').hidden = false;
+    document.getElementById('boardChip').addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (document.getElementById('boardDrop').hidden) openBoardDrop(); else closeBoardDrop();
     });
-    document.getElementById('boardClose').addEventListener('click', function () {
-      document.getElementById('boardSheet').hidden = true;
+    document.getElementById('boardClose').addEventListener('click', closeBoardDrop);
+    document.getElementById('boardBackdrop').addEventListener('click', closeBoardDrop);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' || e.keyCode === 27) closeBoardDrop();
     });
-    document.getElementById('boardSheet').addEventListener('click', function (e) {
-      if (e.target === this) this.hidden = true;
-    });
+    var bdSearch = document.getElementById('boardSearch');
+    if (bdSearch) bdSearch.addEventListener('input', function () { renderBoards(bdSearch.value); });
     document.getElementById('langBtn').addEventListener('click', function () {
       state.lang = state.lang === 'hi' ? 'en' : 'hi';
       storeSet('bp_lang', state.lang);

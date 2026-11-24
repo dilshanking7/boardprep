@@ -43,13 +43,16 @@
   <a href="#/profile" data-nav="profile"><span class="bn-ico" data-icon="user"></span><span class="bn-tx">प्रोफ़ाइल</span></a>
 </nav>
 
-<div class="sheet" id="boardSheet" hidden>
-  <div class="sheet-panel">
-    <div class="sheet-head">
-      <strong>बोर्ड चुनें</strong>
-      <button class="sheet-close" id="boardClose" aria-label="band">✕</button>
+<div id="boardBackdrop" hidden></div>
+<div id="boardDrop" hidden>
+  <div class="bd-card">
+    <div class="bd-head">
+      <strong data-i18n="board_pick">बोर्ड चुनें</strong>
+      <button class="bd-close" id="boardClose" aria-label="band">✕</button>
     </div>
-    <div class="sheet-body" id="boardList"></div>
+    <input class="bd-search" id="boardSearch" type="search" autocomplete="off"
+      placeholder="बोर्ड खोजें…" data-i18n-ph="board_search_ph">
+    <div class="bd-list" id="boardList"></div>
   </div>
 </div>
 
