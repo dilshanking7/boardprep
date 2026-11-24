@@ -713,19 +713,35 @@ window.NOTES_SCIENCE = [
   "blocks": [
    [
     "h2",
-    "कार्बन और उसके यौगिक"
+    "अध्याय 4: कार्बन और उसके यौगिक"
    ],
    [
     "p",
-    "कार्बन एक महत्वपूर्ण अधातु तत्व है। जीवित प्राणियों के शरीर, भोजन, ईंधन, कपड़े, प्लास्टिक और अनेक उपयोगी पदार्थों में कार्बन पाया जाता है। कार्बन की परमाणु संख्या 6 है और इसका इलेक्ट्रॉनिक विन्यास 2,4 है। बाहरी कक्षा में चार इलेक्ट्रॉन होने के कारण कार्बन सामान्यतः चार सहसंयोजक बंध बनाता है। कार्बन अपने ही परमाणुओं के साथ लंबी शृंखला, शाखित शृंखला और वलय बना सकता है। इस गुण को श्रृंखलन (catenation) कहते हैं।"
+    "कार्बन एक अत्यंत महत्वपूर्ण अधातु तत्व है। जीवित संसार के अधिकांश पदार्थों—जैसे प्रोटीन, कार्बोहाइड्रेट, वसा, DNA और अनेक विटामिन—में कार्बन पाया जाता है। लकड़ी, कागज, कपास, पेट्रोल, प्राकृतिक गैस, प्लास्टिक और भोजन में भी कार्बन के यौगिक होते हैं। कार्बन का परमाणु क्रमांक 6 है और इसका इलेक्ट्रॉनिक विन्यास 2,4 है। बाहरी कक्षा में चार इलेक्ट्रॉन होने के कारण इसकी संयोजकता चार होती है। इस अध्याय में हम समझेंगे कि कार्बन इतने अधिक यौगिक क्यों बनाता है और इन यौगिकों की संरचना, गुण तथा उपयोग क्या हैं।"
    ],
    [
     "h3",
-    "सहसंयोजक बंध"
+    "कार्बन की चतुसंयोजकता"
    ],
    [
     "p",
-    "जब परमाणु इलेक्ट्रॉनों का साझा उपयोग करके बंध बनाते हैं, तो उसे सहसंयोजक बंध कहते हैं। हाइड्रोजन, ऑक्सीजन, नाइट्रोजन, मीथेन और कार्बन डाइऑक्साइड में सहसंयोजक बंध पाए जाते हैं। मीथेन (CH₄) में कार्बन चार हाइड्रोजन परमाणुओं के साथ चार एकल बंध बनाता है। एथीन (C₂H₄) में कार्बन परमाणुओं के बीच द्विबंध और एथाइन (C₂H₂) में त्रिबंध होता है। सहसंयोजक यौगिक सामान्यतः विद्युत के कुचालक होते हैं क्योंकि उनमें स्वतंत्र आयन नहीं होते।"
+    "कार्बन के बाहरी कोश में चार इलेक्ट्रॉन होते हैं। स्थायी इलेक्ट्रॉन विन्यास पाने के लिए इसे चार इलेक्ट्रॉन प्राप्त करने या चार इलेक्ट्रॉन खोने पड़ेंगे, लेकिन दोनों ही स्थितियाँ ऊर्जा की दृष्टि से कठिन हैं। इसलिए कार्बन सामान्यतः दूसरे परमाणुओं के साथ इलेक्ट्रॉनों की साझेदारी करता है। जब दो परमाणु इलेक्ट्रॉनों के युग्म साझा करते हैं, तो उनके बीच सहसंयोजक बंध बनता है। कार्बन चार सहसंयोजक बंध बना सकता है; इस गुण को चतुसंयोजकता कहते हैं। मीथेन (CH₄) इसका सरल उदाहरण है, जिसमें एक कार्बन चार हाइड्रोजन परमाणुओं के साथ एकल बंध बनाता है।"
+   ],
+   [
+    "h3",
+    "सहसंयोजक बंध और उसके प्रकार"
+   ],
+   [
+    "p",
+    "सहसंयोजक बंध में साझा इलेक्ट्रॉन दोनों जुड़े परमाणुओं के लिए उपयोगी होते हैं। एक इलेक्ट्रॉन युग्म साझा करने पर एकल बंध, दो युग्म साझा करने पर द्विबंध और तीन युग्म साझा करने पर त्रिबंध बनता है। एथेन (C₂H₆) में कार्बन-कार्बन एकल बंध, एथीन (C₂H₄) में द्विबंध और एथाइन (C₂H₂) में त्रिबंध होता है। बंध का प्रकार अणु की संरचना और रासायनिक गुणों को प्रभावित करता है। सहसंयोजक यौगिक सामान्यतः अणुओं के रूप में पाए जाते हैं।"
+   ],
+   [
+    "h3",
+    "कार्बन में श्रृंखलन (Catenation)"
+   ],
+   [
+    "p",
+    "कार्बन की सबसे खास विशेषताओं में से एक श्रृंखलन है। कार्बन-कार्बन बंध मजबूत होता है, इसलिए कार्बन परमाणु आपस में जुड़कर लंबी सीधी श्रृंखलाएँ, शाखायुक्त श्रृंखलाएँ और वलय बना सकते हैं। यही कारण है कि कार्बन के लाखों यौगिक ज्ञात हैं। कार्बन अन्य तत्वों, विशेषकर हाइड्रोजन, ऑक्सीजन, नाइट्रोजन, सल्फर और हैलोजन के साथ भी स्थिर यौगिक बनाता है।"
    ],
    [
     "h3",
@@ -733,51 +749,279 @@ window.NOTES_SCIENCE = [
    ],
    [
     "p",
-    "केवल कार्बन और हाइड्रोजन से बने यौगिक हाइड्रोकार्बन कहलाते हैं। जिनमें कार्बन-कार्बन के बीच केवल एकल बंध होते हैं, वे संतृप्त हाइड्रोकार्बन या ऐल्केन हैं। उदाहरण: मीथेन, एथेन। जिनमें कम-से-कम एक द्विबंध या त्रिबंध होता है, वे असंतृप्त हाइड्रोकार्बन हैं। द्विबंध वाले ऐल्कीन और त्रिबंध वाले ऐल्काइन कहलाते हैं। सामान्य सूत्र: ऐल्केन CₙH₂ₙ₊₂, ऐल्कीन CₙH₂ₙ और ऐल्काइन CₙH₂ₙ₋₂ (खुली शृंखला के सामान्य सदस्यों के लिए)।"
+    "केवल कार्बन और हाइड्रोजन से बने यौगिक हाइड्रोकार्बन कहलाते हैं। जिनमें कार्बन परमाणुओं के बीच केवल एकल बंध होते हैं, वे संतृप्त हाइड्रोकार्बन या एल्केन कहलाते हैं। खुले श्रृंखला वाले एल्केन का सामान्य सूत्र CₙH₂ₙ₊₂ है; जैसे मीथेन CH₄ और एथेन C₂H₆। जिनमें कम-से-कम एक कार्बन-कार्बन द्विबंध हो, वे एल्कीन कहलाते हैं; एक द्विबंध वाले खुले एल्कीन का सामान्य सूत्र CₙH₂ₙ है। त्रिबंध वाले यौगिक एल्काइन कहलाते हैं; एक त्रिबंध वाले खुले एल्काइन का सामान्य सूत्र CₙH₂ₙ₋₂ है। एथीन और एथाइन इनके उदाहरण हैं।"
    ],
    [
     "h3",
-    "समजातीय श्रेणी और नामकरण"
+    "समजातीय श्रेणी"
    ],
    [
     "p",
-    "ऐसे कार्बनिक यौगिकों की श्रेणी जिनमें समान क्रियात्मक समूह और समान सामान्य सूत्र हो तथा क्रमागत सदस्यों में –CH₂– का अंतर हो, समजातीय श्रेणी कहलाती है। इनके रासायनिक गुण मिलते-जुलते, जबकि भौतिक गुण क्रमशः बदलते हैं। कार्बन की संख्या के आधार पर मेथ-, एथ-, प्रोप-, ब्यूट- जैसे मूल नाम आते हैं। एकल बंध के लिए –ane, द्विबंध के लिए –ene और त्रिबंध के लिए –yne प्रत्यय लगाया जाता है।"
+    "ऐसे कार्बनिक यौगिकों का समूह जिनमें एक ही क्रियात्मक समूह और समान सामान्य सूत्र हो तथा क्रमागत सदस्यों में –CH₂– का अंतर हो, समजातीय श्रेणी कहलाता है। इसके सदस्यों के रासायनिक गुण मिलते-जुलते होते हैं, जबकि आणविक द्रव्यमान और कुछ भौतिक गुण क्रमशः बदलते हैं। उदाहरण के लिए एल्केन श्रेणी में मीथेन, एथेन, प्रोपेन और ब्यूटेन आते हैं। प्रत्येक अगले सदस्य में एक कार्बन और दो हाइड्रोजन अधिक होते हैं।"
+   ],
+   [
+    "h3",
+    "कार्बनिक यौगिकों का नामकरण"
+   ],
+   [
+    "p",
+    "कार्बन परमाणुओं की संख्या के आधार पर मूल नाम बदलता है: एक के लिए मेथ-, दो के लिए एथ-, तीन के लिए प्रोप- और चार के लिए ब्यूट-। बंध के प्रकार के अनुसार एल्केन में –ane, एल्कीन में –ene और एल्काइन में –yne लगाया जाता है। उदाहरण: CH₄ मीथेन, C₂H₆ एथेन, C₂H₄ एथीन और C₂H₂ एथाइन। नामकरण से यौगिक में कार्बन की संख्या और बंध की प्रकृति का संकेत मिलता है।"
    ],
    [
     "h3",
     "क्रियात्मक समूह"
    ],
    [
-    "ul",
-    [
-     "–OH: ऐल्कोहॉल समूह; उदाहरण एथेनॉल (C₂H₅OH)।",
-     "–CHO: ऐल्डिहाइड समूह; उदाहरण एथेनाल (CH₃CHO)।",
-     "–COOH: कार्बोक्सिलिक अम्ल समूह; उदाहरण एथेनोइक अम्ल (CH₃COOH)।",
-     "–Cl, –Br: हैलोजन समूह; उदाहरण क्लोरोएथेन।",
-     ">C=O: कीटोन समूह; उदाहरण प्रोपेनोन।"
-    ]
+    "p",
+    "कार्बन श्रृंखला में उपस्थित कोई परमाणु या परमाणुओं का समूह, जो यौगिक के विशिष्ट रासायनिक गुण निर्धारित करता है, क्रियात्मक समूह कहलाता है। प्रमुख समूह हैं: हैलोजन (–Cl/–Br), ऐल्कोहॉल (–OH), ऐल्डिहाइड (–CHO), कीटोन (>C=O), कार्बोक्सिलिक अम्ल (–COOH) और द्विबंध/त्रिबंध। उदाहरण के लिए एथेनॉल में –OH समूह और एथेनोइक अम्ल में –COOH समूह होता है। एक ही कार्बन श्रृंखला में अलग क्रियात्मक समूह होने से यौगिकों के गुण बदल जाते हैं।"
    ],
    [
     "h3",
-    "कार्बन यौगिकों की अभिक्रियाएँ"
+    "कार्बन यौगिकों के रासायनिक गुण"
    ],
    [
     "p",
-    "दहन में कार्बन यौगिक ऑक्सीजन में जलकर ऊष्मा देते हैं। पर्याप्त ऑक्सीजन में कार्बन डाइऑक्साइड बनती है; ऑक्सीजन कम होने पर कार्बन मोनोऑक्साइड या कालिख बन सकती है। ऑक्सीकरण में ऑक्सीकारक की सहायता से अल्कोहॉल जैसे यौगिक आगे ऑक्सीकृत हो सकते हैं। असंतृप्त हाइड्रोकार्बन हाइड्रोजन जोड़कर संतृप्त बन सकते हैं; इसे योगात्मक अभिक्रिया कहते हैं। तेलों का हाइड्रोजनीकरण वनस्पति घी बनाने का उदाहरण है।"
+    "दहन में कार्बन यौगिक ऑक्सीजन के साथ अभिक्रिया करके ऊष्मा और प्रायः प्रकाश देते हैं। पर्याप्त ऑक्सीजन में कार्बन डाइऑक्साइड और पानी बनते हैं; ऑक्सीजन कम होने पर कार्बन मोनोऑक्साइड या कालिख बन सकती है। संतृप्त हाइड्रोकार्बन सामान्यतः प्रतिस्थापन अभिक्रिया देते हैं, जबकि असंतृप्त हाइड्रोकार्बन उपयुक्त परिस्थितियों में योग अभिक्रिया करते हैं। ऑक्सीकरण में किसी कार्बनिक पदार्थ में ऑक्सीजन जुड़ सकती है या हाइड्रोजन हट सकती है।"
+   ],
+   [
+    "box",
+    "मुख्य अभिक्रियाएँ",
+    "मीथेन का दहन: CH₄ + 2O₂ → CO₂ + 2H₂O। एथीन का हाइड्रोजनीकरण: C₂H₄ + H₂ → C₂H₆ (उत्प्रेरक की उपस्थिति में)। एथेनॉल का ऑक्सीकरण करके एथेनोइक अम्ल बनाया जा सकता है।"
+   ],
+   [
+    "h3",
+    "एथेनॉल"
    ],
    [
     "p",
-    "साबुन के साथ एस्टरीकरण और साबुनीकरण भी महत्वपूर्ण हैं। कार्बोक्सिलिक अम्ल और अल्कोहॉल की अभिक्रिया से एस्टर बनता है, जिसकी गंध प्रायः मीठी/फल जैसी होती है। एस्टर का क्षारक के साथ जल अपघटन साबुनीकरण कहलाता है। साबुन के अणु का एक सिरा जल से और दूसरा तेल/चिकनाई से आकर्षित होता है; इसलिए वह चिकनाई को छोटे कणों में बाँटकर पानी से हटाने में मदद करता है। कठोर जल में साबुन कम झाग देता है, जबकि डिटर्जेंट अधिक प्रभावी रहते हैं।"
+    "एथेनॉल (C₂H₅OH) एक रंगहीन, वाष्पशील द्रव है। इसका उपयोग औद्योगिक विलायक, दवाओं और अनेक रासायनिक पदार्थों के निर्माण में होता है। यह पानी में घुलनशील है। सोडियम के साथ इसकी अभिक्रिया में हाइड्रोजन गैस निकलती है। एथेनॉल का नियंत्रित ऑक्सीकरण करके एथेनोइक अम्ल प्राप्त किया जा सकता है। यह समझना जरूरी है कि एथेनॉल एक ज्वलनशील रसायन है और इसका सेवन स्वास्थ्य के लिए हानिकारक हो सकता है; इसका उल्लेख यहाँ केवल पाठ्यपुस्तक के रासायनिक गुणों के संदर्भ में है।"
+   ],
+   [
+    "h3",
+    "एथेनोइक अम्ल"
+   ],
+   [
+    "p",
+    "एथेनोइक अम्ल (CH₃COOH) को सामान्यतः ऐसीटिक अम्ल कहते हैं। सिरके में इसका पतला जलीय विलयन होता है। यह नीले लिटमस को लाल करता है और कार्बोनेट/हाइड्रोजन कार्बोनेट के साथ अभिक्रिया करके कार्बन डाइऑक्साइड गैस देता है। एथेनोइक अम्ल और एथेनॉल की अम्ल उत्प्रेरक की उपस्थिति में अभिक्रिया से एस्टर बनता है, जिसकी गंध प्रायः फल जैसी होती है। क्षार के साथ अभिक्रिया में नमक और पानी बनते हैं।"
+   ],
+   [
+    "h3",
+    "एस्टरीकरण और साबुनीकरण"
+   ],
+   [
+    "p",
+    "कार्बोक्सिलिक अम्ल और ऐल्कोहॉल की अभिक्रिया से एस्टर तथा पानी बनते हैं; इसे एस्टरीकरण कहते हैं। एस्टर सुगंधित हो सकते हैं और इत्र तथा स्वाद-संबंधी उद्योगों में उपयोगी हैं। एस्टर की क्षार के साथ अभिक्रिया से फिर ऐल्कोहॉल और कार्बोक्सिलिक अम्ल का लवण बनता है; इसे साबुनीकरण कहते हैं। साबुन बनाने की प्रक्रिया इसी सिद्धांत पर आधारित है।"
+   ],
+   [
+    "h3",
+    "साबुन और अपमार्जक"
+   ],
+   [
+    "p",
+    "साबुन लंबे हाइड्रोकार्बन भाग वाले फैटी अम्लों के सोडियम या पोटैशियम लवण होते हैं। इनके अणु का एक सिरा पानी से आकर्षित होता है और दूसरा सिरा तेल/चिकनाई से। पानी में साबुन के अणु समूह बनाकर माइसेल बनाते हैं, जिनमें चिकनाई फँस जाती है और पानी के साथ बह जाती है। कठोर जल में कैल्शियम और मैग्नीशियम आयन साबुन के साथ अघुलनशील मैल बनाते हैं, इसलिए झाग कम बनता है। अपमार्जक कठोर जल में भी प्रभावी रहते हैं।"
+   ],
+   [
+    "h3",
+    "अध्याय का सार"
+   ],
+   [
+    "p",
+    "कार्बन की चतुसंयोजकता और श्रृंखलन उसके असंख्य यौगिकों का आधार हैं। कार्बन एकल, द्वि और त्रिबंध बना सकता है। हाइड्रोकार्बन संतृप्त या असंतृप्त होते हैं। क्रियात्मक समूह कार्बनिक यौगिकों के रासायनिक गुण तय करते हैं। एथेनॉल और एथेनोइक अम्ल महत्वपूर्ण उदाहरण हैं। साबुन और अपमार्जक की सफाई क्रिया उनके अणुओं की दोहरी प्रकृति पर निर्भर करती है।"
+   ],
+   [
+    "h3",
+    "परीक्षा के महत्वपूर्ण प्रश्न"
    ],
    [
     "qa",
-    "कार्बन चार सहसंयोजक बंध क्यों बनाता है?",
-    "कार्बन की बाहरी कक्षा में चार इलेक्ट्रॉन होते हैं। चार इलेक्ट्रॉन खोना या पाना कठिन है, इसलिए वह इलेक्ट्रॉनों को साझा करके चार बंध बनाता है।"
+    "कार्बन चतुसंयोजी क्यों है?",
+    "कार्बन के बाहरी कोश में चार इलेक्ट्रॉन होते हैं और वह चार सहसंयोजक बंध बनाकर इलेक्ट्रॉनों की साझेदारी करता है।"
+   ],
+   [
+    "qa",
+    "श्रृंखलन किसे कहते हैं?",
+    "कार्बन परमाणुओं का आपस में जुड़कर लंबी, शाखायुक्त या वलयाकार श्रृंखलाएँ बनाना श्रृंखलन कहलाता है।"
+   ],
+   [
+    "qa",
+    "संतृप्त और असंतृप्त हाइड्रोकार्बन में अंतर लिखिए।",
+    "संतृप्त हाइड्रोकार्बन में केवल एकल कार्बन-कार्बन बंध होते हैं; असंतृप्त में कम-से-कम एक द्विबंध या त्रिबंध होता है।"
+   ],
+   [
+    "qa",
+    "समजातीय श्रेणी क्या है?",
+    "समान क्रियात्मक समूह और सामान्य सूत्र वाले ऐसे कार्बनिक यौगिक जिनके क्रमागत सदस्यों में –CH₂– का अंतर हो, समजातीय श्रेणी कहलाते हैं।"
+   ],
+   [
+    "qa",
+    "क्रियात्मक समूह का क्या महत्व है?",
+    "यह कार्बनिक यौगिक के विशिष्ट रासायनिक गुण और उसकी अभिक्रियाओं को निर्धारित करता है।"
+   ],
+   [
+    "qa",
+    "साबुन कठोर जल में कम प्रभावी क्यों होता है?",
+    "कठोर जल के कैल्शियम और मैग्नीशियम आयन साबुन के साथ अघुलनशील पदार्थ बनाते हैं, जिससे झाग और सफाई क्षमता घटती है।"
    ],
    [
     "box",
     "त्वरित पुनरावृत्ति",
-    "कार्बन की संयोजकता 4 है। श्रृंखलन से लंबी शृंखलाएँ बनती हैं। –OH अल्कोहॉल और –COOH कार्बोक्सिलिक अम्ल का क्रियात्मक समूह है।"
+    "कार्बन: परमाणु क्रमांक 6, संयोजकता 4। मीथेन CH₄, एथेन C₂H₆, एथीन C₂H₄, एथाइन C₂H₂। –OH ऐल्कोहॉल, –COOH कार्बोक्सिलिक अम्ल। साबुन माइसेल बनाकर चिकनाई हटाता है।"
+   ],
+   [
+    "h2",
+    "Chapter 4: Carbon and Its Compounds"
+   ],
+   [
+    "p",
+    "Carbon is one of the most important non-metals. It is present in living organisms and in substances such as carbohydrates, proteins, fats and DNA. Fuels, wood, paper, cotton, plastics and many everyday materials also contain carbon compounds. Carbon has atomic number 6 and electronic configuration 2,4. It has four electrons in its outermost shell, so its valency is four. This chapter explains why carbon forms an exceptionally large number of compounds and how their structures are related to their properties and uses."
+   ],
+   [
+    "h3",
+    "Tetravalency of carbon"
+   ],
+   [
+    "p",
+    "Carbon would have to gain or lose four electrons to form simple ions and reach a stable electronic arrangement. Both processes require a large amount of energy. Instead, carbon usually completes its outer shell by sharing electrons with other atoms. A shared pair of electrons forms a covalent bond. Since carbon can form four covalent bonds, the property is called tetravalency. In methane, CH₄, one carbon atom shares one electron pair with each of four hydrogen atoms."
+   ],
+   [
+    "h3",
+    "Covalent bonds"
+   ],
+   [
+    "p",
+    "A covalent bond forms when atoms share electron pairs. Sharing one pair produces a single bond, two pairs produce a double bond and three pairs produce a triple bond. Ethane (C₂H₆) contains a carbon-carbon single bond, ethene (C₂H₄) contains a double bond and ethyne (C₂H₂) contains a triple bond. Bond type influences the structure and chemical behaviour of a compound. Many covalent compounds exist as separate molecules."
+   ],
+   [
+    "h3",
+    "Catenation"
+   ],
+   [
+    "p",
+    "Catenation is the ability of an element to form bonds with atoms of the same element. Carbon-carbon bonds are strong and stable, allowing carbon atoms to form long straight chains, branched chains and rings. Carbon also forms stable bonds with hydrogen, oxygen, nitrogen, sulphur and halogens. Tetravalency together with catenation explains the enormous number and variety of carbon compounds."
+   ],
+   [
+    "h3",
+    "Saturated and unsaturated hydrocarbons"
+   ],
+   [
+    "p",
+    "Compounds containing only carbon and hydrogen are called hydrocarbons. Saturated hydrocarbons have only single bonds between carbon atoms and are called alkanes. The general formula of open-chain alkanes is CₙH₂ₙ₊₂; methane (CH₄) and ethane (C₂H₆) are examples. Unsaturated hydrocarbons contain at least one carbon-carbon double or triple bond. Alkenes contain a double bond; a simple open-chain alkene with one double bond has the general formula CₙH₂ₙ. Alkynes contain a triple bond; one triple bond in an open chain gives the formula CₙH₂ₙ₋₂."
+   ],
+   [
+    "h3",
+    "Homologous series"
+   ],
+   [
+    "p",
+    "A homologous series is a family of organic compounds having the same functional group and the same general formula, in which consecutive members differ by a –CH₂– unit. Members show similar chemical properties because they contain the same functional group. Their molecular masses and some physical properties change gradually. Methane, ethane, propane and butane are consecutive members of the alkane series."
+   ],
+   [
+    "h3",
+    "Basic naming of carbon compounds"
+   ],
+   [
+    "p",
+    "The root of an organic name indicates the number of carbon atoms: meth- for one, eth- for two, prop- for three and but- for four. The ending indicates the type of carbon-carbon bond: –ane for single bonds, –ene for a double bond and –yne for a triple bond. Thus CH₄ is methane, C₂H₆ is ethane, C₂H₄ is ethene and C₂H₂ is ethyne. This basic system helps identify the size and bonding pattern of a molecule."
+   ],
+   [
+    "h3",
+    "Functional groups"
+   ],
+   [
+    "p",
+    "A functional group is an atom or group of atoms that gives an organic compound its characteristic chemical properties. Important groups include halogens such as –Cl and –Br, the hydroxyl group –OH in alcohols, the aldehyde group –CHO, the ketone group >C=O and the carboxyl group –COOH in carboxylic acids. A carbon-carbon double or triple bond is also an important feature. Ethanol contains –OH, while ethanoic acid contains –COOH. Compounds with the same carbon chain can behave differently when their functional groups differ."
+   ],
+   [
+    "h3",
+    "Chemical properties of carbon compounds"
+   ],
+   [
+    "p",
+    "Combustion is the reaction of a carbon compound with oxygen, releasing energy as heat and often light. Complete combustion generally produces carbon dioxide and water. Limited oxygen may lead to carbon monoxide or soot. Saturated hydrocarbons commonly undergo substitution reactions, whereas unsaturated hydrocarbons can undergo addition reactions. Oxidation may involve the addition of oxygen or removal of hydrogen. Reaction conditions and catalysts can affect the products formed."
+   ],
+   [
+    "box",
+    "Important equations",
+    "Combustion of methane: CH₄ + 2O₂ → CO₂ + 2H₂O. Hydrogenation of ethene: C₂H₄ + H₂ → C₂H₆ (with a suitable catalyst). Ethanol can be oxidised to ethanoic acid."
+   ],
+   [
+    "h3",
+    "Ethanol"
+   ],
+   [
+    "p",
+    "Ethanol (C₂H₅OH) is a colourless, volatile liquid and is soluble in water. It is used as an industrial solvent and as a starting material in the manufacture of several chemicals and medicines. Ethanol reacts with sodium to release hydrogen gas. Controlled oxidation converts ethanol into ethanoic acid. Ethanol is flammable and its consumption is harmful to health; here it is discussed only for its chemical properties in the school syllabus."
+   ],
+   [
+    "h3",
+    "Ethanoic acid"
+   ],
+   [
+    "p",
+    "Ethanoic acid (CH₃COOH), also called acetic acid, is the acid present in vinegar in dilute form. It turns blue litmus red. It reacts with carbonates and hydrogencarbonates to release carbon dioxide. Ethanoic acid reacts with ethanol in the presence of an acid catalyst to form an ester and water. It also reacts with a base to form a salt and water."
+   ],
+   [
+    "h3",
+    "Esterification and saponification"
+   ],
+   [
+    "p",
+    "The reaction between a carboxylic acid and an alcohol to form an ester and water is called esterification. Many esters have pleasant, fruity smells and are used in perfumes and flavouring industries. When an ester reacts with an alkali, it forms an alcohol and the salt of a carboxylic acid. This process is called saponification and is the chemical principle used in soap manufacture."
+   ],
+   [
+    "h3",
+    "Soaps and detergents"
+   ],
+   [
+    "p",
+    "Soaps are sodium or potassium salts of long-chain fatty acids. A soap molecule has a water-attracting ionic end and a long hydrocarbon end that is attracted to oil and grease. In water, soap molecules form structures called micelles. Their hydrocarbon ends trap oily dirt while the water-attracting ends remain in contact with water, allowing dirt to be washed away. Hard water contains calcium and magnesium ions, which form insoluble scum with soap and reduce lather. Detergents generally work better in hard water."
+   ],
+   [
+    "h3",
+    "Chapter summary"
+   ],
+   [
+    "p",
+    "The large number of carbon compounds is mainly due to tetravalency and catenation. Carbon forms single, double and triple covalent bonds. Hydrocarbons may be saturated or unsaturated. Functional groups determine many characteristic reactions. Ethanol and ethanoic acid are important examples of compounds containing –OH and –COOH groups. Soap cleans by forming micelles, while detergents are more effective in hard water."
+   ],
+   [
+    "h3",
+    "Important examination questions"
+   ],
+   [
+    "qa",
+    "Why is carbon tetravalent?",
+    "Carbon has four electrons in its outermost shell and completes its shell by sharing electrons to form four covalent bonds."
+   ],
+   [
+    "qa",
+    "What is catenation?",
+    "Catenation is the ability of carbon atoms to bond with one another and form long chains, branched chains or rings."
+   ],
+   [
+    "qa",
+    "Differentiate between saturated and unsaturated hydrocarbons.",
+    "Saturated hydrocarbons contain only carbon-carbon single bonds. Unsaturated hydrocarbons contain at least one carbon-carbon double or triple bond."
+   ],
+   [
+    "qa",
+    "What is a homologous series?",
+    "It is a family of organic compounds with the same functional group and general formula, in which consecutive members differ by –CH₂–."
+   ],
+   [
+    "qa",
+    "Why are functional groups important?",
+    "They determine the characteristic chemical properties and many reactions of organic compounds."
+   ],
+   [
+    "qa",
+    "Why does soap not work well in hard water?",
+    "Calcium and magnesium ions in hard water react with soap to form insoluble scum, reducing lather and cleaning efficiency."
+   ],
+   [
+    "box",
+    "Quick revision",
+    "Carbon has atomic number 6 and valency 4. Methane: CH₄; ethane: C₂H₆; ethene: C₂H₄; ethyne: C₂H₂. –OH is the alcohol group and –COOH is the carboxylic acid group. Soap forms micelles to remove grease."
    ]
   ]
  },
