@@ -28,12 +28,16 @@
     try { localStorage.setItem('bp_device_token', 'u' + hash32(userId, 2166136261) + hash32(userId, 2654435761)); } catch (e) { }
   }
 
+  function returnTo() {
+    return location.origin + location.pathname;
+  }
+
   function emit() {
     listeners.forEach(function (fn) { try { fn(S); } catch (e) { } });
   }
 
   function saveSession(s) {
-    if (!s || !s.access_token) throw new Error('session nahi mila');
+    if (!s || !s.access_token) throw new Error('सत्र नहीं मिला');
     var user = s.user || (S && S.user) || null;
     S = {
       access_token: s.access_token,
@@ -99,20 +103,19 @@
   }
 
   function signUp(email, password) {
-    return api('/auth/v1/signup', {
+    return api('/auth/v1/signup?redirect_to=' + encodeURIComponent(returnTo()), {
       method: 'POST', body: { email: email, password: password }, token: ''
     }).then(function (j) { if (j.access_token) saveSession(j); return j; });
   }
 
   function sendOtp(email) {
-    return api('/auth/v1/otp', {
+    return api('/auth/v1/otp?redirect_to=' + encodeURIComponent(returnTo()), {
       method: 'POST', body: { email: email, create_user: true }, token: ''
     });
   }
 
   function signInWithGoogle() {
-    var back = location.origin + location.pathname;
-    location.href = SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(back);
+    location.href = SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(returnTo());
   }
 
   function signOut() {
@@ -133,20 +136,20 @@
     d.id = 'bpAuthOverlay';
     d.style.cssText = 'position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(8,12,24,.68);z-index:100000;display:none;align-items:center;justify-content:center;padding:16px';
     d.innerHTML = '<div style="width:100%;max-width:380px;background:#fff;color:#111;border-radius:18px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.35)">' +
-      '<h2 style="margin:0 0 6px;font-size:20px">BoardPrep login</h2>' +
-      '<p style="margin:0 0 14px;font-size:13px;color:#555;line-height:1.4">Progress, notes aur chats tumhare account me hamesha save rahenge. Har user ko roz 60 AI requests milte hain.</p>' +
-      '<input id="bpAuthEmail" type="email" placeholder="Email" style="width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:8px;border:1px solid #d7dbe5;border-radius:10px;font-size:15px">' +
-      '<input id="bpAuthPass" type="password" placeholder="Password" style="width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:12px;border:1px solid #d7dbe5;border-radius:10px;font-size:15px">' +
+      '<h2 style="margin:0 0 6px;font-size:20px">BoardPrep लॉगिन</h2>' +
+      '<p style="margin:0 0 14px;font-size:13px;color:#555;line-height:1.4">प्रगति, नोट्स और चैट आपके खाते में हमेशा सहेजे जाएँगे। हर उपयोगकर्ता को रोज़ 60 AI अनुरोध मिलते हैं।</p>' +
+      '<input id="bpAuthEmail" type="email" placeholder="ईमेल" style="width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:8px;border:1px solid #d7dbe5;border-radius:10px;font-size:15px">' +
+      '<input id="bpAuthPass" type="password" placeholder="पासवर्ड" style="width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:12px;border:1px solid #d7dbe5;border-radius:10px;font-size:15px">' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-      '<button id="bpAuthIn" style="flex:1;min-width:100px;padding:11px;border:0;border-radius:10px;background:#4f46e5;color:#fff;font-weight:800">Login</button>' +
-      '<button id="bpAuthUp" style="flex:1;min-width:100px;padding:11px;border:1px solid #d7dbe5;border-radius:10px;background:#fff;font-weight:800">Sign up</button>' +
+      '<button id="bpAuthIn" style="flex:1;min-width:100px;padding:11px;border:0;border-radius:10px;background:#4f46e5;color:#fff;font-weight:800">लॉगिन</button>' +
+      '<button id="bpAuthUp" style="flex:1;min-width:100px;padding:11px;border:1px solid #d7dbe5;border-radius:10px;background:#fff;font-weight:800">साइन अप</button>' +
       '</div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">' +
-      '<button id="bpAuthOtp" style="flex:1;min-width:100px;padding:10px;border:1px solid #d7dbe5;border-radius:10px;background:#fff">Magic link</button>' +
-      '<button id="bpAuthGoogle" style="flex:1;min-width:100px;padding:10px;border:1px solid #d7dbe5;border-radius:10px;background:#fff">Google se login</button>' +
+      '<button id="bpAuthOtp" style="flex:1;min-width:100px;padding:10px;border:1px solid #d7dbe5;border-radius:10px;background:#fff">मैजिक लिंक</button>' +
+      '<button id="bpAuthGoogle" style="flex:1;min-width:100px;padding:10px;border:1px solid #d7dbe5;border-radius:10px;background:#fff">Google से लॉगिन</button>' +
       '</div>' +
       '<div id="bpAuthMsg" style="min-height:18px;margin-top:10px;font-size:12px;color:#b91c1c"></div>' +
-      '<button id="bpAuthGuest" style="width:100%;margin-top:6px;padding:8px;border:0;background:none;color:#555;font-size:13px;text-decoration:underline">Guest mode (sirf offline padhai)</button>' +
+      '<button id="bpAuthGuest" style="width:100%;margin-top:6px;padding:8px;border:0;background:none;color:#555;font-size:13px;text-decoration:underline">अतिथि मोड (केवल ऑफ़लाइन पढ़ाई)</button>' +
       '</div>';
     document.body.appendChild(d);
 
@@ -155,21 +158,21 @@
     var pass = function () { return d.querySelector('#bpAuthPass').value; };
     d.querySelector('#bpAuthIn').addEventListener('click', function () {
       msg('');
-      signIn(email(), pass()).then(function () { hideOverlay(); }).catch(function (e) { msg(e.message || 'login fail'); });
+      signIn(email(), pass()).then(function () { hideOverlay(); }).catch(function (e) { msg(e.message || 'लॉगिन विफल'); });
     });
     d.querySelector('#bpAuthUp').addEventListener('click', function () {
       msg('');
       signUp(email(), pass()).then(function (j) {
         if (j && j.access_token) { hideOverlay(); return; }
-        msg('Account bana gaya. Email verify karke login karo.');
-      }).catch(function (e) { msg(e.message || 'signup fail'); });
+        msg('खाता बन गया। ईमेल सत्यापित करके लॉगिन करें।');
+      }).catch(function (e) { msg(e.message || 'साइनअप विफल'); });
     });
     d.querySelector('#bpAuthOtp').addEventListener('click', function () {
       msg('');
-      sendOtp(email()).then(function () { msg('Magic link email par bhej diya gaya.'); }).catch(function (e) { msg(e.message || 'otp fail'); });
+      sendOtp(email()).then(function () { msg('मैजिक लिंक ईमेल पर भेज दिया गया।'); }).catch(function (e) { msg(e.message || 'मैजिक लिंक विफल'); });
     });
     d.querySelector('#bpAuthGoogle').addEventListener('click', function () {
-      msg('Google provider enable hone par login chal jayega.');
+      msg('Google प्रदाता सक्षम होने पर लॉगिन चलेगा।');
       setTimeout(function () { signInWithGoogle(); }, 400);
     });
     d.querySelector('#bpAuthGuest').addEventListener('click', function () { guest(); });
@@ -251,7 +254,7 @@
       if (row && row.data && Object.keys(row.data).length) {
         var hasLocal = false;
         try { hasLocal = Object.keys(collectData().local).length > 0; } catch (e) { }
-        if (hasLocal && !confirm('Tumhare account me pehle se data hai. Local data ko cloud data se replace karein?')) return pushData().then(function () { return row; });
+        if (hasLocal && !confirm('आपके खाते में पहले से डेटा है। स्थानीय डेटा को क्लाउड डेटा से बदलें?')) return pushData().then(function () { return row; });
         applyData(row.data);
         return row;
       }
@@ -273,7 +276,7 @@
       });
     }
     clean();
-    showOverlay(true, get('error_description') || 'login fail');
+    showOverlay(true, get('error_description') || 'लॉगिन विफल');
     return true;
   }
 
@@ -286,11 +289,11 @@
     card.className = 'card';
     card.id = 'bpAccountCard';
     card.style.cssText = 'margin-bottom:12px;padding:14px';
-    card.innerHTML = '<div style="font-size:13px;font-weight:800;margin-bottom:6px">' + (u ? 'Account' : 'Login') + '</div>' +
-      '<div class="t-secondary" style="font-size:13px;margin-bottom:10px">' + (u ? escapeHtml(u.email || u.id) : 'Login karke data hamesha save karein. Roz 60 AI requests.') + '</div>' +
+    card.innerHTML = '<div style="font-size:13px;font-weight:800;margin-bottom:6px">' + (u ? 'खाता' : 'लॉगिन') + '</div>' +
+      '<div class="t-secondary" style="font-size:13px;margin-bottom:10px">' + (u ? escapeHtml(u.email || u.id) : 'लॉगिन करके डेटा हमेशा सहेजें। रोज़ 60 AI अनुरोध।') + '</div>' +
       '<div id="bpAccQuota" class="t-small" style="margin-bottom:10px"></div>' +
-      '<div class="chips"><button class="fchip" id="bpAccMain">' + (u ? 'Logout' : 'Login') + '</button>' +
-      (u ? '<button class="fchip" id="bpAccSave">Cloud me save</button><button class="fchip" id="bpAccLoad">Cloud se load</button>' : '') + '</div>';
+      '<div class="chips"><button class="fchip" id="bpAccMain">' + (u ? 'लॉगआउट' : 'लॉगिन') + '</button>' +
+      (u ? '<button class="fchip" id="bpAccSave">क्लाउड में सेव</button><button class="fchip" id="bpAccLoad">क्लाउड से लोड</button>' : '') + '</div>';
     view.insertBefore(card, view.firstChild);
     card.querySelector('#bpAccMain').addEventListener('click', function () {
       if (u) signOut().then(function () { window.BP && BP.render && BP.render(); });
@@ -298,19 +301,19 @@
     });
     var save = card.querySelector('#bpAccSave');
     if (save) save.addEventListener('click', function () {
-      pushData().then(function () { if (window.toast) window.toast('Cloud me save ho gaya'); }).catch(function (e) { if (window.toast) window.toast(e.message || 'save fail'); });
+      pushData().then(function () { if (window.toast) window.toast('क्लाउड में सेव हो गया'); }).catch(function (e) { if (window.toast) window.toast(e.message || 'सेव विफल'); });
     });
     var load = card.querySelector('#bpAccLoad');
     if (load) load.addEventListener('click', function () {
       pullData().then(function (row) {
-        if (!row || !row.data) { if (window.toast) window.toast('Cloud par data nahi mila'); return; }
-        if (applyData(row.data) && window.toast) window.toast('Cloud se data aa gaya');
-      }).catch(function (e) { if (window.toast) window.toast(e.message || 'load fail'); });
+        if (!row || !row.data) { if (window.toast) window.toast('क्लाउड में डेटा नहीं मिला'); return; }
+        if (applyData(row.data) && window.toast) window.toast('क्लाउड से डेटा आ गया');
+      }).catch(function (e) { if (window.toast) window.toast(e.message || 'लोड विफल'); });
     });
     if (u && window.Cloud && Cloud.quota) {
       Cloud.quota().then(function (q) {
         var o = document.getElementById('bpAccQuota');
-        if (o && q && q.ok) o.textContent = 'Aaj ki quota: ' + q.left + '/' + q.per;
+        if (o && q && q.ok) o.textContent = 'आज का कोटा: ' + q.left + '/' + q.per;
       }).catch(function () { });
     }
   }
