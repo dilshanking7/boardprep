@@ -1,5 +1,5 @@
-// BoardPrep cloud — AI (RAG + free model), sync (Supabase/D1), study rooms.
-// Sab offline-safe: network na ho to local fallback, koi crash nahi.
+// BoardPrep cloud — authenticated AI, Supabase sync, and study rooms.
+// Network failures never crash the app.
 (function () {
   'use strict';
 
@@ -71,10 +71,11 @@
       return v;
     } catch (e) { return randomToken(); }
   }
-  function authHeaders(extra, withJson) {
+  function authHeaders(extra, withJson, token) {
     var h = {};
     if (withJson) h['Content-Type'] = 'application/json';
     h[TOKEN_HEADER] = deviceToken();
+    if (token) h.Authorization = 'Bearer ' + token;
     if (extra) {
       for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) h[k] = extra[k]; }
     }
@@ -95,7 +96,7 @@
     var marker = '[स्क्रीन पर यह दिख रहा है]:';
     var i = s.indexOf(marker);
     if (i < 0) return s;
-    if (consent('screen', 'BoardPrep AI को अभी खुले पेज का text भेजना है। Allow करें?')) return s;
+    if (consent('screen', 'BoardPrep AI को अभी खुले पेज का text भेजना है। अनुमति दें?')) return s;
     var parts = s.slice(i + marker.length).split('\n\nसवाल: ');
     return parts.length > 1 ? ('सवाल: ' + parts[1]) : 'सवाल:';
   }
@@ -105,20 +106,38 @@
     var b = goodUrl(BASE) ? BASE : FALLBACK_BASE;
     return b + path;
   }
-  function post(path, body, extra) {
+  async function accessToken() {
+    if (window.Auth && window.Auth.getToken) return window.Auth.getToken();
+    if (window.Auth && window.Auth.token) return window.Auth.token();
+    return '';
+  }
+  function readResponse(r) {
+    return r.json().catch(function () { return { ok: false, error: 'bad response' }; }).then(function (j) {
+      if (r.status === 401) {
+        if (window.Auth) window.Auth.showOverlay(true);
+        j.ok = false;
+        j.error = j.error || 'login required';
+        j.login = true;
+      }
+      return j;
+    });
+  }
+  async function post(path, body, extra) {
     if (!goodUrl(BASE) && !goodUrl(FALLBACK_BASE)) return Promise.reject(new Error('no-base'));
     if (!needLogin()) return Promise.reject({ ok: false, error: 'login required', login: true });
+    const token = await accessToken();
     return fetch(url(path), {
       method: 'POST',
-      headers: authHeaders(extra, true),
+      headers: authHeaders(extra, true, token),
       body: JSON.stringify(body || {})
-    }).then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
+    }).then(readResponse).catch(function () { throw new Error('net'); });
   }
-  function get(path, extra) {
+  async function get(path, extra) {
     if (!goodUrl(BASE) && !goodUrl(FALLBACK_BASE)) return Promise.reject(new Error('no-base'));
     if (!needLogin()) return Promise.reject({ ok: false, error: 'login required', login: true });
-    return fetch(url(path), { headers: authHeaders(extra, false) })
-      .then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
+    const token = await accessToken();
+    return fetch(url(path), { headers: authHeaders(extra, false, token) })
+      .then(readResponse).catch(function () { throw new Error('net'); });
   }
 
   // AI: notes (RAG context) + sawal -> free model ka javab
@@ -158,15 +177,15 @@
   function quota() { return get('/api/quota?id=' + encodeURIComponent(deviceId())); }
   // voice: audio (base64) -> text
   function stt(audio, mime) {
-    if (!consent('voice', 'आवाज़ का audio AI सर्वर पर भेजा जाएगा। Allow करें?')) {
-      return Promise.resolve({ ok: false, error: 'voice consent nahi diya — audio nahi bheja gaya' });
+    if (!consent('voice', 'आवाज़ का audio AI सर्वर पर भेजा जाएगा। अनुमति दें?')) {
+      return Promise.resolve({ ok: false, error: 'आवाज़ की अनुमति नहीं मिली — audio नहीं भेजा गया' });
     }
     return post('/api/stt', { audio: audio, mime: mime || 'audio/webm' });
   }
   // photo: image (base64) -> javab
   function vision(image, q) {
-    if (!consent('photo', 'यह फोटो AI सर्वर पर भेजी जाएगी। Allow करें?')) {
-      return Promise.resolve({ ok: false, error: 'photo consent nahi diya — image nahi bheji gayi' });
+    if (!consent('photo', 'यह फोटो AI सर्वर पर भेजी जाएगी। अनुमति दें?')) {
+      return Promise.resolve({ ok: false, error: 'फ़ोटो की अनुमति नहीं मिली — image नहीं भेजी गई' });
     }
     return post('/api/vision', { image: image, q: q || '' });
   }
