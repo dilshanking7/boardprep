@@ -37,7 +37,7 @@ async function refresh(db, env, c) {
   });
   if (!res.ok) throw new Error("token refresh fail (HTTP " + res.status + ")");
   const d = await res.json();
-  if (!d.access_token) throw new Error("refresh response me access_token nahi");
+  if (!d.access_token) throw new Error("refresh response has no access_token");
   const nc = {
     access: d.access_token,
     refresh: d.refresh_token || c.refresh,
@@ -83,6 +83,6 @@ export async function nousChat(db, env, messages, opts = {}) {
   }
   const d = await res.json();
   const content = d && d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content;
-  if (!content) throw new Error("Nous API se jawab nahi aaya");
+  if (!content) throw new Error("no answer from Nous API");
   return content.trim();
 }

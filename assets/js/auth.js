@@ -96,6 +96,14 @@
     return S.access_token || '';
   }
 
+  function getToken() {
+    if (!S) return Promise.resolve('');
+    if (S.expires_at && Date.now() > S.expires_at - 60000 && S.refresh_token) {
+      return refresh().then(function () { return (S && S.access_token) || ''; });
+    }
+    return Promise.resolve(S.access_token || '');
+  }
+
   function signIn(email, password) {
     return api('/auth/v1/token?grant_type=password', {
       method: 'POST', body: { email: email, password: password }, token: ''
@@ -347,6 +355,7 @@
     url: SUPABASE_URL,
     user: user,
     token: token,
+    getToken: getToken,
     on: function (fn) { listeners.push(fn); try { fn(S); } catch (e) { } },
     showOverlay: showOverlay,
     hideOverlay: hideOverlay,

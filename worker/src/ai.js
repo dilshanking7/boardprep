@@ -1,9 +1,9 @@
-// BoardPrep AI — real chat engine
-// Free model chain (jo key mili, use ho; warna agle par jaata hai):
-//   1. Cloudflare Workers AI  (free — sirf CF account)
+// BoardPrep AI — chat engine
+// Free model chain (the first configured provider that works is used):
+//   1. Cloudflare Workers AI  (free — CF account)
 //   2. Nous Portal free model (longcat-2.5:free)
 //   3. Groq  (free key)      4. Gemini (free key)      5. OpenRouter :free
-// + web search (DuckDuckGo + Wikipedia, bina key)
+// + web search (DuckDuckGo + Wikipedia, no key)
 // + rate limit (D1)
 
 import { getSetting, setSetting } from "./db.js";
@@ -11,10 +11,10 @@ import { nousChat } from "./nous.js";
 
 const enc = encodeURIComponent;
 
-// ---- web search (free, no key) ----
+// ---- Web search (free, no key) ----
 async function webSearch(q) {
   const out = [];
-  // Wikipedia ( sabse pakki )
+  // Wikipedia (most reliable)
   try {
     const u = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + enc(q) +
       '&format=json&srlimit=3&origin=*';
@@ -45,8 +45,8 @@ async function webSearch(q) {
   return out.slice(0, 6);
 }
 
-// ---- model chain ----
-// har provider ke kuch candidates — jo chala wahi
+// ---- Model chain ----
+// Each provider has several candidates; the first working model wins
 var CF_MODELS = [
   '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
   '@cf/qwen/qwen2.5-7b-instruct',
@@ -142,7 +142,7 @@ async function callOpenRouter(env, messages) {
   throw new Error('openrouter: ' + last);
 }
 
-// jo kaam kare, wahi chuno
+// Pick the first working model
 async function askAI(db, env, messages) {
   const tries = [
     ['Groq GPT-OSS', function () { return callGroq(env, messages); }],
@@ -158,10 +158,10 @@ async function askAI(db, env, messages) {
       if (t) return { text: t, model: tries[i][0] };
     } catch (e) { errs.push(tries[i][0] + ': ' + String(e.message || e).slice(0, 50)); }
   }
-  throw new Error('sab model fail — ' + errs.join(', '));
+  throw new Error('all models failed — ' + errs.join(', '));
 }
 
-// ---- rate limit (D1) ----
+// ---- Rate limit (D1) ----
 async function rateLimit(db, id, env) {
   const now = Date.now();
   const per = Number(env.LIMIT_PER || 20);
@@ -180,7 +180,7 @@ async function rateLimit(db, id, env) {
   return { ok: true, left: per - rec.n, per: per, windowH: winH, reset: rec.reset };
 }
 
-// kaun sa model chalta hai — har ek aajmao (diagnostic)
+// Diagnostics: try every configured model
 async function probe(env, provider, models) {
   const out = [];
   for (let i = 0; i < models.length; i++) {
@@ -231,7 +231,7 @@ async function probe(env, provider, models) {
   return out;
 }
 
-// CF vision (photo samajhna)
+// CF vision (photo understanding)
 async function probeCFVision(env, models) {
   const out = [];
   const b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";

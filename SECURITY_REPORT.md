@@ -1,5 +1,20 @@
 # BoardPrep Security Report
 
+## v5.12 — Authenticated API and quota hardening (step 2, 2026-11-25)
+
+- Every protected Worker route verifies the Supabase access token with `GET /auth/v1/user` using the anon key. Missing or invalid tokens get `401` with `login: true`.
+- The browser sends `Authorization: Bearer <token>`; CORS allows the `Authorization` header.
+- Quota and legacy D1 storage ownership keys are SHA-256 hashes of the verified Supabase user id. Client-supplied ids and device tokens can no longer select another user's quota, sync data, rooms, or feedback.
+- `/api/quota` is login-only. Anonymous callers no longer learn quota state.
+- AI routes (`/api/chat`, `/api/ask`, `/api/stt`, `/api/vision`, `/api/image`) count only verified users: 60 requests per 24 hours.
+- Supabase URL and anon key are Worker vars. No service role key is stored in the repo.
+- User-facing prompts and UI strings in changed code use English or Hindi only.
+
+The v5.11 notes below remain as history.
+
+---
+
+
 ## v5.11 — Cloud/API security (step 1, 2026-11-25)
 
 - Worker responses ab sirf allowlisted origins par CORS dete hain (`*` nahi); `ALLOWED_ORIGINS` config se control.
