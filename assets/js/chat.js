@@ -37,6 +37,10 @@
       return 'पेज: ' + (s.title || s.hash) + '। ' + s.text.slice(0, 700);
     } catch (e) { return ''; }
   }
+  function canUseScreen() {
+    return !!(window.Cloud && window.Cloud.consent && window.Cloud.consent('screen', 'BoardPrep AI को अभी खुले पेज का text भेजना है। Allow करें?'));
+  }
+
   // voice commands — app ke andar ka kaam khud
   function command(q) {
     var s = (q || '').toLowerCase();
@@ -138,6 +142,7 @@
   var recog = null;
   function startVoice() {
     if (VP.mode !== 'voice' || VP.mute) return;
+    if (window.Cloud && window.Cloud.consent && !window.Cloud.consent('voice', 'माइक से बोली गई आवाज़ browser/AI सेवा पर जाएगी। Allow करें?')) { setMode('chat'); return; }
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { alert(L('इस ब्राउज़र में voice नहीं चलेगी।', 'Voice is not supported in this browser.')); return; }
     try { if (recog) recog.abort(); } catch (e) { }
@@ -362,7 +367,9 @@
       alert(L('Cloud API set nahi hai.', 'क्लाउड API सेट नहीं है।'));
       return;
     }
-    pushMsg({ role: 'user', content: q, scr: !!screenCtx() });
+    var sc = screenCtx();
+    if (sc && !canUseScreen()) sc = '';
+    pushMsg({ role: 'user', content: q, scr: !!sc });
     inp.value = '';
     render();
     var box = document.getElementById('chatBox');
@@ -376,7 +383,7 @@
     var c = cur();
     var hist = c.msgs.slice(-10).map(function (m) { return { role: m.role, content: m.content }; });
     // screen ka sandarbh ke saath bhejo — AI "jo dikha raha hai" samjhe
-    var full = screenCtx() ? ('[स्क्रीन पर यह दिख रहा है]: ' + screenCtx() + '\n\nसवाल: ' + q) : q;
+    var full = sc ? ('[स्क्रीन पर यह दिख रहा है]: ' + sc + '\n\nसवाल: ' + q) : q;
     window.Cloud.chat(full, hist, web).then(function (r) {
       thinking.remove();
       if (r && r.ok) {

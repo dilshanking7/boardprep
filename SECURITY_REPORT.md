@@ -1,3 +1,17 @@
+# BoardPrep Security Report
+
+## v5.11 — Cloud/API security (step 1, 2026-11-25)
+
+- Worker responses ab sirf allowlisted origins par CORS dete hain (`*` nahi); `ALLOWED_ORIGINS` config se control.
+- Browser har API request ke saath random `X-BP-Device-Token` bhejta hai; server uska SHA-256 hash rakhta hai. Sync data aur locked rooms usi token ke bina read/write nahi hote. Purane token-less records backward-compatible hain.
+- AI quota ab real hai: 60 requests/device/hour (token na ho to IP fallback). `/api/chat`, `/api/ask`, `/api/stt`, `/api/vision`, `/api/image` covered.
+- `/api/diag` default band; sirf `DIAG_TOKEN` secret + `X-Diag-Token` header ke saath chaltta hai.
+- Nous tokens Worker secrets (`NOUS_TOKEN`, `NOUS_REFRESH_TOKEN`, `NOUS_CLIENT_ID`) se read hote hain; secrets set hone par D1 me plaintext write nahi hota. Purana D1 fallback sirf tab hai jab secrets na ho.
+- Screen text / voice / photo bhejne se pehle client par consent confirm hota hai (`bp_privacy_consent`, reset: `Cloud.resetConsent()`).
+- Baaki report neeche v3.0 APK ke liye hai — usme "no network requests" wali baat ab purani hai (v5.x me opt-in AI cloud features hain).
+
+---
+
 # BoardPrep v3.0 — Android Security Report
 
 APK: `BoardPrep-v3.0.apk` (com.dilshan.boardprep, versionCode 3, versionName 3.0)

@@ -13,13 +13,80 @@ const json = (data, opts = {}) => new Response(JSON.stringify(data), {
   headers: {
     "Content-Type": "application/json; charset=utf-8",
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, X-BP-Device-Token",
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Vary": "Origin",
     ...(opts.headers || {}),
   },
 });
 
-const CORS_PREFLIGHT = () => json({ ok: true });
+const DEFAULT_ORIGINS = [
+  "https://dilshanking7.github.io",
+  "https://appassets.androidplatform.net",
+  "http://appassets.androidplatform.net",
+];
+
+function originAllowed(origin, reqUrl, env) {
+  if (!origin) return true;
+  const own = new URL(reqUrl).origin;
+  if (origin === own) return true;
+  if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin)) return true;
+  const list = String(env.ALLOWED_ORIGINS || DEFAULT_ORIGINS.join(","))
+    .split(",").map(function (s) { return s.trim(); }).filter(Boolean);
+  return list.indexOf("*") >= 0 || list.indexOf(origin) >= 0;
+}
+
+function withSecurity(res, origin) {
+  if (origin) res.headers.set("Access-Control-Allow-Origin", origin);
+  else res.headers.delete("Access-Control-Allow-Origin");
+  res.headers.set("Vary", "Origin");
+  return res;
+}
+
+async function hashText(s) {
+  const bytes = new TextEncoder().encode(String(s || ""));
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest)).map(function (b) {
+    return b.toString(16).padStart(2, "0");
+  }).join("");
+}
+
+async function tokenHash(req) {
+  const token = req.headers.get("X-BP-Device-Token");
+  return token ? hashText(token) : "";
+}
+
+async function rateKey(req) {
+  const t = await tokenHash(req);
+  if (t) return "t" + t;
+  return "ip" + await hashText(req.headers.get("CF-Connecting-IP") || "anon");
+}
+
+async function checkLimit(req, env) {
+  await ensureSchema(env.DB);
+  return rateLimit(env.DB, await rateKey(req), env);
+}
+
+function tooMany(rl) {
+  return json({ ok: false, error: "LIMIT", limit: true, retryMs: rl.retryMs, per: rl.per, windowH: rl.windowH }, { status: 429 });
+}
+
+export default {
+  async fetch(req, env, ctx) {
+    const origin = req.headers.get("Origin") || "";
+    if (!originAllowed(origin, req.url, env)) {
+      const blocked = json({ ok: false, error: "origin not allowed" }, { status: 403 });
+      blocked.headers.delete("Access-Control-Allow-Origin");
+      return blocked;
+    }
+    if (req.method === "OPTIONS") {
+      const pre = json({ ok: true });
+      pre.headers.set("Access-Control-Allow-Origin", origin || new URL(req.url).origin);
+      return pre;
+    }
+    return withSecurity(await handle(req, env, ctx), origin);
+  },
+};
 
 function uid(raw) {
   // device id -> hex (D1 key ke liye)
@@ -41,11 +108,9 @@ async function loadProgress(db, id) {
   try { return JSON.parse(raw); } catch (e) { return null; }
 }
 
-export default {
-  async fetch(req, env, ctx) {
+async function handle(req, env, ctx) {
     const url = new URL(req.url);
     const p = url.pathname.replace(/\/+$/, "");
-    if (req.method === "OPTIONS") return CORS_PREFLIGHT();
 
     try {
       if (p === "/health") return json({ ok: true, service: "boardprep-api", time: Date.now() });
@@ -53,6 +118,11 @@ export default {
 
       // ---------- AI chat (ChatGPT/Gemini jaisa) ----------
       if (p === "/api/diag") {
+        const expectedDiag = String(env.DIAG_TOKEN || "");
+        const gotDiag = String(req.headers.get("X-Diag-Token") || "");
+        if (!expectedDiag || gotDiag !== expectedDiag) {
+          return json({ ok: false, error: "not found" }, { status: 404 });
+        }
         const prov = String(url.searchParams.get("list") || "all");
         if (prov === "groq") return json({ ok: true, list: await probe(env, "groq", [
           "llama-3.3-70b-versatile", "llama-3.1-8b-instant", "llama-3.1-70b-versatile",
@@ -110,6 +180,8 @@ export default {
       }
       // ---------- voice: audio -> text (Groq Whisper, free) ----------
       if (p === "/api/stt" && req.method === "POST") {
+        const rl = await checkLimit(req, env);
+        if (!rl.ok) return tooMany(rl);
         const b = await req.json().catch(() => ({}));
         const b64 = String(b.audio || "").split(",").pop();
         const mime = String(b.mime || "audio/webm");
@@ -134,6 +206,8 @@ export default {
 
       // ---------- photo: image -> javab (OpenRouter free vision) ----------
       if (p === "/api/vision" && req.method === "POST") {
+        const rl = await checkLimit(req, env);
+        if (!rl.ok) return tooMany(rl);
         const b = await req.json().catch(() => ({}));
         const img = String(b.image || "");
         const q = String(b.q || "इस फोटो/नोट को पढ़कर समझाओ।").slice(0, 400);
@@ -242,6 +316,8 @@ export default {
 
       // ---------- image banana (CF flux, free) ----------
       if (p === "/api/image" && req.method === "POST") {
+        const rl = await checkLimit(req, env);
+        if (!rl.ok) return tooMany(rl);
         const b = await req.json().catch(() => ({}));
         const pr = String(b.prompt || "").slice(0, 400);
         if (!pr) return json({ ok: false, error: "prompt required" }, { status: 400 });
@@ -295,12 +371,11 @@ export default {
       }
 
       if (p === "/api/quota" && req.method === "GET") {
-        const id = uid(url.searchParams.get("id"));
         await ensureSchema(env.DB);
-        const raw = await getSetting(env.DB, "rl_" + id, null);
+        const raw = await getSetting(env.DB, "rl_" + await rateKey(req), null);
         let rec = null;
         try { rec = raw ? JSON.parse(raw) : null; } catch (e) { }
-        const per = Number(env.LIMIT_PER || 20);
+        const per = Number(env.LIMIT_PER || 60);
         const winH = Number(env.WINDOW_HOURS || 1);
         const now = Date.now();
         if (!rec || now > rec.reset) {
@@ -317,16 +392,9 @@ export default {
         const wantWeb = b.web !== false;
         function langOfQ(s) { return /[\u0900-\u097F]/.test(String(s || '')) ? 'hi' : 'en'; }
         if (!q) return json({ error: "q required" }, { status: 400 });
-        await ensureSchema(env.DB);
 
-        // rate limit — pehle check
-        const rl = await rateLimit(env.DB, id, env);
-        if (!rl.ok) {
-          return json({
-            ok: false, error: "LIMIT", limit: true,
-            retryMs: rl.retryMs, per: rl.per, windowH: rl.windowH,
-          }, { status: 429 });
-        }
+        const rl = await checkLimit(req, env);
+        if (!rl.ok) return tooMany(rl);
 
         // web search (bahar ki info) — sirf jab zaroorat lage
         // YouTube: padhne ka video chahiye to link do
@@ -404,7 +472,8 @@ export default {
         const q = String(b.q || "").slice(0, 500);
         const notes = Array.isArray(b.notes) ? b.notes.slice(0, 6) : [];
         if (!q) return json({ error: "q required" }, { status: 400 });
-        await ensureSchema(env.DB);
+        const rl = await checkLimit(req, env);
+        if (!rl.ok) return tooMany(rl);
         const ctx = notes.map((n, i) => {
           const t = typeof n === "string" ? n : ((n && (n.ch + " — " + (n.text || ""))) || "");
           return "(${i + 1}) " + t.slice(0, 900);
@@ -432,15 +501,30 @@ export default {
       if (p === "/api/sync/save" && req.method === "POST") {
         const b = await req.json().catch(() => ({}));
         const id = uid(b.id);
+        const owner = await tokenHash(req);
         await ensureSchema(env.DB);
-        await saveProgress(env.DB, id, b.data || {});
-        return json({ ok: true, id: id, saved: Date.now() });
+        const raw = await getSetting(env.DB, "progress_" + id, null);
+        let rec = {};
+        try { rec = raw ? JSON.parse(raw) : {}; } catch (e) { rec = {}; }
+        if (rec.owner && rec.owner !== owner) {
+          return json({ ok: false, error: "not owner" }, { status: 403 });
+        }
+        rec.v = 1;
+        rec.t = Date.now();
+        rec.data = b.data || {};
+        if (owner) rec.owner = owner;
+        await setSetting(env.DB, "progress_" + id, JSON.stringify(rec));
+        return json({ ok: true, id: id, saved: rec.t });
       }
       if (p === "/api/sync/load" && req.method === "GET") {
         const id = uid(url.searchParams.get("id"));
+        const owner = await tokenHash(req);
         await ensureSchema(env.DB);
         const r = await loadProgress(env.DB, id);
         if (!r) return json({ ok: false, found: false });
+        if (r.owner && r.owner !== owner) {
+          return json({ ok: false, error: "not owner" }, { status: 403 });
+        }
         return json({ ok: true, id: id, t: r.t, data: r.data });
       }
 
@@ -450,12 +534,14 @@ export default {
         const b = await req.json().catch(() => ({}));
         const code = String(b.code || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 12);
         if (!code) return json({ error: "code required" }, { status: 400 });
+        const owner = await tokenHash(req);
         await ensureSchema(env.DB);
         await setSetting(env.DB, "room_" + code, JSON.stringify({
           code: code, name: String(b.name || code).slice(0, 60),
           members: [String(b.name || "student").slice(0, 40)],
           msgs: [{ n: "system", t: String(b.name || "student") + " ne room banaya", ts: Date.now() }],
           ts: Date.now(),
+          lock: owner ? [owner] : [],
         }));
         return json({ ok: true, code: code });
       }
@@ -466,6 +552,13 @@ export default {
         const raw = await getSetting(env.DB, "room_" + code, null);
         if (!raw) return json({ ok: false, error: "room nahi mila" }, { status: 404 });
         const room = JSON.parse(raw);
+        const owner = await tokenHash(req);
+        const lock = Array.isArray(room.lock) ? room.lock : [];
+        if (lock.length) {
+          if (!owner) return json({ ok: false, error: "device token required" }, { status: 403 });
+          if (lock.indexOf(owner) < 0) lock.push(owner);
+        }
+        room.lock = lock;
         const nm = String(b.name || "student").slice(0, 40);
         if (!room.members.includes(nm)) room.members.push(nm);
         room.msgs.push({ n: "system", t: nm + " join hua", ts: Date.now() });
@@ -482,6 +575,11 @@ export default {
         const raw = await getSetting(env.DB, "room_" + code, null);
         if (!raw) return json({ ok: false, error: "room nahi mila" }, { status: 404 });
         const room = JSON.parse(raw);
+        const owner = await tokenHash(req);
+        const lock = Array.isArray(room.lock) ? room.lock : [];
+        if (lock.length && (!owner || lock.indexOf(owner) < 0)) {
+          return json({ ok: false, error: "not a member" }, { status: 403 });
+        }
         room.msgs.push({ n: String(b.name || "student").slice(0, 40), t: msg, ts: Date.now() });
         if (room.msgs.length > 200) room.msgs = room.msgs.slice(-200);
         room.ts = Date.now();
@@ -500,5 +598,4 @@ export default {
     } catch (e) {
       return json({ ok: false, error: String(e.message || e) }, { status: 500 });
     }
-  },
-};
+}

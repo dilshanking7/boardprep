@@ -58,12 +58,13 @@ Worker तुम्हारे Nous Portal token से free model चलात
 ### Step 6. Nous Portal token (मुफ़्त)
 1. https://portal.nousresearch.com पर जाओ और account बनाओ (मुफ़्त)
 2. Login करके **API token / access token** लो
-3. Token को D1 में डालो (terminal से):
+3. Token को Worker **secret** में डालो (D1 में plaintext न रखें):
    ```
    cd ~/boardprep-api
-   npx wrangler d1 execute boardprep --command "INSERT INTO settings(key,value) VALUES('nous_access_token','यहाँ-token') ON CONFLICT(key) DO UPDATE SET value=excluded.value"
+   npx wrangler secret put NOUS_TOKEN
    ```
-4. अगर token expire हो तो refresh token भी चाहिए — वही portal से मिलेगा
+4. Refresh token मिले तो `npx wrangler secret put NOUS_REFRESH_TOKEN`, client id के लिए
+   `npx wrangler secret put NOUS_CLIENT_ID`। पुराना D1 fallback अब भी चलता है, पर secrets बेहतर हैं।
 
 ### Step 7. AI आज़माओ
 5. app → **Assistant** → सवाल लिखो → **"AI से जवाब लो (क्लाउड)"** दबाओ
@@ -101,10 +102,11 @@ npx wrangler secret put GEMINI_KEY
 npx wrangler secret put OPENROUTER_KEY
 ```
 
-### Rate limit
-- अभी **असीमित** (LIMIT_PER 100000 — हर घंटे रीसेट, ज़बरदस्ती नहीं होता)
-- फिर से लागू करना हो तो `wrangler.toml` में `LIMIT_PER = "20"` और `WINDOW_HOURS = "1"`,
-  फिर `bash deploy.sh`
+### Rate limit (security step 1)
+- अब **60 AI requests / device / hour** (`LIMIT_PER = "60"`, `WINDOW_HOURS = "1"`)
+- device token browser में `bp_device_token` के रूप में बनेगा और हर request के header में जाएगा
+- token न हो तो Cloudflare IP से fallback quota लगेगा
+- `/api/chat`, `/api/ask`, `/api/stt`, `/api/vision`, `/api/image` सभीlimit में आते हैं
 
 ### चैट सेव
 - चैटें अपने-आप **सेव** होती हैं — back से बाहर जाओ, वापस आओ, **चैट वहीं मिलेगी**
@@ -131,6 +133,11 @@ npx wrangler secret put OPENROUTER_KEY
 ```
 (https://openrouter.ai पर free account → API key)
 
+### Privacy consent (security step 1)
+- स्क्रीन का text, माइक की आवाज़ और फोटो भेजने से पहले एक बार confirm मिलेगा; जवाब `bp_privacy_consent` में सेव होता है
+- बाद में बदलना हो तो browser console में `Cloud.resetConsent()` चलाएँ, या site data साफ़ करें
+- `/api/diag` अब बंद है; चाहिए तो `npx wrangler secret put DIAG_TOKEN` + header `X-Diag-Token`
+
 ### ईमानदारी के साथ
 - **AI को इंटरनेट चाहिए** — ऑफ़लाइन में बाकी सब (नोट्स, क्विज़, 3D, PDF, गाने) चलता है,
   पर AI सवाल-जवाब नेट के बिना नहीं होगा।
@@ -150,6 +157,7 @@ app → **AI चैट** → कुछ लिखो → भेजो। नी�
 - दूसरे फ़ोन पर: दूसरा device id होगा, इसलिए पहले उसी device पर save करो,
   फिर दूसरे फ़ोन पर **"Cloud se lao"** (उसी account/device पर)
   - नोट: अभी device id हर फ़ोन अलग है — एक ही फ़ोन पर save/load सही चलेगा
+  - security step 1 के बाद cloud data उस device token से जुड़ा है; ऐप/data साफ़ करने पर नया token बनेगा — पुराना cloud data तभी मिलेगा जब पुराना token वापस डालें (`localStorage.setItem('bp_device_token', puranaToken)`)
 
 ### Study room
 - **अभ्यास tab → Study room**

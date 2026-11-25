@@ -42,22 +42,73 @@
     } catch (e) { return 'anon'; }
   }
 
+  var TOKEN_KEY = 'bp_device_token';
+  var TOKEN_HEADER = 'X-BP-Device-Token';
+  var CONSENT_KEY = 'bp_privacy_consent';
+
+  function randomToken() {
+    try {
+      var a = new Uint8Array(24);
+      if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(a);
+      else { for (var i = 0; i < a.length; i++) a[i] = Math.floor(Math.random() * 256); }
+      var s = '';
+      for (var j = 0; j < a.length; j++) s += ('0' + a[j].toString(16)).slice(-2);
+      return 't' + s;
+    } catch (e) { return 't' + Date.now().toString(36) + Math.random().toString(36).slice(2); }
+  }
+  function deviceToken() {
+    try {
+      var v = localStorage.getItem(TOKEN_KEY);
+      if (!v) { v = randomToken(); localStorage.setItem(TOKEN_KEY, v); }
+      return v;
+    } catch (e) { return randomToken(); }
+  }
+  function authHeaders(extra, withJson) {
+    var h = {};
+    if (withJson) h['Content-Type'] = 'application/json';
+    h[TOKEN_HEADER] = deviceToken();
+    if (extra) {
+      for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) h[k] = extra[k]; }
+    }
+    return h;
+  }
+  function consent(kind, msg) {
+    var o = {};
+    try { o = JSON.parse(localStorage.getItem(CONSENT_KEY) || '{}') || {}; } catch (e) { }
+    if (o[kind] === true) return true;
+    if (o[kind] === false) return false;
+    var ok = !!window.confirm(msg);
+    o[kind] = ok;
+    try { localStorage.setItem(CONSENT_KEY, JSON.stringify(o)); } catch (e) { }
+    return ok;
+  }
+  function stripScreen(q) {
+    var s = String(q || '');
+    var marker = '[स्क्रीन पर यह दिख रहा है]:';
+    var i = s.indexOf(marker);
+    if (i < 0) return s;
+    if (consent('screen', 'BoardPrep AI को अभी खुले पेज का text भेजना है। Allow करें?')) return s;
+    var parts = s.slice(i + marker.length).split('\n\nसवाल: ');
+    return parts.length > 1 ? ('सवाल: ' + parts[1]) : 'सवाल:';
+  }
+
   // request ke waqt bhi URL check — galat/placeholder ho to sahi URL
   function url(path) {
     var b = goodUrl(BASE) ? BASE : FALLBACK_BASE;
     return b + path;
   }
-  function post(path, body) {
+  function post(path, body, extra) {
     if (!goodUrl(BASE) && !goodUrl(FALLBACK_BASE)) return Promise.reject(new Error('no-base'));
     return fetch(url(path), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(extra, true),
       body: JSON.stringify(body || {})
     }).then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
   }
-  function get(path) {
+  function get(path, extra) {
     if (!goodUrl(BASE) && !goodUrl(FALLBACK_BASE)) return Promise.reject(new Error('no-base'));
-    return fetch(url(path)).then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
+    return fetch(url(path), { headers: authHeaders(extra, false) })
+      .then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
   }
 
   // AI: notes (RAG context) + sawal -> free model ka javab
@@ -76,6 +127,7 @@
   // study rooms
   // AI chat (ChatGPT/Gemini jaisa) + quota
   function chat(q, history, web) {
+    q = stripScreen(q);
     var lang = (/[\u0900-\u097F]/.test(String(q || ''))) ? 'hi' : 'en';
     return post('/api/chat', { id: deviceId(), q: q, history: history || [], web: web !== false, lang: lang });
   }
@@ -85,10 +137,16 @@
   function quota() { return get('/api/quota?id=' + encodeURIComponent(deviceId())); }
   // voice: audio (base64) -> text
   function stt(audio, mime) {
+    if (!consent('voice', 'आवाज़ का audio AI सर्वर पर भेजा जाएगा। Allow करें?')) {
+      return Promise.resolve({ ok: false, error: 'voice consent nahi diya — audio nahi bheja gaya' });
+    }
     return post('/api/stt', { audio: audio, mime: mime || 'audio/webm' });
   }
   // photo: image (base64) -> javab
   function vision(image, q) {
+    if (!consent('photo', 'यह फोटो AI सर्वर पर भेजी जाएगी। Allow करें?')) {
+      return Promise.resolve({ ok: false, error: 'photo consent nahi diya — image nahi bheji gayi' });
+    }
     return post('/api/vision', { image: image, q: q || '' });
   }
   // feedback (AI khud seekhe)
@@ -121,6 +179,9 @@
     getBase: function () { return goodUrl(BASE) ? BASE : FALLBACK_BASE; },
     ready: function () { return goodUrl(BASE) || goodUrl(FALLBACK_BASE); },
     deviceId: deviceId,
+    deviceToken: deviceToken,
+    consent: consent,
+    resetConsent: function () { try { localStorage.removeItem(CONSENT_KEY); } catch (e) { } },
     ask: ask,
     syncPush: syncPush,
     syncPull: syncPull,

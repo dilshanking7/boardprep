@@ -8,12 +8,18 @@ MODEL = "meituan/longcat-2.5:free"
 INFERENCE_BASE_URL = "https://inference-api.nousresearch.com/v1"
 NOUS_PORTAL = "https://portal.nousresearch.com"
 
-# rate limit — kitne message, kitne ghante me (badal sakte ho)
-LIMIT_PER = "100000"
+# rate limit — kitne AI requests, kitne ghante me (per device token, IP fallback)
+LIMIT_PER = "60"
 WINDOW_HOURS = "1"
+
+# security — sirf yahi origins API call kar sakte hain ('*' nahi).
+# localhost kisi bhi port par allowed (code me regex), APK origin bhi included.
+ALLOWED_ORIGINS = "https://dilshanking7.github.io,http://localhost,http://127.0.0.1,https://appassets.androidplatform.net,http://appassets.androidplatform.net"
 
 # free keys (optional — jo mile daalo, chain apne-aap use karegi)
 # GROQ_KEY, GEMINI_KEY, OPENROUTER_KEY  -> wrangler secret ya vars me
+# NOUS_TOKEN, NOUS_REFRESH_TOKEN, NOUS_CLIENT_ID -> wrangler secret (D1 se better)
+# DIAG_TOKEN -> optional; set karne par hi /api/diag chalega
 
 # Cloudflare Workers AI (free — CF account chahiye)
 [ai]
