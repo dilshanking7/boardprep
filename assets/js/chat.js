@@ -138,6 +138,7 @@
   var recog = null;
   function startVoice() {
     if (VP.mode !== 'voice' || VP.mute) return;
+    if (window.Cloud && window.Cloud.consent && !window.Cloud.consent('voice', 'माइक से बोली गई आवाज़ browser/AI सेवा पर जाएगी। Allow करें?')) { setMode('chat'); return; }
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { alert(L('इस ब्राउज़र में voice नहीं चलेगी।', 'Voice is not supported in this browser.')); return; }
     try { if (recog) recog.abort(); } catch (e) { }

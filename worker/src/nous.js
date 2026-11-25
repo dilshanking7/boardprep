@@ -9,20 +9,20 @@ export async function getCreds(db, env) {
   const s = await allSettings(db, "nous_%");
   return {
     access: (env.NOUS_TOKEN || s.nous_access_token || ""),
-    refresh: s.nous_refresh_token || "",
+    refresh: (env.NOUS_REFRESH_TOKEN || s.nous_refresh_token || ""),
     clientId: (env.NOUS_CLIENT_ID || s.nous_client_id || ""),
     portal: (env.NOUS_PORTAL || s.nous_portal_url || DEFAULT_PORTAL).replace(/\/+$/, ""),
   };
 }
 
-export async function saveCreds(db, c) {
-  await setSetting(db, "nous_access_token", c.access || "");
-  await setSetting(db, "nous_refresh_token", c.refresh || "");
-  await setSetting(db, "nous_client_id", c.clientId || "");
+export async function saveCreds(db, env, c) {
+  if (!env.NOUS_TOKEN) await setSetting(db, "nous_access_token", c.access || "");
+  if (!env.NOUS_REFRESH_TOKEN) await setSetting(db, "nous_refresh_token", c.refresh || "");
+  if (!env.NOUS_CLIENT_ID) await setSetting(db, "nous_client_id", c.clientId || "");
   await setSetting(db, "nous_portal_url", c.portal || DEFAULT_PORTAL);
 }
 
-async function refresh(db, c) {
+async function refresh(db, env, c) {
   const res = await fetch(c.portal + "/api/oauth/token", {
     method: "POST",
     headers: {
@@ -44,7 +44,7 @@ async function refresh(db, c) {
     clientId: c.clientId,
     portal: c.portal,
   };
-  await saveCreds(db, nc);
+  await saveCreds(db, env, nc);
   return nc;
 }
 
@@ -74,7 +74,7 @@ export async function nousChat(db, env, messages, opts = {}) {
   let res = await send(c.access);
   if (res.status === 401 || res.status === 403) {
     if (!c.refresh) throw new Error("NOUS_TOKEN_EXPIRED");
-    c = await refresh(db, c);
+    c = await refresh(db, env, c);
     res = await send(c.access);
   }
   if (!res.ok) {
