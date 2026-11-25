@@ -145,7 +145,7 @@ async function handle(req, env, ctx) {
       if (p === "/health") return json({ ok: true, service: "boardprep-api", time: Date.now() });
       if (p === "/api/health") return json({ ok: true, time: Date.now() });
 
-      // ---------- AI chat (ChatGPT/Gemini jaisa) ----------
+      // ---------- AI chat ----------
       if (p === "/api/diag") {
         const expectedDiag = String(env.DIAG_TOKEN || "");
         const gotDiag = String(req.headers.get("X-Diag-Token") || "");
@@ -235,7 +235,7 @@ async function handle(req, env, ctx) {
         return json({ ok: true, text: String((j && j.text) || "").trim() });
       }
 
-      // ---------- photo: image -> javab (OpenRouter free vision) ----------
+      // ---------- photo: image -> answer (OpenRouter free vision) ----------
       if (p === "/api/vision" && req.method === "POST") {
         const user = await currentUser();
         if (!user) return unauthorized();
@@ -314,7 +314,7 @@ async function handle(req, env, ctx) {
         return json({ ok: false, error: "vision: " + last }, { status: 502 });
       }
 
-      // ---------- YouTube: padhne ke video (link) ----------
+      // ---------- YouTube: learning videos (links) ----------
       if (p === "/api/yt") {
         const q = String(url.searchParams.get("q") || "").trim().slice(0, 120);
         if (!q) return json({ ok: false, error: "q required" }, { status: 400 });
@@ -366,7 +366,7 @@ async function handle(req, env, ctx) {
         }
       }
 
-      // ---------- feedback: AI khud seekhe (user ka data se) ----------
+      // ---------- feedback: AI learning from user data ----------
       if (p === "/api/feedback" && req.method === "POST") {
         const user = await currentUser();
         if (!user) return unauthorized();
@@ -437,8 +437,8 @@ async function handle(req, env, ctx) {
         const rl = await checkLimit(req, env, user);
         if (!rl.ok) return tooMany(rl);
 
-        // web search (bahar ki info) — sirf jab zaroorat lage
-        // YouTube: padhne ka video chahiye to link do
+        // Web search (outside info) — only when needed
+        // Return a YouTube link when a learning video is requested
         var ytCtx = [];
         try {
           if (/(video|youtube|यूट्यूब|दिखाओ|देखूं|देखूँ|dekho|dikhao|सीखने के लिए)/.test(q)) {
@@ -456,7 +456,7 @@ async function handle(req, env, ctx) {
         var webCtx = [];
         try {
           var low = q.toLowerCase();
-          var needsWeb = /(bahar|internet|news|latest|aaj|2026|2027|google|khoj|search|खोज|नया|आज)/.test(low) || wantWeb;
+          var needsWeb = /(outside|internet|news|latest|aaj|2026|2027|google|search|खोज|नया|आज)/.test(low) || wantWeb;
           if (needsWeb) webCtx = await webSearch(q);
         } catch (e) { }
 
@@ -527,7 +527,7 @@ async function handle(req, env, ctx) {
             content:
               "तुम BoardPrep के शिक्षक-सहायक हो, कक्षा 10 (JAC/CBSE) के लिए। " +
               "नीचे दिए नोट्स से ही जवाब दो — जो नोट्स में न हो, वो न बनाओ। " +
-              "हिंदी/Hinglish में सरल, स्पष्ट, बुलेट वाला जवाब दो। जवाब 200 शब्दों से ज़्यादा मत बनाओ। " +
+              "हिंदी या English में सरल, स्पष्ट, बुलेट वाला जवाब दो। जवाब 200 शब्दों से ज़्यादा मत बनाओ। " +
               "अगर नोट्स में जवाब नहीं मिलता तो सीधे कहो कि यह नोट्स में नहीं है।",
           },
           { role: "user", content: (ctx ? "नोट्स:\n" + ctx + "\n\n" : "") + "सवाल: " + q },
