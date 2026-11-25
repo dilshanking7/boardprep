@@ -7,6 +7,8 @@ compatibility_date = "2026-01-01"
 MODEL = "meituan/longcat-2.5:free"
 INFERENCE_BASE_URL = "https://inference-api.nousresearch.com/v1"
 NOUS_PORTAL = "https://portal.nousresearch.com"
+SUPABASE_URL = "https://qssxnilqflpzlyflfoqk.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_5Kto_b2Fmp4SRww7qvPaeA_SetAlfDV"
 
 # rate limit — 60 AI requests per logged-in user, 24 hour window
 LIMIT_PER = "60"
