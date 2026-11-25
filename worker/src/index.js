@@ -250,7 +250,7 @@ async function handle(req, env, ctx) {
           return json({ ok: false, error: "photo-ke-liye-key", noKey: true });
         }
         let last = "";
-        // pehle Gemini (free, vision chalta hai), phir OpenRouter
+        // Try Gemini first, then OpenRouter
         const gkey = env.GEMINI_KEY || "";
         const gmodels = ["gemini-flash-lite-latest", "gemini-flash-latest", "gemini-2.5-flash", "gemini-3-flash-preview"];
         const dataUrl = img.indexOf("data:") === 0 ? img : "data:image/jpeg;base64," + img;
@@ -347,7 +347,7 @@ async function handle(req, env, ctx) {
         return json({ ok: true, q: q, videos: out, fallback: "https://www.youtube.com/results?search_query=" + encodeURIComponent(q) });
       }
 
-      // ---------- image banana (CF flux, free) ----------
+      // ---------- image generation (CF flux, free) ----------
       if (p === "/api/image" && req.method === "POST") {
         const user = await currentUser();
         if (!user) return unauthorized();
@@ -441,7 +441,7 @@ async function handle(req, env, ctx) {
         // Return a YouTube link when a learning video is requested
         var ytCtx = [];
         try {
-          if (/(video|youtube|यूट्यूब|दिखाओ|देखूं|देखूँ|dekho|dikhao|सीखने के लिए)/.test(q)) {
+          if (/(video|youtube|यूट्यूब|दिखाओ|देखूं|देखूँ|show|सीखने के लिए)/.test(q)) {
             const yu = new URL(url.origin + "/api/yt?q=" + encodeURIComponent(q));
             const yj = await fetch(yu.toString()).then(function (r) { return r.json(); }).catch(function () { return { videos: [] }; });
             if (yj && yj.videos && yj.videos.length) {
@@ -507,7 +507,7 @@ async function handle(req, env, ctx) {
         }
       }
 
-      // ---------- AI (purana — RAG + free model) ----------
+      // ---------- AI (legacy RAG + free model) ----------
       if (p === "/api/ask" && req.method === "POST") {
         const user = await currentUser();
         if (!user) return unauthorized();
