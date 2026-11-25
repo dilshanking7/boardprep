@@ -1,4 +1,18 @@
-# BoardPrep Cloud — Setup Guide (step by step, मुफ़्त)
+# BoardPrep Cloud — Setup Guide
+
+Current status (2026-11-25):
+
+- Worker: https://boardprep-api.dilshan-boardprep.workers.dev
+- Login is required for AI, quota, cloud sync, rooms, and feedback.
+- Supabase auth stores each user's progress in `public.user_data`.
+- Each signed-in user gets 60 AI requests per 24 hours.
+- The Worker verifies Supabase access tokens on every protected request; the browser sends `Authorization: Bearer <token>`.
+- Email/password and magic link work. Google login works after OAuth credentials are entered in Supabase.
+
+The older notes below are kept as setup history; the list above describes current behavior.
+
+---
+
 
 **स्थिति: worker LIVE है** → https://boardprep-api.dilshan-boardprep.workers.dev
 health check चल रहा है, sync + study rooms काम कर रहे हैं।
@@ -102,11 +116,11 @@ npx wrangler secret put GEMINI_KEY
 npx wrangler secret put OPENROUTER_KEY
 ```
 
-### Rate limit (security step 1)
-- अब **60 AI requests / device / hour** (`LIMIT_PER = "60"`, `WINDOW_HOURS = "1"`)
-- device token browser में `bp_device_token` के रूप में बनेगा और हर request के header में जाएगा
-- token न हो तो Cloudflare IP से fallback quota लगेगा
-- `/api/chat`, `/api/ask`, `/api/stt`, `/api/vision`, `/api/image` सभीlimit में आते हैं
+### Rate limit (security step 2)
+- Each signed-in user gets 60 AI requests per 24 hours (`LIMIT_PER = "60"`, `WINDOW_HOURS = "24"`).
+- The Worker verifies the Supabase JWT and uses a SHA-256 hash of the verified user id as the quota key.
+- Requests without a valid token return `401 login required`; they do not consume quota.
+- `/api/chat`, `/api/ask`, `/api/stt`, `/api/vision`, `/api/image`, `/api/quota`, `/api/sync/*`, `/api/room/*`, and `/api/feedback` require login.
 
 ### चैट सेव
 - चैटें अपने-आप **सेव** होती हैं — back से बाहर जाओ, वापस आओ, **चैट वहीं मिलेगी**
