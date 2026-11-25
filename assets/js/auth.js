@@ -332,6 +332,7 @@
       if (s) { hideOverlay(); syncAfterLogin(); }
       setTimeout(mountProfile, 60);
     });
+    if (user()) emit();
     window.addEventListener('hashchange', function () { setTimeout(mountProfile, 60); });
     setTimeout(mountProfile, 200);
     if (!user()) showOverlay(false);
