@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "BoardPrep ka free backend — AI (RAG + free model), cloud sync (D1), study rooms",
+  "description": "BoardPrep free backend — AI (RAG + free model), cloud sync (D1), study rooms",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",

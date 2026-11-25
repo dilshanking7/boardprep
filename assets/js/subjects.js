@@ -1,4 +1,4 @@
-// Pura subject list (saare boards ke liye). Board apna subset choose karta hai.
+// Full subject list (for all boards). Each board chooses its subset.
 window.SUBJECTS = [
   { key: "hindi", name: "हिंदी", en: "Hindi", color: "#ef4444", icon: "अ" },
   { key: "english", name: "English", en: "English", color: "#3b82f6", icon: "A" },

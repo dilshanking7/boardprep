@@ -1,4 +1,4 @@
-// Board-specific question banks. CBSE ke prashn CBSE ke apne official SQP se.
+// Board-specific question banks. CBSE questions come from CBSE's official SQP.
 window.BOARD_BANK = {
  "cbse": {
   "name": "CBSE",

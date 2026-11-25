@@ -15,7 +15,7 @@
   var ORIG_CONTENT = {};
   CONTENT_KEYS.forEach(function (k) { if (window[k]) ORIG_CONTENT[k] = window[k]; });
 
-  // Is APK ki version — version.json se compare hoti hai (in-app update banner)
+  // APK version — compared with version.json for the in-app update banner
   var APP_VERSION = '5.11';
   var VER_URL = 'https://dilshanking7.github.io/boardprep/version.json';
 
@@ -25,8 +25,8 @@
     return 0;
   }
 
-  // Naya update check — banner dikhata hai, tap karke APK khud download + install
-  // ---- code-splitting: notes + calc sirf tab load hon jab chahiye ----
+  // New update check — shows a banner; tapping downloads and installs the APK
+  // ---- code splitting: load notes and calc only when needed ----
   var LAZY = {
     notes: ['assets/data/notes_science.js', 'assets/data/notes_maths.js', 'assets/data/notes_science2.js',
       'assets/data/notes_maths2.js', 'assets/data/notes_jharkhand.js', 'assets/data/notes_sst_history.js',
@@ -68,7 +68,7 @@
         var t = bar.querySelector('.upd-t');
         if (t) t.textContent = L('Naya update aaya: v', 'नया अपडेट आया: v') + j.version +
           (j.note ? ' · ' + j.note : '');
-        // API base bhi yahin se aa sakti hai (Dilshan ek jagah set karta hai)
+        // The API base can also come from here (Dilshan sets it in one place)
         if (j.api && window.Cloud && window.Cloud.refreshBase) window.Cloud.refreshBase(j.api);
       }).catch(function () { });
     } catch (e) { }
@@ -98,7 +98,7 @@
     IMP = window.IMPORTANT || null;
   }
 
-  // Safe storage helpers — storage unavailable hone par app crash NA ho
+  // Safe storage helpers — the app must not crash when storage is unavailable
   function storeGet(k, d) {
     try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; }
   }
@@ -159,7 +159,7 @@
 
   function board() { return MAP[state.board] || BOARDS[0]; }
 
-  // board ke apne prashn (jaise CBSE ka apna English bank)
+  // Board-specific questions (for example, CBSE's own English bank)
   function bank() { return BANK[state.board] || null; }
 
   function applyBoardData() {
@@ -184,7 +184,7 @@
     return null;
   }
 
-  // board ke subjects (unka order aur naam)
+  // Board subjects (their order and names)
   function boardSubjects() {
     var b = board();
     var list = [];
@@ -349,7 +349,7 @@
         '<span data-icon="timer" class="dash-exam-ic"></span></div>';
     }
 
-    /* C2. Student ka apna target */
+    /* C2. Student's own target */
     var cd = (window.STUDY && window.STUDY.countdown) ? window.STUDY.countdown() : null;
     if (cd) {
       h += '<div class="card dash-exam" style="border-color:#c4b5fd;background:#f5f3ff">' +
@@ -574,7 +574,7 @@
       '<div id="searchOut" style="margin-top:14px"></div></section>';
   }
 
-  // Search index — ek baar banta hai, har keystroke par poora DB scan nahi
+  // Search index — built once so each keystroke does not scan the whole database
   var _sidx = null;
   function searchIndex() {
     if (_sidx) return _sidx;
@@ -756,7 +756,7 @@
     var shared = board().id !== 'jac' && !bank();
     var html = '<section class="section"><div class="section-head"><h2>' + esc(t('papers_title')) + '</h2>' +
       '<span class="note">' + esc(board().name) + '</span></div>';
-    // upar hi saal aur sankhya — kholte hi samajh aaye
+    // Year and number at the top so they are visible immediately
     var years2 = {};
     D.papers.forEach(function (p) { years2[p.year] = (years2[p.year] || 0) + 1; });
     var ys = Object.keys(years2).sort().reverse();
@@ -882,14 +882,14 @@
     return n >= 0 && n < q.opts.length;
   }
 
-  // Centralized quiz scoring — har question ka score SIRF EK baar count hota hai
+  // Centralized quiz scoring — each question's score is counted only once
   function quizMark(i, got) {
     var qz = state.quiz;
     if (!qz) return false;
     if (Object.prototype.hasOwnProperty.call(qz.ok, i)) return false; // already locked
     qz.ok[i] = !!got;
     if (got) qz.right++;
-    // progress dashboard ke liye record (silent — koi crash nahi)
+    // Record for the progress dashboard (silent, no crash)
     try {
       var q = qz.items[i];
       if (q && window.STUDY) {
@@ -915,7 +915,7 @@
     return pool.slice(0, Math.min(count, pool.length));
   }
 
-  // seeded shuffle — daily challenge ke liye (us din ke liye wahi set)
+  // Seeded shuffle — the daily challenge uses the same set for a given day
   function seededShuffle(arr, seed) {
     var a = arr.slice();
     var s = seed >>> 0;
@@ -934,7 +934,7 @@
       pool = D.questions.filter(function (q) { return weakChaps[q.subj + '|' + (q.chap || q.part)] && answerable(q); });
     } else if (kind === 'revision' && window.STUDY) {
       var seen = {};
-      // pehle spaced-repetition ke due sawal (jinka time aa chuka hai)
+      // First, spaced-repetition questions that are due
       try {
         window.STUDY.srsDue(40).forEach(function (q) { if (answerable(q)) seen[(q.id || q.q || '').slice(0, 80)] = q; });
       } catch (e) {}
@@ -1093,7 +1093,7 @@
   }
 
   function render() {
-    // lazy (code-split) modules pehle load, phir render
+    // Load lazy (code-split) modules first, then render
     var need = lazyNeed();
     if (need) {
       var missing = (LAZY[need] || []).some(function (s) { return !LOADED[s]; });
@@ -1106,7 +1106,7 @@
       }
     }
     view.innerHTML = route();
-    // pichla screen yaad rakho — AI "screen dekho" ke liye (chat page khud ko nahi likhta)
+    // Remember the previous screen for AI screen context (the chat page does not write it itself)
     try {
       var seg = location.hash.replace(/^#\//, '').split('/')[0];
       if (seg !== 'chat') {
@@ -1282,18 +1282,18 @@
       document.getElementById('updBtn').addEventListener('click', function () {
         var u = bar.getAttribute('data-url') || '';
         if (!u) return;
-        if (window.BPApp && window.BPApp.update) { window.BPApp.update(u); return; }   // APK: khud download + install
+        if (window.BPApp && window.BPApp.update) { window.BPApp.update(u); return; }   // APK: download and install directly
         window.location.href = u;                                                     // web: link kholo
       });
     }
     checkUpdate();
-    // cloud API base (worker URL) — user khud daal sakta hai Profile se
+    // Cloud API base (Worker URL) — the user can set it from the profile
     try {
       var ub = localStorage.getItem('bp_api_base');
       if (ub && window.Cloud) window.Cloud.setBase(ub);
     } catch (e) { }
 
-    // ---- auto cloud sync (app background/band hone par, users ko kuch nahi karna) ----
+    // ---- Automatic cloud sync (runs in the background; users take no action) ----
     var cloudSave = function () {
       if (!window.Cloud || !window.Cloud.ready()) return;
       var auto = '1';
@@ -1314,7 +1314,7 @@
     window.addEventListener('beforeunload', cloudSave);
     window.BP.cloudSave = cloudSave;
 
-    // ---- pehli baar kholne par target setup (ek hi baar) ----
+    // ---- Target setup on first launch (once only) ----
     try {
       var hasT = window.STUDY && window.STUDY.targetGet && window.STUDY.targetGet();
       var skipped = storeGet('bp_target_skip', '0') === '1';
@@ -1324,7 +1324,7 @@
       }
     } catch (e) { }
 
-    // ---- reminder: har 30s check (device par hi, offline) ----
+    // ---- Reminder: check every 30 seconds on the device, offline ----
     if (window.STUDY && window.STUDY.remindCheck) {
       var remindTick = function () {
         var r = window.STUDY.remindCheck();

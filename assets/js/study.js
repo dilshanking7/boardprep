@@ -1,5 +1,5 @@
 // BoardPrep v2 — Student progress, streak, exam simulator, revision, assistant
-// Sab kuch localStorage me (safe helpers ke saath). Koi server/API nahi — sab offline.
+// Everything is stored in localStorage with safe helpers. No server or API — fully offline.
 (function () {
   'use strict';
 
@@ -105,7 +105,7 @@
   function streak() {
     var n = 0;
     var d = new Date();
-    // agar aaj abhi kuch nahi kiya, to streak kal se ginna shuru karo
+    // If nothing was done today, start the streak count from tomorrow
     if (!((D.days[today(d)] || {}).done > 0)) d.setDate(d.getDate() - 1);
     while ((D.days[today(d)] || {}).done > 0) {
       n++;
@@ -131,7 +131,7 @@
 
   /* ---------------- views ---------------- */
 
-  /* ---------------- chapter mastery (asli activity se, fake nahi) ---------------- */
+  /* ---------------- Chapter mastery from real activity, not fake data ---------------- */
 
   function mastery(subjKey, chap) {
     if (!chap) return { state: 'notstarted', n: 0, pct: 0 };
@@ -197,7 +197,7 @@
     if (D.srs) { for (var k in D.srs) { n++; if (D.srs[k].due && D.srs[k].due <= Date.now()) due++; } }
     return { learned: n, due: due };
   }
-  // Question-level + chapter-level deep analytics (browser me hi)
+  // Question-level and chapter-level deep analytics in the browser
   function insights() {
     var byId = {};
     (D.attempts || []).forEach(function (a) {
@@ -236,7 +236,7 @@
   window.STUDY.srsDue = srsDue;
   window.STUDY.srsStats = srsStats;
 
-  /* ---------------- exam target + countdown (student khud set karta hai) ---------------- */
+  /* ---------------- Exam target and countdown set by the student ---------------- */
   var TKEY = 'bp_target_v1';
   function targetGet() { try { return JSON.parse(localStorage.getItem(TKEY)) || null; } catch (e) { return null; } }
   function targetSet(o) { try { localStorage.setItem(TKEY, JSON.stringify(o)); } catch (e) {} }
@@ -271,8 +271,8 @@
     var hm = now.getHours() * 60 + now.getMinutes();
     var set = parseInt(d.min || 0, 10);
     var today = now.toISOString().slice(0, 10);
-    if (d.last === today) return null;            // aaj pehle ho chuka
-    if (Math.abs(hm - set) > 2) return null;      // time ke ±2 min
+    if (d.last === today) return null;            // Already done today
+    if (Math.abs(hm - set) > 2) return null;      // Allow a ±2 minute time difference
     d.last = today; remSave(d);
     var c = countdown();
     var body;
@@ -306,7 +306,7 @@
       '<div class="stat"><b style="color:#f59e0b">' + s.streak + '</b><span>' + esc(L('day streak', 'दिन की स्ट्रीक')) + '</span></div>' +
       '</div>';
 
-    // 7-din ka chart
+    // Seven-day chart
     var max = Math.max.apply(null, s.last7.map(function (x) { return x.n; }).concat([s.goal || 5, 1]));
     h += '<div class="board-group">' + esc(L('Last 7 days', 'पिछले 7 दिन')) + '</div>';
     h += '<div style="display:flex;gap:6px;align-items:flex-end;height:120px;margin:8px 0">';
@@ -409,7 +409,7 @@
       return h + '</div></section>';
     }
     var list = d.wrong;
-    // spaced repetition — aaj due
+    // Spaced repetition — due today
     var due = revSchedule();
     if (due.length) {
       h += '<div class="board-group">' + esc(L('Aaj revision due', 'आज रिवीज़न बाकी')) + ' · ' + due.length + '</div>';
@@ -638,7 +638,7 @@
     return h + '</section>';
   };
 
-  /* ---------------- retrieval (browser ke andar, RAG-जैसा) ---------------- */
+  /* ---------------- Retrieval inside the browser, RAG-like ---------------- */
   var STOP = { 'के': 1, 'का': 1, 'की': 1, 'को': 1, 'में': 1, 'है': 1, 'हैं': 1, 'और': 1, 'से': 1, 'एक': 1, 'यह': 1, 'वह': 1,
     'क्या': 1, 'कैसे': 1, 'कि': 1, 'पर': 1, 'भी': 1, 'तो': 1, 'था': 1, 'थी': 1, 'ने': 1, 'कर': 1, 'किया': 1, 'हो': 1,
     'जो': 1, 'इस': 1, 'उस': 1, 'तक': 1, 'लिए': 1, 'साथ': 1, 'बारे': 1, 'अपने': 1, 'गया': 1, 'दिया': 1, 'कुछ': 1,
@@ -664,7 +664,7 @@
   }
 
   var __idx = null, __idxKey = '';
-  // Poora index browser me hi banta hai (TF-IDF) — koi server nahi
+  // The whole index is built in the browser with TF-IDF — no server
   function indexDocs() {
     var key = (window.BOARD_DATA ? window.BOARD_DATA.questions.length : 0) + '/' + Object.keys(window.NOTES || {}).length;
     if (__idx && __idxKey === key) return __idx;
@@ -692,7 +692,7 @@
     return __idx;
   }
 
-  // Query par sabse relevant notes + sawal (ranked)
+  // Most relevant notes and questions for the query (ranked)
   function retrieve(query, limit) {
     var qt = toks(query);
     if (!qt.length) return { notes: [], qs: [] };
@@ -724,7 +724,7 @@
     if (!out) return;
     var w = (text || '').trim();
     if (!w) { out.innerHTML = ''; return; }
-    // notes lazy load hote hain — pehle lao, phir retrieve
+    // Notes are lazy-loaded — fetch them before retrieval
     if (window.BP && window.BP.loadLazy && !window.NOTES) {
       out.innerHTML = '<div class="empty">' + esc(L('Notes load ho rahe hain…', 'नोट्स लोड हो रहे हैं…')) + '</div>';
       window.BP.loadLazy('notes').then(function () { window.assistAsk(text); }).catch(function () { });
@@ -789,7 +789,7 @@
   /* ---------------- spaced repetition (revision schedule) ---------------- */
 
   var REVKEY = 'bp_rev_v1';
-  var REV_INTERVALS = [1, 3, 7, 14, 30]; // din — saaf schedule, koi mystery nahi
+  var REV_INTERVALS = [1, 3, 7, 14, 30]; // Days — clear schedule, no hidden logic
   function revLoad() { try { return JSON.parse(localStorage.getItem(REVKEY)) || {}; } catch (e) { return {}; } }
   function revSave(r) { try { localStorage.setItem(REVKEY, JSON.stringify(r)); return true; } catch (e) { return false; } }
 

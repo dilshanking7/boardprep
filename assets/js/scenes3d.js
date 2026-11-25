@@ -69,7 +69,7 @@ function finish(scene, list, keys) {
 
 /* ================= OPTICS ================= */
 
-/* Optics ray diagrams — mirror/lens ke har case ke sahi kirane.
+/* Optics ray diagrams — correct rays for every mirror or lens case.
    kind: 'concave-mirror' | 'convex-mirror' | 'convex-lens' | 'concave-lens' */
 
 function axLine(s, list, keys, half) {
@@ -256,7 +256,7 @@ export function optics(kind, caseIdx) {
     dot3(imgX, 'image', list, keys, 0xf472b6);
     label3('I', imgX, 0.34, '#f9a8d4', list, keys);
   } else if (atF) {
-    // image at infinity — kuch nahi (parallel kirane)
+    // Image at infinity — no-op (parallel rays)
   } else if (real) {
     arrow3(imgX, imgH, 0xf472b6, 'image', list, keys);
     label3('I', imgX, imgH + 0.38, '#f9a8d4', list, keys);

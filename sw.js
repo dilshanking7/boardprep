@@ -1,7 +1,7 @@
 /* BoardPrep service worker — offline support
-   - app shell install par cache
-   - baaki sab (PDF, audio, 3D models) cache-first; network par aaye to cache ho jaye
-   - "offline करो" button se poora content cache ho sakta hai
+   - Cache the app shell on install
+   - Everything else (PDF, audio, 3D models) is cache-first; network responses are cached
+   - The "offline" button can cache all content
 */
 const CACHE = 'boardprep-v43';
 
@@ -60,7 +60,7 @@ const SHELL = [
 ];
 
 self.addEventListener('install', function (e) {
-  // Har file alag se cache hoti hai — koi ek fail ho to poora install fail NA ho
+  // Each file is cached separately — one failure must not fail the whole install
   e.waitUntil(caches.open(CACHE).then(function (cache) {
     var failed = [];
     return Promise.all(SHELL.map(function (u) {
@@ -78,7 +78,7 @@ self.addEventListener('activate', function (e) {
   }).then(function () { return self.clients.claim(); }));
 });
 
-// App shell ki cached status report (missing resources ke liye)
+// Cached status report for the app shell (for missing resources)
 self.addEventListener('message', function (e) {
   if (!e.data) return;
   if (e.data.type === 'SHELL_STATUS') {
@@ -129,7 +129,7 @@ self.addEventListener('fetch', function (e) {
   const u = new URL(req.url);
   if (u.origin !== self.location.origin) return;
 
-  // HTML: network first (taaki updates dikhein), cache fallback
+  // HTML: network first so updates appear, with cache fallback
   if (req.mode === 'navigate' || u.pathname.endsWith('.html') || u.pathname === '/' || u.pathname.endsWith('/')) {
     e.respondWith(fetch(req).then(function (r) {
       const copy = r.clone();
@@ -141,14 +141,14 @@ self.addEventListener('fetch', function (e) {
     return;
   }
 
-  // version.json hamesha network se (taaki naya update turant dikhe)
+  // Always fetch version.json from the network so updates appear immediately
   if (u.pathname.endsWith('/version.json')) {
     e.respondWith(fetch(req, { cache: 'no-store' }).catch(function () { return caches.match(req); }));
     return;
   }
 
-  // Baaki sab: stale-while-revalidate — pehle cache (turant), phir network se update
-  // (cache-first nahi, warna purana data hamesha dikhta jab tak CACHE na badle)
+  // Everything else: stale-while-revalidate — serve cache first, then update from the network
+  // (Not cache-only, which would keep showing old data until the cache name changes)
   e.respondWith(caches.match(req).then(function (hit) {
     var net = fetch(req).then(function (r) {
       if (r && r.ok) {

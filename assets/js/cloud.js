@@ -3,7 +3,7 @@
 (function () {
   'use strict';
 
-  // DEFAULT_BASE — ye URL app me hi baked hai (Dilshan ek baar set karta hai).
+  // DEFAULT_BASE — this URL is baked into the app (Dilshan sets it once).
   // Users do not need to configure anything; it works automatically.
   var DEFAULT_BASE = 'https://boardprep-api.dilshan-boardprep.workers.dev';
   var FALLBACK_BASE = 'https://boardprep-api.dilshan-boardprep.workers.dev';

@@ -1,5 +1,5 @@
 // Hindi -> English content dictionary (auto-generated).
-// English mode me content globals inka English roop lete hain.
+// In English mode, content globals use their English forms.
 window.HI_EN = {
  "'Cat' का समान अर्थ वाला शब्द नहीं है?": "Isn't there a word that means the same as 'Cat'?",
  "'अनुपम' का विलोम शब्द?": "What is the antonym of 'unparalleled'?",

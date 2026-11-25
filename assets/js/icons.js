@@ -1,5 +1,5 @@
 // BoardPrep — inline SVG icon set (24x24, stroke based, consistent)
-// Android/iOS don't render emoji glyphs reliably — isliye sab jagah SVG use hota hai.
+// Android/iOS do not render emoji glyphs reliably, so SVG is used everywhere.
 (function () {
   var S = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
   var E = '</svg>';
@@ -54,7 +54,7 @@
   window.BP_ICONS = I;
   window.BP_ICON = icon;
 
-  // HTML me <span class="bp-ico" data-icon="home"></span> ko SVG se bhar do
+  // Replace <span class="bp-ico" data-icon="home"></span> with SVG
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('[data-icon]').forEach(function (el) {
       el.innerHTML = icon(el.dataset.icon);

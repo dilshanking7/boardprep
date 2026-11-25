@@ -112,7 +112,7 @@ export default {
 };
 
 function uid(raw) {
-  // device id -> hex (D1 key ke liye)
+  // Device ID to hex for the D1 key
   let h = 0;
   const s = String(raw || "anon");
   for (let i = 0; i < s.length; i++) { h = (h * 31 + s.charCodeAt(i)) >>> 0; }
@@ -247,7 +247,7 @@ async function handle(req, env, ctx) {
         if (!img) return json({ ok: false, error: "image required" }, { status: 400 });
         const key = env.OPENROUTER_KEY || "";
         if (!key && !env.GEMINI_KEY) {
-          return json({ ok: false, error: "photo-ke-liye-key", noKey: true });
+          return json({ ok: false, error: "vision key missing", noKey: true });
         }
         let last = "";
         // Try Gemini first, then OpenRouter
@@ -384,7 +384,7 @@ async function handle(req, env, ctx) {
         return json({ ok: true });
       }
 
-      // user ka pradarshan (kamzor/norm) — prompt me judta hai
+      // User performance level (weak or normal) added to the prompt
       async function userContext(db, id) {
         try {
           const r = await loadProgress(db, id);

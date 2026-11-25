@@ -14,7 +14,7 @@
     return seen;
   }
 
-  // stories ke liye sirf asli chapter/section naam (data-source categories nahi)
+  // For stories, use only real chapter or section names (not data-source categories)
   function storyChapters(subjKey) {
     var bad = ['प्रश्न', 'उत्तरीय', 'Bank', 'Objective', 'MCQ', 'पुनरीक्षण', 'उद्धरण', 'मुख्य बातें'];
     return chapList(subjKey).filter(function (c) {
@@ -660,7 +660,7 @@
       '<a class="fchip" href="#/notes/' + esc(subjKey) + '">' + esc(L('Notes', 'नोट्स')) + '</a></div>';
     h += '</section>';
 
-    // notes se overview / key points
+    // Overview and key points from notes
     var notes = null;
     try {
       ((window.NOTES || {})[subjKey] || []).forEach(function (it) { if (!notes && it.ch === chap) notes = it; });
@@ -803,7 +803,7 @@
       }).join('') + '</div>' +
       '<div class="note">' + esc(L('Roz poora karo', 'रोज़ पूरा करो')) + '</div></div>';
 
-    /* 7 din ka calendar */
+    /* Seven-day calendar */
     var max = Math.max.apply(null, st.last7.map(function (x) { return x.n; }).concat([goal, 1]));
     h += '<div class="board-group">' + esc(L('Pichle 7 din', 'पिछले 7 दिन')) + '</div>';
     h += '<div class="cal7">' + st.last7.map(function (x) {
@@ -971,7 +971,7 @@
     return h + '</section>';
   }
 
-  /* ---------------- help / kaise use karein ---------------- */
+  /* ---------------- Help and usage guide ---------------- */
 
   function vHelp() {
     var steps = [

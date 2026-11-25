@@ -14,21 +14,21 @@ SUPABASE_ANON_KEY = "sb_publishable_5Kto_b2Fmp4SRww7qvPaeA_SetAlfDV"
 LIMIT_PER = "60"
 WINDOW_HOURS = "24"
 
-# security — sirf yahi origins API call kar sakte hain ('*' nahi).
-# localhost kisi bhi port par allowed (code me regex), APK origin bhi included.
+# Security — only these origins can call the API (no '*').
+# Localhost on any port is allowed by a regex in code; the APK origin is included.
 ALLOWED_ORIGINS = "https://dilshanking7.github.io,http://localhost,http://127.0.0.1,https://appassets.androidplatform.net,http://appassets.androidplatform.net"
 
-# free keys (optional — jo mile daalo, chain apne-aap use karegi)
-# GROQ_KEY, GEMINI_KEY, OPENROUTER_KEY  -> wrangler secret ya vars me
-# NOUS_TOKEN, NOUS_REFRESH_TOKEN, NOUS_CLIENT_ID -> wrangler secret (D1 se better)
-# DIAG_TOKEN -> optional; set karne par hi /api/diag chalega
+# Free keys (optional — the chain uses whatever is available)
+# GROQ_KEY, GEMINI_KEY, OPENROUTER_KEY -> Wrangler secret or var
+# NOUS_TOKEN, NOUS_REFRESH_TOKEN, NOUS_CLIENT_ID -> Wrangler secret (better than D1)
+# DIAG_TOKEN -> optional; /api/diag runs only when it is set
 
-# Cloudflare Workers AI (free — CF account chahiye)
+# Cloudflare Workers AI (free tier — requires a Cloudflare account)
 [ai]
 binding = "AI"
 
-# D1 database (SQLite, free) — progress sync + study rooms
-# NOTE: pehle `wrangler d1 create boardprep` chalao, phir mila id yahan REPLACE_ME ki jagah likho
+# D1 database (SQLite, free tier) — progress sync and study rooms
+# NOTE: run `wrangler d1 create boardprep` first, then replace REPLACE_ME with the returned ID
 [[d1_databases]]
 binding = "DB"
 database_name = "boardprep"

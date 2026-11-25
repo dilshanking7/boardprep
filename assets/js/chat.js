@@ -1,5 +1,5 @@
 // BoardPrep AI chat — ChatGPT/Gemini जैसा चैट डैशबोर्ड (cloud worker से)
-// chats save rehti hain — back se bahar aao, baad me continue ya nayi chat
+// Chats stay saved — leave and continue later, or start a new chat
 (function () {
   'use strict';
   var KEY = 'bp_chats_v1';
@@ -16,7 +16,7 @@
   function active() { try { return localStorage.getItem(IDX) || ''; } catch (e) { return ''; } }
   function setActive(id) { try { localStorage.setItem(IDX, id); } catch (e) { } }
   function mkid() { return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
-  // error ko aam bhasha me — user ko tech nahi dikhta
+  // Error in plain language — no technical details for the user
   function friendly(e) {
     var m = String((e && e.message) || e || '');
     if (m.indexOf('no-base') >= 0) {
@@ -28,7 +28,7 @@
     }
     return m;
   }
-  // screen ka bhaag — AI ko "jo dikha raha hai" ka sandarbh (screen padhna)
+  // Screen section — context for the AI about what is visible (screen reading)
   function screenCtx() {
     try {
       var s = (window.BP && window.BP.lastScreen) || null;
@@ -41,7 +41,7 @@
     return !!(window.Cloud && window.Cloud.consent && window.Cloud.consent('screen', 'BoardPrep AI को अभी खुले पेज का text भेजना है। Allow करें?'));
   }
 
-  // voice commands — app ke andar ka kaam khud
+  // Voice commands — in-app actions
   function command(q) {
     var s = (q || '').toLowerCase();
     var go = function (h) { location.hash = h; };
@@ -80,7 +80,7 @@
     if (/(खोज|search)/.test(s)) { go('#/search'); return true; }
     return false;
   }
-  // awaaz ki tayyari
+  // Prepare voice
   var VP = { voice: '', speed: 1.02, mode: 'chat', mute: false };
   try {
     var sv = localStorage.getItem('bp_voice_pref');
@@ -117,7 +117,7 @@
       var body = String(text || '').replace(/[*\n]/g, ' ').slice(0, 400);
       var v = pickVoiceByName(VP.voice) || bestVoice(L2);
       if (!v) {
-        // device par voice nahi — Google se hi awaaz (hamesha chalti hai)
+        // No speech synthesis on the device — use Google voice (always available)
         if (VP.mute) return;
         try { window.speechSynthesis.cancel(); } catch (e) { }
         var url = 'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=' +
@@ -134,11 +134,11 @@
       u.rate = VP.speed;
       u.voice = v;
       window.speechSynthesis.speak(u);
-      // voice mode: javab khatam hote hi dobara suno
+      // Voice mode — listen again when the answer ends
       u.onend = function () { if (VP.mode === 'voice' && !VP.mute) setTimeout(startVoice, 220); };
     } catch (e) { }
   }
-  // awaaz se sawal
+  // Question by voice
   var recog = null;
   function startVoice() {
     if (VP.mode !== 'voice' || VP.mute) return;
@@ -361,7 +361,7 @@
     var inp = document.getElementById('chatIn');
     var q = (inp.value || '').trim();
     if (!q) return;
-    // app ke andar ka kaam — pehle command dekho
+    // In-app action — check the command first
     if (command(q)) { inp.value = ''; render(); return; }
     if (!window.Cloud || !window.Cloud.ready()) {
       alert(L('Cloud API set nahi hai.', 'क्लाउड API सेट नहीं है।'));
@@ -382,7 +382,7 @@
     var web = (document.getElementById('chatWeb') || {}).checked !== false;
     var c = cur();
     var hist = c.msgs.slice(-10).map(function (m) { return { role: m.role, content: m.content }; });
-    // screen ka sandarbh ke saath bhejo — AI "jo dikha raha hai" samjhe
+    // Send with screen context so the AI understands what is visible
     var full = sc ? ('[स्क्रीन पर यह दिख रहा है]: ' + sc + '\n\nसवाल: ' + q) : q;
     window.Cloud.chat(full, hist, web).then(function (r) {
       thinking.remove();
@@ -468,7 +468,7 @@
       }
     }).catch(function (e) { if (out) out.innerHTML = '<div class="sheet-empty">' + esc(friendly(e)) + '</div>'; });
   }
-  // voice mode: lagataar suno — kabhी mic apne-aap band nahi hoga
+  // Voice mode — keep listening; the mic does not stop by itself
   var listening = false;
   setInterval(function () {
     try {
