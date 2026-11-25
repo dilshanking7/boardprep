@@ -10,7 +10,7 @@
   var OVERRIDE_KEY = 'bp_api_base';
   var BASE = '';
 
-  // URL sahi hai ya nahi (purana placeholder <subdomain> ya khaali)
+  // Check the URL and reject placeholders or empty values
   function goodUrl(u) {
     var s = String(u || '').trim();
     return /^https?:\/\/[a-z0-9][a-z0-9.\-]*\.[a-z]{2,}/i.test(s) && s.indexOf('<') === -1;
@@ -215,7 +215,7 @@
       try { localStorage.removeItem(OVERRIDE_KEY); } catch (e) { }
       BASE = pick(window.BP_API_BASE) || pick(DEFAULT_BASE) || pick(FALLBACK_BASE);
     },
-    // version.json se aaya URL — sirf memory me (override nahi likhta)
+    // URL from version.json: memory only, not saved as override
     refreshBase: function (u) { var s = pick(u); if (s) BASE = s; },
     getBase: function () { return goodUrl(BASE) ? BASE : FALLBACK_BASE; },
     ready: function () { return goodUrl(BASE) || goodUrl(FALLBACK_BASE); },
