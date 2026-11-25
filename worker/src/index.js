@@ -456,7 +456,7 @@ async function handle(req, env, ctx) {
         var webCtx = [];
         try {
           var low = q.toLowerCase();
-          var needsWeb = /(outside|internet|news|latest|aaj|2026|2027|google|search|खोज|नया|आज)/.test(low) || wantWeb;
+          var needsWeb = /(outside|internet|news|latest|today|2026|2027|google|search|खोज|नया|आज)/.test(low) || wantWeb;
           if (needsWeb) webCtx = await webSearch(q);
         } catch (e) { }
 
