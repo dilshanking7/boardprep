@@ -4,7 +4,7 @@
   'use strict';
 
   // DEFAULT_BASE — ye URL app me hi baked hai (Dilshan ek baar set karta hai).
-  // Users ko kuch set nahi karna — sab apne-aap chalega.
+  // Users do not need to configure anything; it works automatically.
   var DEFAULT_BASE = 'https://boardprep-api.dilshan-boardprep.workers.dev';
   var FALLBACK_BASE = 'https://boardprep-api.dilshan-boardprep.workers.dev';
   var OVERRIDE_KEY = 'bp_api_base';
@@ -101,7 +101,7 @@
     return parts.length > 1 ? ('सवाल: ' + parts[1]) : 'सवाल:';
   }
 
-  // request ke waqt bhi URL check — galat/placeholder ho to sahi URL
+  // Check the URL on every request and fall back if it is invalid
   function url(path) {
     var b = goodUrl(BASE) ? BASE : FALLBACK_BASE;
     return b + path;
@@ -140,7 +140,7 @@
       .then(readResponse).catch(function () { throw new Error('net'); });
   }
 
-  // AI: notes (RAG context) + sawal -> free model ka javab
+  // AI: notes (RAG context) + question -> free model answer
   function ask(q, notes) {
     return post('/api/ask', { q: q, notes: notes || [] });
   }
@@ -165,7 +165,7 @@
   }
 
   // study rooms
-  // AI chat (ChatGPT/Gemini jaisa) + quota
+  // AI chat and quota
   function chat(q, history, web) {
     q = stripScreen(q);
     var lang = (/[\u0900-\u097F]/.test(String(q || ''))) ? 'hi' : 'en';
@@ -182,14 +182,14 @@
     }
     return post('/api/stt', { audio: audio, mime: mime || 'audio/webm' });
   }
-  // photo: image (base64) -> javab
+  // photo: image (base64) -> answer
   function vision(image, q) {
     if (!consent('photo', 'यह फोटो AI सर्वर पर भेजी जाएगी। अनुमति दें?')) {
       return Promise.resolve({ ok: false, error: 'फ़ोटो की अनुमति नहीं मिली — image नहीं भेजी गई' });
     }
     return post('/api/vision', { image: image, q: q || '' });
   }
-  // feedback (AI khud seekhe)
+  // feedback (AI learning)
   function feedback(topic, good) {
     return post('/api/feedback', { id: deviceId(), topic: topic, good: good });
   }
@@ -198,7 +198,7 @@
   function roomPost(code, name, msg) { return post('/api/room/post', { code: code, name: name, msg: msg }); }
   function roomGet(code) { return get('/api/room/get?code=' + encodeURIComponent(code)); }
 
-  // token owner ka naam (rooms/sync ke liye)
+  // Token owner name (for rooms and sync)
   function myName() {
     try { return localStorage.getItem('bp_name') || ''; } catch (e) { return ''; }
   }
