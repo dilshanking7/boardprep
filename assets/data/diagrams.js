@@ -1,4 +1,4 @@
-// Science diagrams — har part ki jaankari
+// Science diagrams — information for each part
 window.DIAGRAMS = [
   { id: "eye", title: "Human Eye", hi: "मानव नेत्र", subj: "science",
     desc: "नेत्र एक कैमरा जैसा काम करता है। प्रकाश कॉर्निया और लेंस से गुजरकर रेटिना पर उल्टी तस्वीर बनाता है।",

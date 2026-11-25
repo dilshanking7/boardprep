@@ -1,4 +1,4 @@
-// Brain Level / IQ test — 20 sawal, 5 categories
+// Brain Level / IQ test — 20 questions, 5 categories
 window.BRAIN = {
   title: "Brain Level Test",
   items: [

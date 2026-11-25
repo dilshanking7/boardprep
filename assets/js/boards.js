@@ -1,4 +1,4 @@
-// Board list + per-board config: apna pattern, bhasha, subjects, accent color
+// Board list + per-board config: own pattern, language, subjects, accent color
 window.BOARDS = [
   { id: "cbse", group: "national", name: "CBSE", full: "Central Board of Secondary Education", state: "All India", lang: "en", exam: "Feb–Mar 2027", passMarks: 33, pattern: "80 + 20", medium: "English / Hindi", color: "#4f46e5",
     subjects: ["english", "hindi", "maths", "science", "sst", "sanskrit", "it"],

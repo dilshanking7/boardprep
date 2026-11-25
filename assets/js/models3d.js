@@ -92,7 +92,7 @@ export const Viewer = {
 
   mount: function (container, opts) {
     this.dispose();
-    // Low-end phone? — antialias band + pixel ratio 1 (battery + memory bache)
+    // Low-end phone? — disable antialiasing and use pixel ratio 1 to save battery and memory
     var cores = navigator.hardwareConcurrency || 4;
     var mem = navigator.deviceMemory || 4;
     var lowEnd = (cores <= 4 && mem <= 4) || mem <= 2;
@@ -258,7 +258,7 @@ export const Viewer = {
     this.active = null;
   },
 
-  // Loading indicator — GLB load ke dauran dikhta hai
+  // Loading indicator — shown while the GLB loads
   setLoading: function (on, label) {
     const s = this.active;
     if (!s) return;

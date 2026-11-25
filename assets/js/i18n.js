@@ -1,4 +1,4 @@
-// UI labels - Hindi / English. Question content apni language me hi rehta hai.
+// UI labels - Hindi / English. Question content stays in its own language.
 window.I18N = {
   brand: { hi: "Class 10 Prep", en: "Class 10 Prep" },
   nav_home: { hi: "होम", en: "Home" },

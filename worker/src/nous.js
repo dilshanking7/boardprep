@@ -1,4 +1,4 @@
-// Nous Portal free model client — token D1 me (refresh ke baad bhi bacha rahe)
+// Nous Portal free model client — token stored in D1 (survives refresh)
 
 import { allSettings, setSetting } from "./db.js";
 
