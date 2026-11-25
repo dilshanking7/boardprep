@@ -1,4 +1,4 @@
-// BoardPrep cloud — AI (RAG + free model), sync (D1), study rooms.
+// BoardPrep cloud — AI (RAG + free model), sync (Supabase/D1), study rooms.
 // Sab offline-safe: network na ho to local fallback, koi crash nahi.
 (function () {
   'use strict';
@@ -29,6 +29,14 @@
     if (!BASE) BASE = pick(window.BP_API_BASE) || pick(DEFAULT_BASE) || pick(FALLBACK_BASE);
   }
   initBase();
+
+  function needLogin() {
+    if (window.Auth && window.Auth.configured && !window.Auth.user()) {
+      window.Auth.showOverlay(true);
+      return false;
+    }
+    return true;
+  }
 
   function deviceId() {
     try {
@@ -99,6 +107,7 @@
   }
   function post(path, body, extra) {
     if (!goodUrl(BASE) && !goodUrl(FALLBACK_BASE)) return Promise.reject(new Error('no-base'));
+    if (!needLogin()) return Promise.reject({ ok: false, error: 'login required', login: true });
     return fetch(url(path), {
       method: 'POST',
       headers: authHeaders(extra, true),
@@ -107,6 +116,7 @@
   }
   function get(path, extra) {
     if (!goodUrl(BASE) && !goodUrl(FALLBACK_BASE)) return Promise.reject(new Error('no-base'));
+    if (!needLogin()) return Promise.reject({ ok: false, error: 'login required', login: true });
     return fetch(url(path), { headers: authHeaders(extra, false) })
       .then(function (r) { return r.json(); }).catch(function () { throw new Error('net'); });
   }
@@ -116,11 +126,22 @@
     return post('/api/ask', { q: q, notes: notes || [] });
   }
 
-  // cloud sync
+  // cloud sync — Supabase (logged-in user)
   function syncPush(data) {
+    if (window.Auth && window.Auth.configured) {
+      if (!window.Auth.user()) { window.Auth.showOverlay(true); return Promise.reject({ ok: false, error: 'login required', login: true }); }
+      return window.Auth.pushData();
+    }
     return post('/api/sync/save', { id: deviceId(), data: data || {} });
   }
   function syncPull() {
+    if (window.Auth && window.Auth.configured) {
+      if (!window.Auth.user()) { window.Auth.showOverlay(true); return Promise.reject({ ok: false, error: 'login required', login: true }); }
+      return window.Auth.pullData().then(function (row) {
+        if (!row || !row.data) return { ok: false, found: false };
+        return { ok: true, t: Date.parse(row.updated_at) || Date.now(), data: row.data };
+      });
+    }
     return get('/api/sync/load?id=' + encodeURIComponent(deviceId()));
   }
 
@@ -153,7 +174,8 @@
   function feedback(topic, good) {
     return post('/api/feedback', { id: deviceId(), topic: topic, good: good });
   }
-  function roomCreate(code, name) { return post('/api/room/create', { code: code, name: name }); }  function roomJoin(code, name) { return post('/api/room/join', { code: code, name: name }); }
+  function roomCreate(code, name) { return post('/api/room/create', { code: code, name: name }); }
+  function roomJoin(code, name) { return post('/api/room/join', { code: code, name: name }); }
   function roomPost(code, name, msg) { return post('/api/room/post', { code: code, name: name, msg: msg }); }
   function roomGet(code) { return get('/api/room/get?code=' + encodeURIComponent(code)); }
 

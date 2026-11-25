@@ -8,9 +8,9 @@ MODEL = "meituan/longcat-2.5:free"
 INFERENCE_BASE_URL = "https://inference-api.nousresearch.com/v1"
 NOUS_PORTAL = "https://portal.nousresearch.com"
 
-# rate limit — kitne AI requests, kitne ghante me (per device token, IP fallback)
+# rate limit — 60 AI requests per logged-in user, 24 hour window
 LIMIT_PER = "60"
-WINDOW_HOURS = "1"
+WINDOW_HOURS = "24"
 
 # security — sirf yahi origins API call kar sakte hain ('*' nahi).
 # localhost kisi bhi port par allowed (code me regex), APK origin bhi included.
