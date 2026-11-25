@@ -1,8 +1,8 @@
 // BoardPrep API — Cloudflare Worker (free tier)
-// - /api/ask      : notes से RAG + free model से जवाब (AI)
-// - /api/sync/*   : D1 (SQLite) me progress cloud par (database)
-// - /api/room/*   : study rooms (multi-user, D1 polling)
-// Sab kuch free. Koi card nahi.
+// - /api/ask, /api/chat, /api/stt, /api/vision, /api/image : authenticated AI endpoints
+// - /api/sync/* : legacy D1 progress sync (authenticated)
+// - /api/room/* : study rooms (authenticated)
+// All free tier. No card required.
 
 import { ensureSchema, getSetting, setSetting } from "./db.js";
 import { nousChat } from "./nous.js";
@@ -13,7 +13,7 @@ const json = (data, opts = {}) => new Response(JSON.stringify(data), {
   headers: {
     "Content-Type": "application/json; charset=utf-8",
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type, X-BP-Device-Token",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-BP-Device-Token",
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     "Vary": "Origin",
     ...(opts.headers || {}),
@@ -56,15 +56,38 @@ async function tokenHash(req) {
   return token ? hashText(token) : "";
 }
 
-async function rateKey(req) {
+function unauthorized() {
+  return json({ ok: false, error: "login required", login: true }, { status: 401 });
+}
+
+async function verifyUser(req, env) {
+  const header = String(req.headers.get("Authorization") || "");
+  const m = /^Bearer\s+(.+)$/i.exec(header);
+  if (!m || !env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) return null;
+  try {
+    const r = await fetch(String(env.SUPABASE_URL).replace(/\/$/, "") + "/auth/v1/user", {
+      headers: { apikey: env.SUPABASE_ANON_KEY, Authorization: "Bearer " + m[1] },
+    });
+    if (!r.ok) return null;
+    const u = await r.json();
+    return u && u.id ? { id: String(u.id) } : null;
+  } catch (e) { return null; }
+}
+
+async function userKey(user) {
+  return "u" + await hashText(user.id);
+}
+
+async function rateKey(req, user) {
+  if (user) return await userKey(user);
   const t = await tokenHash(req);
   if (t) return "t" + t;
   return "ip" + await hashText(req.headers.get("CF-Connecting-IP") || "anon");
 }
 
-async function checkLimit(req, env) {
+async function checkLimit(req, env, user) {
   await ensureSchema(env.DB);
-  return rateLimit(env.DB, await rateKey(req), env);
+  return rateLimit(env.DB, await rateKey(req, user), env);
 }
 
 function tooMany(rl) {
@@ -111,6 +134,12 @@ async function loadProgress(db, id) {
 async function handle(req, env, ctx) {
     const url = new URL(req.url);
     const p = url.pathname.replace(/\/+$/, "");
+    let authUser = null;
+    let authChecked = false;
+    async function currentUser() {
+      if (!authChecked) { authChecked = true; authUser = await verifyUser(req, env); }
+      return authUser;
+    }
 
     try {
       if (p === "/health") return json({ ok: true, service: "boardprep-api", time: Date.now() });
@@ -180,7 +209,9 @@ async function handle(req, env, ctx) {
       }
       // ---------- voice: audio -> text (Groq Whisper, free) ----------
       if (p === "/api/stt" && req.method === "POST") {
-        const rl = await checkLimit(req, env);
+        const user = await currentUser();
+        if (!user) return unauthorized();
+        const rl = await checkLimit(req, env, user);
         if (!rl.ok) return tooMany(rl);
         const b = await req.json().catch(() => ({}));
         const b64 = String(b.audio || "").split(",").pop();
@@ -206,7 +237,9 @@ async function handle(req, env, ctx) {
 
       // ---------- photo: image -> javab (OpenRouter free vision) ----------
       if (p === "/api/vision" && req.method === "POST") {
-        const rl = await checkLimit(req, env);
+        const user = await currentUser();
+        if (!user) return unauthorized();
+        const rl = await checkLimit(req, env, user);
         if (!rl.ok) return tooMany(rl);
         const b = await req.json().catch(() => ({}));
         const img = String(b.image || "");
@@ -233,7 +266,7 @@ async function handle(req, env, ctx) {
                 contents: [{
                   role: "user",
                   parts: [
-                    { text: "तुम कक्षा 10 के विद्यार्थी के होमवर्क/नोट्स की मदद करते हो। फोटो में जो लिखा/दिखा है उसे पढ़ो और हिंदी/Hinglish में सरल, स्पष्ट जवाब दो — पढ़ाओ, समझाओ, उदाहरण दो। 250 शब्दों के अंदर।" },
+                    { text: "तुम कक्षा 10 के विद्यार्थी के होमवर्क/नोट्स की मदद करते हो। फोटो में जो लिखा/दिखा है उसे पढ़ो और हिंदी या English में सरल, स्पष्ट जवाब दो — पढ़ाओ, समझाओ, उदाहरण दो। 250 शब्दों के अंदर।" },
                     { inline_data: { mime_type: mime, data: raw } },
                   ],
                 }],
@@ -264,7 +297,7 @@ async function handle(req, env, ctx) {
                 messages: [{
                   role: "user",
                   content: [
-                    { type: "text", text: "तुम कक्षा 10 के विद्यार्थी के होमवर्क/नोट्स की मदद करते हो। फोटो में जो लिखा/दिखा है उसे पढ़ो और हिंदी/Hinglish में सरल, स्पष्ट जवाब दो — पढ़ाओ, समझाओ, उदाहरण दो। 250 शब्दों के अंदर।" },
+                    { type: "text", text: "तुम कक्षा 10 के विद्यार्थी के होमवर्क/नोट्स की मदद करते हो। फोटो में जो लिखा/दिखा है उसे पढ़ो और हिंदी या English में सरल, स्पष्ट जवाब दो — पढ़ाओ, समझाओ, उदाहरण दो। 250 शब्दों के अंदर।" },
                     { type: "image_url", image_url: { url: img.indexOf("data:") === 0 ? img : "data:image/jpeg;base64," + img } },
                   ],
                 }],
@@ -316,7 +349,9 @@ async function handle(req, env, ctx) {
 
       // ---------- image banana (CF flux, free) ----------
       if (p === "/api/image" && req.method === "POST") {
-        const rl = await checkLimit(req, env);
+        const user = await currentUser();
+        if (!user) return unauthorized();
+        const rl = await checkLimit(req, env, user);
         if (!rl.ok) return tooMany(rl);
         const b = await req.json().catch(() => ({}));
         const pr = String(b.prompt || "").slice(0, 400);
@@ -333,8 +368,10 @@ async function handle(req, env, ctx) {
 
       // ---------- feedback: AI khud seekhe (user ka data se) ----------
       if (p === "/api/feedback" && req.method === "POST") {
+        const user = await currentUser();
+        if (!user) return unauthorized();
         const b = await req.json().catch(() => ({}));
-        const id = uid(b.id);
+        const id = await userKey(user);
         const topic = String(b.topic || "general").slice(0, 60);
         const good = b.good ? 1 : -1;
         await ensureSchema(env.DB);
@@ -371,8 +408,10 @@ async function handle(req, env, ctx) {
       }
 
       if (p === "/api/quota" && req.method === "GET") {
+        const user = await currentUser();
+        if (!user) return unauthorized();
         await ensureSchema(env.DB);
-        const raw = await getSetting(env.DB, "rl_" + await rateKey(req), null);
+        const raw = await getSetting(env.DB, "rl_" + await rateKey(req, user), null);
         let rec = null;
         try { rec = raw ? JSON.parse(raw) : null; } catch (e) { }
         const per = Number(env.LIMIT_PER || 60);
@@ -385,15 +424,17 @@ async function handle(req, env, ctx) {
         return json({ ok: true, left: left, per: per, windowH: winH, resetInMs: rec.reset - now });
       }
       if (p === "/api/chat" && req.method === "POST") {
+        const user = await currentUser();
+        if (!user) return unauthorized();
         const b = await req.json().catch(() => ({}));
-        const id = uid(b.id);
+        const id = await userKey(user);
         const q = String(b.q || "").slice(0, 1200);
         const hist = Array.isArray(b.history) ? b.history.slice(-10) : [];
         const wantWeb = b.web !== false;
         function langOfQ(s) { return /[\u0900-\u097F]/.test(String(s || '')) ? 'hi' : 'en'; }
         if (!q) return json({ error: "q required" }, { status: 400 });
 
-        const rl = await checkLimit(req, env);
+        const rl = await checkLimit(req, env, user);
         if (!rl.ok) return tooMany(rl);
 
         // web search (bahar ki info) — sirf jab zaroorat lage
@@ -429,7 +470,7 @@ async function handle(req, env, ctx) {
           "उसकी निजी जानकारी (जन्म-तिथि, स्कूल का नाम) कभी मत बताओ। " +
           (lang === 'en'
             ? "जवाब ENGLISH में दो। "
-            : "जवाब हिंदी या Hinglish में दो। ") +
+            : "जवाब हिंदी या English में दो। ") +
           (ctx ? ctx + "इन कमज़ोर चीज़ों को समझाते समय ख़ास ध्यान दो और आसान उदाहरण दो। " : "") +
           "नियम: (1) सीधा और छोटा जवाब दो, अगल-बढ़कर न लिखो। (2) किसी भी तरह का सवाल हो — पढ़ाई, क्विज़, जीवन, तकनीक, " +
           "मनोरंजन, सलाह, कहानी, कविता, चर्चा — सबका जवाब दो, मना मत करो। संदिग्ध सवाल (जैसे 'hii', 'hello') का जवाब " +
@@ -468,11 +509,13 @@ async function handle(req, env, ctx) {
 
       // ---------- AI (purana — RAG + free model) ----------
       if (p === "/api/ask" && req.method === "POST") {
+        const user = await currentUser();
+        if (!user) return unauthorized();
         const b = await req.json().catch(() => ({}));
         const q = String(b.q || "").slice(0, 500);
         const notes = Array.isArray(b.notes) ? b.notes.slice(0, 6) : [];
         if (!q) return json({ error: "q required" }, { status: 400 });
-        const rl = await checkLimit(req, env);
+        const rl = await checkLimit(req, env, user);
         if (!rl.ok) return tooMany(rl);
         const ctx = notes.map((n, i) => {
           const t = typeof n === "string" ? n : ((n && (n.ch + " — " + (n.text || ""))) || "");
@@ -499,9 +542,11 @@ async function handle(req, env, ctx) {
 
       // ---------- cloud sync (database) ----------
       if (p === "/api/sync/save" && req.method === "POST") {
+        const user = await currentUser();
+        if (!user) return unauthorized();
         const b = await req.json().catch(() => ({}));
-        const id = uid(b.id);
-        const owner = await tokenHash(req);
+        const id = await userKey(user);
+        const owner = id;
         await ensureSchema(env.DB);
         const raw = await getSetting(env.DB, "progress_" + id, null);
         let rec = {};
@@ -517,8 +562,10 @@ async function handle(req, env, ctx) {
         return json({ ok: true, id: id, saved: rec.t });
       }
       if (p === "/api/sync/load" && req.method === "GET") {
-        const id = uid(url.searchParams.get("id"));
-        const owner = await tokenHash(req);
+        const user = await currentUser();
+        if (!user) return unauthorized();
+        const id = await userKey(user);
+        const owner = id;
         await ensureSchema(env.DB);
         const r = await loadProgress(env.DB, id);
         if (!r) return json({ ok: false, found: false });
@@ -531,51 +578,57 @@ async function handle(req, env, ctx) {
       // ---------- study rooms (multi-user) ----------
       // room row: settings key = room_<code> ; value = JSON {code,name,members,msgs[]}
       if (p === "/api/room/create" && req.method === "POST") {
+        const user = await currentUser();
+        if (!user) return unauthorized();
         const b = await req.json().catch(() => ({}));
         const code = String(b.code || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 12);
         if (!code) return json({ error: "code required" }, { status: 400 });
-        const owner = await tokenHash(req);
+        const owner = await userKey(user);
         await ensureSchema(env.DB);
         await setSetting(env.DB, "room_" + code, JSON.stringify({
           code: code, name: String(b.name || code).slice(0, 60),
           members: [String(b.name || "student").slice(0, 40)],
-          msgs: [{ n: "system", t: String(b.name || "student") + " ne room banaya", ts: Date.now() }],
+          msgs: [{ n: "system", t: String(b.name || "student") + " created the room", ts: Date.now() }],
           ts: Date.now(),
           lock: owner ? [owner] : [],
         }));
         return json({ ok: true, code: code });
       }
       if (p === "/api/room/join" && req.method === "POST") {
+        const user = await currentUser();
+        if (!user) return unauthorized();
         const b = await req.json().catch(() => ({}));
         const code = String(b.code || "").trim().toLowerCase();
         await ensureSchema(env.DB);
         const raw = await getSetting(env.DB, "room_" + code, null);
-        if (!raw) return json({ ok: false, error: "room nahi mila" }, { status: 404 });
+        if (!raw) return json({ ok: false, error: "room not found" }, { status: 404 });
         const room = JSON.parse(raw);
-        const owner = await tokenHash(req);
+        const owner = await userKey(user);
         const lock = Array.isArray(room.lock) ? room.lock : [];
         if (lock.length) {
-          if (!owner) return json({ ok: false, error: "device token required" }, { status: 403 });
+          if (!owner) return json({ ok: false, error: "login required" }, { status: 403 });
           if (lock.indexOf(owner) < 0) lock.push(owner);
         }
         room.lock = lock;
         const nm = String(b.name || "student").slice(0, 40);
         if (!room.members.includes(nm)) room.members.push(nm);
-        room.msgs.push({ n: "system", t: nm + " join hua", ts: Date.now() });
+        room.msgs.push({ n: "system", t: nm + " joined the room", ts: Date.now() });
         room.ts = Date.now();
         await setSetting(env.DB, "room_" + code, JSON.stringify(room));
         return json({ ok: true, room: room });
       }
       if (p === "/api/room/post" && req.method === "POST") {
+        const user = await currentUser();
+        if (!user) return unauthorized();
         const b = await req.json().catch(() => ({}));
         const code = String(b.code || "").trim().toLowerCase();
         const msg = String(b.msg || "").slice(0, 400);
         if (!msg) return json({ error: "msg required" }, { status: 400 });
         await ensureSchema(env.DB);
         const raw = await getSetting(env.DB, "room_" + code, null);
-        if (!raw) return json({ ok: false, error: "room nahi mila" }, { status: 404 });
+        if (!raw) return json({ ok: false, error: "room not found" }, { status: 404 });
         const room = JSON.parse(raw);
-        const owner = await tokenHash(req);
+        const owner = await userKey(user);
         const lock = Array.isArray(room.lock) ? room.lock : [];
         if (lock.length && (!owner || lock.indexOf(owner) < 0)) {
           return json({ ok: false, error: "not a member" }, { status: 403 });
@@ -587,10 +640,12 @@ async function handle(req, env, ctx) {
         return json({ ok: true, room: room });
       }
       if (p === "/api/room/get" && req.method === "GET") {
+        const user = await currentUser();
+        if (!user) return unauthorized();
         const code = String(url.searchParams.get("code") || "").trim().toLowerCase();
         await ensureSchema(env.DB);
         const raw = await getSetting(env.DB, "room_" + code, null);
-        if (!raw) return json({ ok: false, error: "room nahi mila" }, { status: 404 });
+        if (!raw) return json({ ok: false, error: "room not found" }, { status: 404 });
         return json({ ok: true, room: JSON.parse(raw) });
       }
 
