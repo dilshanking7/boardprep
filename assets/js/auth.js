@@ -65,12 +65,15 @@
     if (opts.headers) {
       Object.keys(opts.headers).forEach(function (k) { headers[k] = opts.headers[k]; });
     }
-    var t = opts.token === undefined ? (S && S.access_token) : opts.token;
-    if (t) headers.Authorization = 'Bearer ' + t;
-    return fetch(SUPABASE_URL + path, {
-      method: opts.method || 'GET',
-      headers: headers,
-      body: opts.body ? JSON.stringify(opts.body) : undefined
+    var pendingToken = opts.token === undefined ? getToken() : Promise.resolve(opts.token || '');
+    return pendingToken.then(function (t) {
+      if (!t && opts.token === undefined) throw new Error('सत्र समाप्त, कृपया फिर से लॉगिन करें');
+      if (t) headers.Authorization = 'Bearer ' + t;
+      return fetch(SUPABASE_URL + path, {
+        method: opts.method || 'GET',
+        headers: headers,
+        body: opts.body ? JSON.stringify(opts.body) : undefined
+      });
     }).then(function (r) {
       return r.text().then(function (txt) {
         var j = {};
