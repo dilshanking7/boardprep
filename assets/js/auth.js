@@ -287,7 +287,7 @@
       });
     }
     clean();
-    showOverlay(true, get('error_description') || 'लॉगिन विफल');
+    showOverlay(true, (get('error_description') || 'लॉगिन विफल').replace(/\+/g, ' '));
     return true;
   }
 
